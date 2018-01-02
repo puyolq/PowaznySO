@@ -1,6 +1,6 @@
 #include "ZarzadzanieProcesami.h"
 #include "Kolejka procesow.hpp"
-
+#include <iostream>
 
 PCB::PCB(int _id, std::string _nazwa, PCB* _rodzic)
 {
@@ -134,15 +134,7 @@ void PCB::ustawSocket(Socket* _socket)
 	socket = _socket;
 }
 
-void PCB::ustawSemafor(Semafor* _semafor)
-{
-	semafor = _semafor;
-}
 
-Semafor* PCB::dajSemafor()
-{
-	return semafor;
-}
 
 void PCB::ustawRamLokalizacja(int wartosc)
 {

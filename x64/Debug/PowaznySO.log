@@ -1,2 +1,6 @@
-﻿  Source.cpp
+﻿  dysk.cpp
+c:\users\bartosz\documents\github\powaznyso\dysk.cpp(147): warning C4244: '=': conversion from 'short' to 'char', possible loss of data
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  Source.cpp
   PowaznySO.vcxproj -> C:\Users\Bartosz\Documents\GitHub\PowaznySO\x64\Debug\PowaznySO.exe

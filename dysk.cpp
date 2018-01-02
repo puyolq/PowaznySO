@@ -4,6 +4,7 @@
 #include "blednaNazwaPliku.h"
 #include "brakWolnychSynow.h"
 #include "blednaNazwaFolderu.h"
+#include "iostream"
 //Rzucane wyj¹tki:
 //1. brakMiescja
 //2. niejednoznacznaNazwa

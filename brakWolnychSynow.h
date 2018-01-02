@@ -1,6 +1,6 @@
 #pragma once
 #include <exception>
-#include <string>
+
 
 class brakWolnychSynow : public std::exception
 {

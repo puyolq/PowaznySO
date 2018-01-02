@@ -146,6 +146,7 @@
     <ClCompile Include="iwezel.cpp" />
     <ClCompile Include="katalog.cpp" />
     <ClCompile Include="Kolejka procesow.cpp" />
+    <ClCompile Include="Semafory.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="wpisKatalogowy.cpp" />
     <ClCompile Include="ZarzadzanieProcesami.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="katalog.h" />
     <ClInclude Include="Kolejka procesow.hpp" />
     <ClInclude Include="niejednoznacznaNazwa.h" />
+    <ClInclude Include="Semafory.h" />
     <ClInclude Include="wpisKatalogowy.h" />
     <ClInclude Include="ZarzadzanieProcesami.h" />
   </ItemGroup>

@@ -1,12 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <iostream>
 
-//do usuniêcia potem
-struct Semafor
-{
-};
 
 struct Socket
 {
@@ -34,6 +29,12 @@ private:
 	PCB* rodzic;
 public:
 	PCB(int id, std::string nazwa, PCB* rodzic);
+	PCB()
+	{
+		id = 0;
+		//potomkowie = nullptr;
+		rodzic = nullptr;
+	}
 	~PCB();
 	PCB* dodajProces(int id, std::string nazwa, std::string rodzic);
 	std::string dajNazwe();
@@ -93,11 +94,7 @@ public:
 	int dajRamRozmiar();
 
 	//dla Mariusza (semafory)
-private:
-	Semafor* semafor;
-public:
-	void ustawSemafor(Semafor* semafor);
-	Semafor* dajSemafor();
+
 
 };
 
