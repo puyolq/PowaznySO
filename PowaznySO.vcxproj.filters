@@ -14,4 +14,56 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dysk.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="iwezel.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="katalog.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wpisKatalogowy.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZarzadzanieProcesami.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="blednaNazwaFolderu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="blednaNazwaPliku.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="brakMiejsca.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="brakWolnychSynow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dysk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="iwezel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="katalog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="niejednoznacznaNazwa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wpisKatalogowy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZarzadzanieProcesami.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
