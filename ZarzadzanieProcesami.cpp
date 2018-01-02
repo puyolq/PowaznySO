@@ -38,15 +38,27 @@ void PCB::ustawStatus(int _status)
 	if(_status>0 && _status<5)
 	{
 		//zmiana z nowy na gotowy
-		if (status == 0 && _status == 1) status = _status;
+		if (status == 0 && _status == 1)
+		{
+			status = _status;
+			kolejkaGotowych.dodajDoKolejki(this);
+		}
 		//zmiana z gotowy na aktywny
 		else if (status == 1 && _status == 3) status = _status;
 		//zmiana z aktywny na gotowy
 		else if (status == 3 && _status == 1) status = _status;
 		//zmiana z aktywnego na oczekuj¹cy
-		else if (status == 3 && _status == 2) status = _status;
+		else if (status == 3 && _status == 2)
+		{
+			status = _status;
+			uspijProces(this);
+		}
 		//zmiana z oczekuj¹cego na gotowy
-		else if (status == 2 && _status == 1) status = _status;
+		else if (status == 2 && _status == 1)
+		{
+			status = _status;
+			obudzProces(this);
+		}
 		//zmiana z aktywnego na zakoñczony
 		else if(status==3 && _status==4)
 		{
@@ -232,6 +244,7 @@ void PCB::usunProces(std::string nazwa)
 		przeniesPotomkow(this, local);
 		PCB* ojciec = local->dajRodzica();
 		ojciec->usunPotomka(nazwa);
+		kolejkaGotowych.usunProces(local->dajId());
 		delete local;
 	}
 }
