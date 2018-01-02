@@ -18,16 +18,7 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dysk.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="iwezel.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="katalog.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wpisKatalogowy.cpp">
+    <ClCompile Include="Kolejka procesow.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="ZarzadzanieProcesami.cpp">
@@ -60,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wpisKatalogowy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Kolejka procesow.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ZarzadzanieProcesami.h">

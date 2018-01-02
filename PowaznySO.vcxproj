@@ -142,11 +142,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="dysk.cpp" />
-    <ClCompile Include="iwezel.cpp" />
-    <ClCompile Include="katalog.cpp" />
+    <ClCompile Include="Kolejka procesow.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="wpisKatalogowy.cpp" />
     <ClCompile Include="ZarzadzanieProcesami.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +154,7 @@
     <ClInclude Include="dysk.h" />
     <ClInclude Include="iwezel.h" />
     <ClInclude Include="katalog.h" />
+    <ClInclude Include="Kolejka procesow.hpp" />
     <ClInclude Include="niejednoznacznaNazwa.h" />
     <ClInclude Include="wpisKatalogowy.h" />
     <ClInclude Include="ZarzadzanieProcesami.h" />

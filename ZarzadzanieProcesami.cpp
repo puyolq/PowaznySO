@@ -1,4 +1,5 @@
 #include "ZarzadzanieProcesami.h"
+#include "Kolejka procesow.hpp"
 
 
 PCB::PCB(int _id, std::string _nazwa, PCB* _rodzic)
@@ -294,6 +295,10 @@ ZarzadzanieProcesami::ZarzadzanieProcesami()
 	init = new PCB(0, "init", nullptr);
 }
 
+ZarzadzanieProcesami::~ZarzadzanieProcesami()
+{
+}
+
 void ZarzadzanieProcesami::wyswietlIloscProcesow()
 {
 	std::clog << "Ilosc procesow: " << init->zliczProcesy() << std::endl;
@@ -314,7 +319,7 @@ void ZarzadzanieProcesami::wyswietlProces(std::string nazwa)
 PCB* ZarzadzanieProcesami::dodajProces(std::string nazwa, std::string rodzic)
 {
 	PCB*local = init->dodajProces(dajLicznik(), nazwa, rodzic);
-	//dodaj local do kolejki gotowych
+	kolejkaGotowych.dodajDoKolejki(local);
 	return local;
 }
 
