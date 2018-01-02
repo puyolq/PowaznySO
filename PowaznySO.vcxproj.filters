@@ -39,6 +39,9 @@
     <ClCompile Include="Semafory.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="RAM.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="blednaNazwaFolderu.h">
@@ -75,6 +78,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Semafory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RAM.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

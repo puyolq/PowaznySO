@@ -84,10 +84,10 @@ public:
 	void dodajSocket(Socket*_socket);
 
 	//dla Mariana (RAM)
-private:
+public:
 	int ramLokalizacja;
 	int ramRozmiar;
-public:
+
 	void ustawRamLokalizacja(int wartosc);
 	int dajRamLokalizacja();
 	void ustawRamRozmiar(int wartosc);
