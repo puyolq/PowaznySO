@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="blednaNazwaFolderu.h" />
     <ClInclude Include="blednaNazwaPliku.h" />
+    <ClInclude Include="brakDostepuDoPliku.h" />
     <ClInclude Include="brakMiejsca.h" />
     <ClInclude Include="brakWolnychSynow.h" />
     <ClInclude Include="dysk.h" />

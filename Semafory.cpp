@@ -40,3 +40,15 @@ int Semafory::dlugosc()
 {
 	return (-1)*(this->wartosc);
 }
+
+bool Semafory::czyPodniesiony()
+{
+	if(wartosc==1)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

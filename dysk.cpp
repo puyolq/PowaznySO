@@ -4,7 +4,8 @@
 #include "blednaNazwaPliku.h"
 #include "brakWolnychSynow.h"
 #include "blednaNazwaFolderu.h"
-#include "iostream"
+#include "brakDostepuDoPliku.h"
+#include <iostream>
 //Rzucane wyj¹tki:
 //1. brakMiescja
 //2. niejednoznacznaNazwa
@@ -33,6 +34,39 @@ dysk::dysk()
 	++ileFolderow;
 
 }
+
+void dysk::otworzPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu)
+{
+	short pozycja = znajdzPlik(nazwa, rozszerzenie);
+	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
+
+	if (pozycja == -1)
+	{
+		throw blednaNazwaPliku();
+	}
+	if (pozycjaFolderu == -1)
+	{
+		throw blednaNazwaFolderu();
+	}
+	tablicaSemaforów[pozycja].czekaj(proces);
+}
+
+void dysk::zamknijPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB * proces, std::string nazwaFolderu)
+{
+	short pozycja = znajdzPlik(nazwa, rozszerzenie);
+	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
+
+	if (pozycja == -1)
+	{
+		throw blednaNazwaPliku();
+	}
+	if (pozycjaFolderu == -1)
+	{
+		throw blednaNazwaFolderu();
+	}
+	tablicaSemaforów[pozycja].rusz(proces);
+}
+
 
 void dysk::utworzPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
 {
@@ -84,11 +118,16 @@ void dysk::utworzPlik(std::string nazwa, std::string rozszerzenie, std::string n
 
 }
 
-void dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, std::string nazwaFolderu)
+void dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"u)
 {
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
+	if(!tablicaSemaforów[pozycja].czyPodniesiony())
+	{
+		throw brakDostepuDoPliku();
+	}
+	tablicaSemaforów[pozycja].czekaj(proces);
 	if (pozycja == -1)
 	{
 		throw blednaNazwaPliku();
@@ -166,7 +205,7 @@ void dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::strin
 	}
 }
 
-std::string dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
+std::string dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk")
 {
 	std::string doZwrotu = "";
 	short ileBlokowOczytano = 0;
@@ -175,6 +214,11 @@ std::string dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, std::
 	short ileDanychPierwszyBlok;
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
+	if (!tablicaSemaforów[pozycja].czyPodniesiony())
+	{
+		throw brakDostepuDoPliku();
+	}
+	tablicaSemaforów[pozycja].czekaj(proces);
 	if (pozycja == -1)
 	{
 		throw blednaNazwaPliku();
@@ -252,13 +296,19 @@ std::string dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, std::
 	return doZwrotu;
 }
 
-void dysk::otowrzStratnie(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
+void dysk::otowrzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk")
 {
 	short ileBlokowOczytano = 0;
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	int pobraneDane = tablicaIwezlow[pozycja].pobierzRozmiarPliku();
 	short ileDanychPierwszyBlok;
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
+
+	if (!tablicaSemaforów[pozycja].czyPodniesiony())
+	{
+		throw brakDostepuDoPliku();
+	}
+	tablicaSemaforów[pozycja].czekaj(proces);
 	if (pozycja == -1)
 	{
 		throw blednaNazwaPliku();

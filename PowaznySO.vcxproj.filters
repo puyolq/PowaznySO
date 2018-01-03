@@ -83,5 +83,8 @@
     <ClInclude Include="RAM.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="brakDostepuDoPliku.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
