@@ -115,5 +115,4 @@ public:
 
 	PCB* dodajProces(std::string nazwa, std::string rodzic);
 	void usunProces(std::string nazwa);
-	PCB* dajProcesInit();
 };

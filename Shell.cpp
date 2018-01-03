@@ -67,12 +67,20 @@ void Shell::RF(std::string nazwa, std::string rozszerzenie, std::string nowaNazw
 void Shell::SF(std::string nazwa, std::string rozszerzenie, std::string dane, PCB * proces, std::string nazwaFolderu)
 {
 	Dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, proces, nazwaFolderu);
+	Dysk.zamknijPlik(nazwa, rozszerzenie, "", zarzadzanieProcesami->init, nazwaFolderu);
 }
 
 void Shell::PF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::string nazwaFolderu)
 {
 	string wyjscie = Dysk.pobierzDane(nazwa, rozszerzenie, proces, nazwaFolderu);
 	cout << wyjscie << endl;
+	Dysk.zamknijPlik(nazwa, rozszerzenie, "", zarzadzanieProcesami->init, nazwaFolderu);
+}
+
+void Shell::XF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::string nazwaFolderu)
+{
+	Dysk.otowrzStratnie(nazwa, rozszerzenie, zarzadzanieProcesami->init, nazwaFolderu);
+	Dysk.zamknijPlik(nazwa, rozszerzenie, "", zarzadzanieProcesami->init, nazwaFolderu);
 }
 
 void Shell::CF(std::string nazwa, std::string rozszerzenie, std::string dane, PCB * proces, std::string nazwaFolderu)
@@ -265,6 +273,7 @@ void Shell::czytajWejscie(std::string wejscie)
 			if (args.size() != 5)
 				args.push_back("Dysk");
 			SF(args[1], args[2], args[3], zarzadzanieProcesami->init, args[4]);
+
 		}
 	}
 	else if (komenda == "PF") {
@@ -274,6 +283,17 @@ void Shell::czytajWejscie(std::string wejscie)
 			if (args.size() != 4)
 				args.push_back("Dysk");
 			PF(args[1], args[2], zarzadzanieProcesami->init, args[3]);
+
+		}
+	}
+	else if (komenda == "XF") {
+		if (args.size() < 3)
+			cout << "niepoprawne uzycie komendy" << endl;
+		else {
+			if (args.size() != 4)
+				args.push_back("Dysk");
+			XF(args[1], args[2], zarzadzanieProcesami->init, args[3]);
+
 		}
 	}
 	else if (komenda == "CF") {

@@ -55,6 +55,9 @@ public:
 	//pobranie danych z pliku
 	void PF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu);
 	
+	//otwieranie stratnie
+	void XF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk");
+
 	//zamkniecie pliku
 	void CF(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu);
 
