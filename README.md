@@ -1,11 +1,11 @@
 # PowaznySO
 <BR>
 <B>Moduły:</b><BR>
-1.<BR> Zarządzanie procesorem (damian)
-  2.<BR> Semafory całkowite (Mariusz)
-  3.<BR> Zarządzanie pamiecią (marian)
-  4.<BR> Zarządzanie procesami (ptak)
-  5.<BR> Komunikacja miedzyprocesorowa (czarek)
-  6.<BR> Pliki katalogi dysk (kontu)
-  7.<BR> Shell (pablo)
-  8.<BR> Interpreter (żegalski)
+  1. Zarządzanie procesorem (damian)<BR>
+  2. Semafory całkowite (Mariusz)<BR>
+  3. Zarządzanie pamiecią (marian)<BR>
+  4. Zarządzanie procesami (ptak)<BR>
+  5. Komunikacja miedzyprocesorowa (czarek)<BR>
+  6. Pliki katalogi dysk (kontu)<BR>
+  7. Shell (pablo)<BR>
+  8. Interpreter (żegalski)<BR>
