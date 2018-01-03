@@ -49,7 +49,14 @@ public:
 	//zmiana nazwy pliku
 	void RF(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu);
 
-
+	//zapis do pliku
+	void SF(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu);
+		
+	//pobranie danych z pliku
+	void PF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu);
+	
+	//zamkniecie pliku
+	void CF(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu);
 
 	//tworzenie folderu
 	void MD(std::string nazwa, std::string nazwaNadrzednego);

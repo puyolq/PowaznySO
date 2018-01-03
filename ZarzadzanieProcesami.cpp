@@ -332,3 +332,8 @@ void ZarzadzanieProcesami::usunProces(std::string nazwa)
 {
 	init->usunProces(nazwa);
 }
+
+PCB * ZarzadzanieProcesami::dajProcesInit()
+{
+	return init;
+}
