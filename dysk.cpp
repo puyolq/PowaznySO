@@ -118,7 +118,7 @@ void dysk::utworzPlik(std::string nazwa, std::string rozszerzenie, std::string n
 
 }
 
-void dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"u)
+void dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk")
 {
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
@@ -408,7 +408,96 @@ void dysk::usunPlik(std::string nazwa, std::string rozszerzenie, std::string naz
 	}
 	if(pozycja!=-1 && pozycjaFolderu!=-1)
 	{
-		otowrzStratnie(nazwa, rozszerzenie);
+#pragma  region potrzeba
+		short ileBlokowOczytano = 0;
+		short pozycja = znajdzPlik(nazwa, rozszerzenie);
+		int pobraneDane = tablicaIwezlow[pozycja].pobierzRozmiarPliku();
+		short ileDanychPierwszyBlok;
+		short pozycjaFolderu = znajdzFolder(nazwaFolderu);
+		if (pozycja == -1)
+		{
+			throw blednaNazwaPliku();
+		}
+		if (pozycjaFolderu == -1)
+		{
+			throw blednaNazwaFolderu();
+		}
+		if (pozycja != -1 && pozycjaFolderu != -1)
+		{
+			if (tablicaIwezlow[pozycja].pobierzPierwszyBlok() != -1)
+			{
+				if (tablicaIwezlow[pozycja].pobierzRozmiarPliku() < 33)
+				{
+					ileDanychPierwszyBlok = tablicaIwezlow[pozycja].pobierzRozmiarPliku();
+				}
+				else { ileDanychPierwszyBlok = 32; }
+
+				for (int i = tablicaIwezlow[pozycja].pobierzPierwszyBlok()*wielkoscBloku; i < tablicaIwezlow[pozycja].pobierzPierwszyBlok()*wielkoscBloku + ileDanychPierwszyBlok; i++)
+				{
+					tablicaDysk[i] = '0';
+				}
+				++ileBlokowOczytano;
+			}
+
+			if (tablicaIwezlow[pozycja].pobierzDrugiBlok() != -1)
+			{
+				if (tablicaIwezlow[pozycja].pobierzRozmiarPliku() < 64)
+				{
+					ileDanychPierwszyBlok = tablicaIwezlow[pozycja].pobierzRozmiarPliku() - 32;
+				}
+				else { ileDanychPierwszyBlok = 32; }
+
+				for (int i = tablicaIwezlow[pozycja].pobierzDrugiBlok()*wielkoscBloku; i < tablicaIwezlow[pozycja].pobierzDrugiBlok()*wielkoscBloku + ileDanychPierwszyBlok; i++)
+				{
+					tablicaDysk[i] = '0';
+				}
+				++ileBlokowOczytano;
+				wektorBitowy[tablicaIwezlow[pozycja].pobierzDrugiBlok()] = true;
+				++wolneBloki;
+			}
+			if (tablicaIwezlow[pozycja].pobierzIndeksowyBlok() != -1)
+			{
+				std::vector<short> blokiPozosta쿮;
+				for (int i = tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku; i<tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku + 31; i++)
+				{
+					if (tablicaDysk[i] != -1)
+					{
+						blokiPozosta쿮.push_back(tablicaDysk[i]);
+					}
+					else
+					{
+						break;
+					}
+				}
+				wektorBitowy[tablicaIwezlow[pozycja].pobierzIndeksowyBlok()] = true;
+				++wolneBloki;
+				for (auto it = 0; it != blokiPozosta쿮.size(); it++)
+				{
+					++wolneBloki;
+					++ileBlokowOczytano;
+					wektorBitowy[blokiPozosta쿮[it]] = true;
+					if (tablicaIwezlow[pozycja].pobierzRozmiarPliku() < ileBlokowOczytano*wielkoscBloku)
+					{
+						ileDanychPierwszyBlok = tablicaIwezlow[pozycja].pobierzRozmiarPliku() - (ileBlokowOczytano - 1)*wielkoscBloku;
+					}
+					else { ileDanychPierwszyBlok = 32; }
+
+					for (int i = blokiPozosta쿮[it] * wielkoscBloku; i < blokiPozosta쿮[it] * wielkoscBloku + ileDanychPierwszyBlok; i++)
+					{
+						tablicaDysk[i] = '0';
+					}
+				}
+				for (auto i = tablicaIwezlow[pozycja].pobierzIndeksowyBlok() * 32; i<tablicaIwezlow[pozycja].pobierzIndeksowyBlok() * 32 + 32; i++)
+				{
+					tablicaDysk[i] = '0';
+				}
+			}
+			tablicaIwezlow[pozycja].ustawDrugiBlok(-1);
+			tablicaIwezlow[pozycja].ustawIndeksowyBlok(-1);
+			tablicaIwezlow[pozycja].ustawRozmiarPliku(1);
+		}
+
+#pragma endregion potrzeba
 		tablicaDysk[tablicaIwezlow[pozycja].pobierzPierwszyBlok() * 32] = '0';
 		wektorBitowy[tablicaIwezlow[pozycja].pobierzPierwszyBlok()] = true;
 		tablicaIwezlow[pozycja].czysc();
