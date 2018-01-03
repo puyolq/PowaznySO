@@ -6,7 +6,7 @@ public:
 	iWezel();	
 	void wypiszIwezel(); 
 	
-#pragma region operacje na zmmiennych prywatnych
+#pragma region operacje na zmiennych prywatnych
 	void czysc(); // Zwalnianie struktury
 
 	void ustawRozmiarPliku(short rozmiar);
@@ -20,7 +20,7 @@ public:
 
 	void ustawIndeksowyBlok(short blok);
 	short pobierzIndeksowyBlok();
-#pragma endregion operacje na zmmiennych prywatnych
+#pragma endregion operacje na zmiennych prywatnych
 
 private:
 	int rozmiarPliku;

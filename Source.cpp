@@ -1,10 +1,19 @@
 #include "Kolejka procesow.hpp"
 #include "ZarzadzanieProcesami.h"
+#include "dysk.h"
 #include <iostream>
 
 int main()
 {
 	ZarzadzanieProcesami zarzadzanie;
+	Dysk dysk;
+	dysk.utworzFolder("Dokumenty"); dysk.wypiszDrzewo();
+	std::cout << "----------------------------" << std::endl;
+	dysk.utworzPlik("cv", "pdf"); dysk.wypiszDrzewo();
+	std::cout << "----------------------------" << std::endl;
+	dysk.dodajPlikDoKatalogu("Dokumenty", "cv", "pdf");dysk.wypiszDrzewo();
+	std::cout << "----------------------------" << std::endl;
+	/*
 	zarzadzanie.dodajProces("nazwa", "init");
 	zarzadzanie.dodajProces("nazwa2", "init");
 	zarzadzanie.dodajProces("nazwa3", "init");
@@ -17,5 +26,6 @@ int main()
 	zarzadzanie.dodajProces("nazwa8", "init");
 	kolejkaGotowych.wyswietlKolejke();
 	zarzadzanie.wyswietlWszystkieProcesy();
+	*/
 	return 0;
 }
