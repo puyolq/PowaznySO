@@ -45,7 +45,7 @@ private:
 	std::array<katalog, 1024> tablicaKatalogow; // Tablica z danymi katalogów
 	std::array<wpis, 32> tablicaWpisow; // Tablica z wpisami katalogowymi plikow
 	std::array<bool, 32> wektorBitowy; // 1 Blok wolny, 0 Blok zajêty
-	std::array<Semafory, 32> tablicaSemaforów; // Ka¿demu iWêz³owi odpowiada 1 semafor o pozycji tego iWêz³a;
+	std::array<Semafory, 32> tablicaSemaforow; // Ka¿demu iWêz³owi odpowiada 1 semafor o pozycji tego iWêz³a;
 #pragma endregion dysk
 
 #pragma region zmienne pomocnicze
