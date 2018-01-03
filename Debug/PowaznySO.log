@@ -1,18 +1,4 @@
-﻿  dysk.cpp
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(22): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(27): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(84): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(142): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(186): warning C4244: '=': conversion from 'short' to 'char', possible loss of data
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(578): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(584): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(608): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(619): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(638): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(667): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(690): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(699): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(714): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(732): warning C4018: '<': signed/unsigned mismatch
-c:\users\bartosz\documents\github\powaznyso\dysk.cpp(751): warning C4018: '<': signed/unsigned mismatch
-  PowaznySO.vcxproj -> C:\Users\Bartosz\Documents\GitHub\PowaznySO\Debug\PowaznySO.exe
+﻿  Shell.cpp
+g:\github\powaznyso\shell.cpp(271): warning C4018: '<': signed/unsigned mismatch
+g:\github\powaznyso\shell.cpp(272): warning C4018: '<': signed/unsigned mismatch
+  PowaznySO.vcxproj -> G:\GitHub\PowaznySO\Debug\PowaznySO.exe

@@ -42,6 +42,9 @@
     <ClCompile Include="RAM.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shell.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="blednaNazwaFolderu.h">
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="brakDostepuDoPliku.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shell.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
