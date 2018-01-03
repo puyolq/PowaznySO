@@ -142,7 +142,7 @@ void Shell::czytajWejscie(std::string wejscie)
 	}
 
 	else if (komenda == "BC") {
-		if (args.size() != 3)
+		if (args.size() != 2)
 			cout << "niepoprawne uzycie komendy" << endl;
 		else
 			BC(args[1]);
