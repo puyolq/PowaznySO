@@ -608,7 +608,7 @@ void Dysk::wypiszDrzewo()
 		int k = tablicaKatalogow[i].pobierzOjca();
 		std::cout << "Folder nadrzedny: "; if (tablicaKatalogow[i].pobierzOjca() == -1) { std::cout << "Brak\n"; }
 		else { std::cout<<tablicaKatalogow[tablicaKatalogow[i].pobierzOjca()].pobierzNazwe()<<"\n"; };
-		std::cout << "Podfoldery:\n";
+		std::cout << "Podfoldery: ";
 		bool podfoldery = true;
 		std::array<short, 32> tabl = tablicaKatalogow[i].pobierzSynow();
 		for (int i = 0; i<tabl.size(); i++)
