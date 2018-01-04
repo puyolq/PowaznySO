@@ -20,6 +20,8 @@ public:
 	void addToMem(PCB*a, std::string polecenie); //dodaj do pamieci
 	void deleteFromMem(PCB*a); //usun z pamieci
 	void showRam();//wypisz cala zawartosc
+	void showRange(int start, int lenght);
+	std::string showProcess(int base);
 
 
 

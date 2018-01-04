@@ -172,3 +172,27 @@ void RAM::showRam()
 	std::cout << std::endl;
 }
 
+void RAM::showRange(int start, int lenght)
+{
+	std::cout << "|";
+	for(int i = start;i<start+lenght;i++)
+	{
+		std::cout << RAM_Content[i] << "|";
+	}
+	std::cout << std::endl;
+}
+
+std::string RAM::showProcess(int base)
+{
+	int limit;
+	std::string process = "";
+	for(auto e : claimedBlocks)
+	{
+		if (e.base == base) e.limit = limit;
+	}
+	for(int i = 0;i<limit;i++)
+	{
+		process += RAM_Content[base + i];
+	}
+}
+
