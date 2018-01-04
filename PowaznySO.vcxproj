@@ -153,19 +153,14 @@
     <ClCompile Include="ZarzadzanieProcesami.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="blednaNazwaFolderu.h" />
-    <ClInclude Include="blednaNazwaPliku.h" />
-    <ClInclude Include="brakDostepuDoPliku.h" />
-    <ClInclude Include="brakMiejsca.h" />
-    <ClInclude Include="brakWolnychSynow.h" />
     <ClInclude Include="dysk.h" />
     <ClInclude Include="iwezel.h" />
     <ClInclude Include="katalog.h" />
     <ClInclude Include="Kolejka procesow.hpp" />
-    <ClInclude Include="niejednoznacznaNazwa.h" />
     <ClInclude Include="RAM.hpp" />
     <ClInclude Include="Semafory.h" />
     <ClInclude Include="wpisKatalogowy.h" />
+    <ClInclude Include="Wyjatki.h" />
     <ClInclude Include="ZarzadzanieProcesami.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

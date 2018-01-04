@@ -1,10 +1,5 @@
 #include "dysk.h"
-#include "brakMiejsca.h"
-#include "niejednoznacznaNazwa.h"
-#include "blednaNazwaPliku.h"
-#include "brakWolnychSynow.h"
-#include "blednaNazwaFolderu.h"
-#include "brakDostepuDoPliku.h"
+#include "Wyjatki.h"
 #include <iostream>
 //Rzucane wyjątki:
 //1. brakMiescja
@@ -13,7 +8,7 @@
 
 
 
-dysk::dysk()
+Dysk::Dysk()
 {
 	wolneBloki = 32;
 	wielkoscBloku = 32;
@@ -35,7 +30,7 @@ dysk::dysk()
 
 }
 
-void dysk::otworzPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu)
+void Dysk::otworzPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu)
 {
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
@@ -51,7 +46,7 @@ void dysk::otworzPlik(std::string nazwa, std::string rozszerzenie, std::string d
 	tablicaSemaforow[pozycja].czekaj(proces);
 }
 
-void dysk::zamknijPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB * proces, std::string nazwaFolderu)
+void Dysk::zamknijPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB * proces, std::string nazwaFolderu)
 {
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
@@ -68,7 +63,7 @@ void dysk::zamknijPlik(std::string nazwa, std::string rozszerzenie, std::string 
 }
 
 
-void dysk::utworzPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
+void Dysk::utworzPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
 {
 	// Sprawdz czy nie ma już takiego pliku
 	// Znajdz miesjce na dysku
@@ -112,13 +107,13 @@ void dysk::utworzPlik(std::string nazwa, std::string rozszerzenie, std::string n
 			tablicaWpisow[iWezel].ustawRozszrzenie(rozszerzenie);
 			--wolneBloki;
 		}
-		else { throw brakMiescja(); }
+		else { throw brakMiejsca(); }
 	}
 	
 
 }
 
-void dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu)
+void Dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu)
 {
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
@@ -205,7 +200,7 @@ void dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::strin
 	}
 }
 
-std::string dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu)
+std::string Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu)
 {
 	std::string doZwrotu = "";
 	short ileBlokowOczytano = 0;
@@ -296,7 +291,7 @@ std::string dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* 
 	return doZwrotu;
 }
 
-void dysk::otowrzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu)
+void Dysk::otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu)
 {
 	short ileBlokowOczytano = 0;
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
@@ -394,7 +389,7 @@ void dysk::otowrzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proc
 	 
 }
 
-void dysk::usunPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
+void Dysk::usunPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
 {
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
@@ -508,7 +503,7 @@ void dysk::usunPlik(std::string nazwa, std::string rozszerzenie, std::string naz
 
 }
 
-void dysk::zmienNazwePliku(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu)
+void Dysk::zmienNazwePliku(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu)
 {
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	
@@ -519,7 +514,7 @@ void dysk::zmienNazwePliku(std::string nazwa, std::string rozszerzenie, std::str
 	else { throw blednaNazwaPliku(); }
 }
 
-void dysk::utworzFolder(std::string nazwa, std::string nazwaNadrzednego)
+void Dysk::utworzFolder(std::string nazwa, std::string nazwaNadrzednego)
 {
 	short pozycja = znajdzFolder(nazwaNadrzednego);
 	short pozycjaNowego = znajdzFolder(nazwa);
@@ -548,7 +543,7 @@ void dysk::utworzFolder(std::string nazwa, std::string nazwaNadrzednego)
 	
 }
 
-void dysk::dodajPlikDoKatalogu(std::string nazwaDolcelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem)
+void Dysk::dodajPlikDoKatalogu(std::string nazwaDolcelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem)
 {
 	short pozycjaKataloguZPlikiem = znajdzFolder(nazwaFolderuZPlikiem);
 	short pozycjaKataloguDocelowego = znajdzFolder(nazwaDolcelowego);
@@ -568,7 +563,7 @@ void dysk::dodajPlikDoKatalogu(std::string nazwaDolcelowego, std::string nazwaPl
 	}
 }
 
-void dysk::usunFolder(int pozycja)
+void Dysk::usunFolder(int pozycja)
 {
 	if (znajdzFolder(this->pobierzNazweFolder(pozycja)) != -1) {
 		this->tablicaKatalogow[tablicaKatalogow[pozycja].pobierzOjca()].usunSyna(pozycja);
@@ -593,7 +588,7 @@ void dysk::usunFolder(int pozycja)
 	else { throw blednaNazwaFolderu(); }
 }
 
-void dysk::wypiszDrzewo()
+void Dysk::wypiszDrzewo()
 {
 	for(int i=0; i<ileFolderow; i++)
 	{
@@ -613,7 +608,7 @@ void dysk::wypiszDrzewo()
 		int k = tablicaKatalogow[i].pobierzOjca();
 		std::cout << "Folder nadrzedny: "; if (tablicaKatalogow[i].pobierzOjca() == -1) { std::cout << "Brak\n"; }
 		else { std::cout<<tablicaKatalogow[tablicaKatalogow[i].pobierzOjca()].pobierzNazwe()<<"\n"; };
-		std::cout << "Podfoldery:\n";
+		std::cout << "Podfoldery: ";
 		bool podfoldery = true;
 		std::array<short, 32> tabl = tablicaKatalogow[i].pobierzSynow();
 		for (int i = 0; i<tabl.size(); i++)
@@ -631,7 +626,7 @@ void dysk::wypiszDrzewo()
 	}
 }
 
-void dysk::wypiszDysk()
+void Dysk::wypiszDysk()
 {
 	std::vector<short> blokiIndeksowe;
 
@@ -661,7 +656,7 @@ void dysk::wypiszDysk()
 	}
 }
 
-void dysk::wypiszWektorBitowy()
+void Dysk::wypiszWektorBitowy()
 {
 	std::cout << "Wektor Bitowy: (1 blok wolny, 0 zajety)\n";
 	for (int i=0; i<wektorBitowy.size(); i++)
@@ -670,7 +665,7 @@ void dysk::wypiszWektorBitowy()
 	}	
 }
 
-void dysk::wypiszTabliceIwezelow()
+void Dysk::wypiszTabliceIwezelow()
 {
 	std::cout << "Tablica iWezelow:\n";
 	for (iWezel tablica_iwezlow : tablicaIwezlow)
@@ -680,12 +675,12 @@ void dysk::wypiszTabliceIwezelow()
 	}
 }
 
-void dysk::ileWolnych()
+void Dysk::ileWolnych()
 {
 	std::cout << "\n\nWolnych blokow; " << wolneBloki;
 }
 
-void dysk::wypiszTabliceWpisow()
+void Dysk::wypiszTabliceWpisow()
 {
 	for (int i=0; i<tablicaWpisow.size(); i++)
 	{
@@ -693,7 +688,7 @@ void dysk::wypiszTabliceWpisow()
 	}
 }
 
-short dysk::znajdzPlik(std::string nazwa, std::string rozszerzenie)
+short Dysk::znajdzPlik(std::string nazwa, std::string rozszerzenie)
 {
 	short doZwrotu = -1;
 	for(short i = 0; i<this->tablicaWpisow.size(); i++)
@@ -708,7 +703,7 @@ short dysk::znajdzPlik(std::string nazwa, std::string rozszerzenie)
 	return doZwrotu;
 }
 
-short dysk::znajdzWolnyBlok()
+short Dysk::znajdzWolnyBlok()
 {
 	short doZwrotu= -1;
 	for(int i=0; i<this->wektorBitowy.size(); i++)
@@ -721,12 +716,12 @@ short dysk::znajdzWolnyBlok()
 	}
 	if (doZwrotu == -1)
 	{
-		throw brakMiescja();
+		throw brakMiejsca();
 	}
 	return doZwrotu;
 }
 
-short dysk::znajdzIwezel()
+short Dysk::znajdzIwezel()
 {
 	short doZwrotu = -1;
 	for (short i = 0; i < this->tablicaIwezlow.size(); i++)
@@ -740,12 +735,12 @@ short dysk::znajdzIwezel()
 	return doZwrotu;
 }
 
-std::string dysk::pobierzNazweFolder(short poz)
+std::string Dysk::pobierzNazweFolder(short poz)
 {
 	return tablicaKatalogow[poz].pobierzNazwe();
 }
 
-short dysk::znajdzFolder(std::string nazwa)
+short Dysk::znajdzFolder(std::string nazwa)
 {
 	short doZwrotu = -1;
 	for(int i=0; i<tablicaKatalogow.size(); i++)
