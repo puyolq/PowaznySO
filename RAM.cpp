@@ -53,11 +53,11 @@ void RAM::defragment()
 	freeBlocks.push_back(tmp);//wolny blok pamieci na koncu
 }
 
-bool RAM::isFreeBlock(PCB* a)
+bool RAM::isFreeBlock(int a)
 {
 	for(int i = 0; i<freeBlocks.size();i++)
 	{
-		if (a->ramRozmiar <= freeBlocks[i].limit) { return true; }
+		if (a <= freeBlocks[i].limit) { return true; }
 	}
 	return false;
 }
@@ -96,6 +96,41 @@ void RAM::memWrite(PCB* a, std::string polecenie)
 	}
 }
 
+void RAM::WriteToRam(std::string a, writtenBlock &writtenTo)
+{
+	
+	int i = 0;
+	for (; i<freeBlocks.size(); ++i) { //while nie dzialalo dla 1 elementu bo i tak robil i++
+		if (freeBlocks[i].limit >= a.size()+1) {
+			break;
+		}
+	}//rozmiar bloku nie mniejszy niz wymagane
+	int base = freeBlocks[i].base;
+	int limit = a.size() + 1;
+	if (freeBlocks[i].limit == limit) { freeBlocks.erase(freeBlocks.begin() + i); }
+	else {
+		freeBlocks[i].base += limit;
+		freeBlocks[i].limit -= limit;
+	}
+	writtenTo.base = base;//zapisuje polozenie procesu
+	Block claimed;
+	claimed.base = base;
+	claimed.limit = limit;
+	claimedBlocks.push_back(claimed);
+	std::sort(claimedBlocks.begin(), claimedBlocks.end(), [](const Block &b1, const Block &b2) {return b1.base < b2.base; });
+	writtenBlocks.push_back(writtenTo);
+	int j = 0;
+	for (int g = base; g < base + limit; g++, j++)
+	{
+		RAM_Content[g] = a[j];
+	}
+}
+
+
+
+
+
+
 ///////////////////////////////////////////////
 // TU PUBLICZNE MACIE //
 ///////////////////////////////////////////////
@@ -118,7 +153,7 @@ void RAM::addToMem(PCB* a, std::string polecenie)
 	if (a->ramRozmiar <=0) { a->ramRozmiar = polecenie.size(); }
 	if (a->ramRozmiar <= freeRAM)
 	{
-		if (isFreeBlock(a))
+		if (isFreeBlock(a->ramRozmiar))
 		{
 			memWrite(a,polecenie);
 			freeRAM -= a->ramRozmiar;
@@ -152,12 +187,29 @@ void RAM::deleteFromMem(PCB* a)
 	Block free;
 	free.base = base;
 	free.limit = limit;
-	freeBlocks.push_back(free);
+	freeBlocks.push_back(free);	
+	freeRAM += limit;
+	for(auto e : writtenBlocks)
+	{
+		if (e.origin == base)
+		{
+			base = e.origin;
+			limit = e.limit;
+			for (int pos = base; pos<base + limit; pos++)
+			{
+				RAM_Content[pos] = 'w';
+			}//czyszczenie ramu
+			claimedBlocks.erase(claimedBlocks.begin() + i);
+			free.base = base;
+			free.limit = limit;
+			freeBlocks.push_back(free);
+			freeRAM += limit;
+			break;			
+		}
+	}
+
 	std::sort(freeBlocks.begin(), freeBlocks.end(), [](const Block &b1, const Block &b2) {return b1.base < b2.base; });
 	memMerge();
-
-	
-	freeRAM += limit;
 }
 
 void RAM::showRam()
@@ -184,15 +236,32 @@ void RAM::showRange(int start, int lenght)
 
 std::string RAM::showProcess(int base)
 {
-	int limit;
+	
 	std::string process = "";
-	for(auto e : claimedBlocks)
-	{
-		if (e.base == base) e.limit = limit;
-	}
-	for(int i = 0;i<limit;i++)
-	{
-		process += RAM_Content[base + i];
-	}
+
+	while (RAM_Content[base] != ',') { process += RAM_Content[base]; base++; }
+	return process;
 }
+
+void RAM::saveToRam(PCB * a, int localisation, std::string value)
+{
+	int i = 0;
+	writtenBlock writtenTo;
+	writtenTo.origin = a->dajRamLokalizacja();
+	writtenTo.limit = value.size() + 1;
+	
+	if (value.size() <= freeRAM)
+	{
+		if (isFreeBlock(value.size()+1))
+		{
+			WriteToRam(value,writtenTo);
+
+			freeRAM -= value.size() + 1;
+		}
+		else { std::cout << "Brak pamieci"; }
+	}
+	else { std::cout << "Brak pamieci"; }
+
+}
+
 
