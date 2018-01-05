@@ -1,22 +1,22 @@
 #pragma once
 #include <string>
 #include <vector>
-
-
+class Semafory;
+#include "Semafory.h"
 //
 /* STANY
  * 0 - nowy
  * 1 - gotowy
- * 2 - oczekuj¹cy
+ * 2 - oczekujÂ¹cy
  * 3 - aktywny
- * 4 - zakoñczony
+ * 4 - zakoÃ±czony
  */
 
 
 class PCB
 {
 private:
-	//ogólne sk³adniki
+	//ogÃ³lne skÂ³adniki
 	int id;
 	std::string nazwa;
 	std::vector<PCB*> potomkowie;
@@ -50,7 +50,7 @@ public:
 	int zliczProcesy();
 
 
-	//dla ¯egalskiego (interpreter)
+	//dla Â¯egalskiego (interpreter)
 private:
 	int status;
 	int rej1, rej2, rej3, rej4;
@@ -70,7 +70,7 @@ public:
 	int dajLicznikRozkazow();
 
 
-	//dla Cezarego (komunikacja miêdzyprocesowa)
+	//dla Cezarego (komunikacja miÃªdzyprocesowa)
 private:
 	int deskryptorGniazda;
 public:
@@ -88,7 +88,7 @@ public:
 	int dajRamRozmiar();
 
 	//dla Mariusza (semafory)
-
+	Semafory semafor;
 
 };
 
