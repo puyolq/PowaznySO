@@ -135,7 +135,6 @@ void PCB::ustawSocket(Socket* _socket)
 }
 
 
-
 void PCB::ustawRamLokalizacja(int wartosc)
 {
 	ramLokalizacja = wartosc;

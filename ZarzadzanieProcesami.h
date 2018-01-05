@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
-
+class Semafory;
+#include "Semafory.h"
 
 struct Socket
 {
@@ -94,7 +95,7 @@ public:
 	int dajRamRozmiar();
 
 	//dla Mariusza (semafory)
-
+	Semafory *semafor;
 
 };
 

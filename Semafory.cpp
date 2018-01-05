@@ -9,31 +9,38 @@ Semafory::~Semafory()
 {
 }
 
-void Semafory::czekaj(PCB * proces)
+void Semafory::wait(PCB * proces)
 {
-	if(wartosc>0)
-	{
-		--wartosc;
+	if (proces->dajStatus() == 3) {
+		if (wartosc > 0)
+		{
+			--wartosc;
+		}
+		else
+		{
+			kolejka.push(proces);
+			proces->ustawStatus(2);
+			--wartosc;
+		}
 	}
-	else
-	{
-		kolejka.push(proces);
-		proces->ustawStatus(2);
-		--wartosc;
-	}
+	else { throw bledneWywolanieWait(); }
 }
 
-void Semafory::rusz(PCB * proces)
+void Semafory::signal(PCB * proces)
 {
-	if(kolejka.empty())
-	{
-		++wartosc;
-	}else
-	{
-		kolejka.front()->ustawStatus(1);
-		kolejka.pop();
-		++wartosc;
+	if (proces->dajStatus() == 3) {
+		if (kolejka.empty())
+		{
+			++wartosc;
+		}
+		else
+		{
+			kolejka.front()->ustawStatus(1);
+			kolejka.pop();
+			++wartosc;
+		}
 	}
+	else { throw bledneWywolanieSignal(); }
 }
 
 int Semafory::dlugosc()

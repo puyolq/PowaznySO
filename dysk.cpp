@@ -43,7 +43,7 @@ void Dysk::otworzPlik(std::string nazwa, std::string rozszerzenie, std::string d
 	{
 		throw blednaNazwaFolderu();
 	}
-	tablicaSemaforow[pozycja].czekaj(proces);
+	tablicaSemaforow[pozycja].wait(proces);
 }
 
 void Dysk::zamknijPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB * proces, std::string nazwaFolderu)
@@ -59,7 +59,7 @@ void Dysk::zamknijPlik(std::string nazwa, std::string rozszerzenie, std::string 
 	{
 		throw blednaNazwaFolderu();
 	}
-	tablicaSemaforow[pozycja].rusz(proces);
+	tablicaSemaforow[pozycja].signal(proces);
 }
 
 
@@ -122,7 +122,7 @@ void Dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::strin
 	{
 		throw brakDostepuDoPliku();
 	}
-	tablicaSemaforow[pozycja].czekaj(proces);
+	tablicaSemaforow[pozycja].wait(proces);
 	if (pozycja == -1)
 	{
 		throw blednaNazwaPliku();
@@ -213,7 +213,7 @@ std::string Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* 
 	{
 		throw brakDostepuDoPliku();
 	}
-	tablicaSemaforow[pozycja].czekaj(proces);
+	tablicaSemaforow[pozycja].wait(proces);
 	if (pozycja == -1)
 	{
 		throw blednaNazwaPliku();
@@ -303,7 +303,7 @@ void Dysk::otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proc
 	{
 		throw brakDostepuDoPliku();
 	}
-	tablicaSemaforow[pozycja].czekaj(proces);
+	tablicaSemaforow[pozycja].wait(proces);
 	if (pozycja == -1)
 	{
 		throw blednaNazwaPliku();
