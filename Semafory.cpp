@@ -11,6 +11,7 @@ Semafory::~Semafory()
 
 void Semafory::czekaj(PCB * proces)
 {
+	if(proces->status==3){
 	if(wartosc>0)
 	{
 		--wartosc;
@@ -21,10 +22,13 @@ void Semafory::czekaj(PCB * proces)
 		proces->ustawStatus(2);
 		--wartosc;
 	}
+	}
+	else{throw bledneWywolanieWait();}
 }
 
 void Semafory::rusz(PCB * proces)
-{
+{	
+	if(proces->status==3){
 	if(kolejka.empty())
 	{
 		++wartosc;
@@ -34,6 +38,8 @@ void Semafory::rusz(PCB * proces)
 		kolejka.pop();
 		++wartosc;
 	}
+	}
+	else{throw bledneWywolanieSignal();}
 }
 
 int Semafory::dlugosc()
