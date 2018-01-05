@@ -123,7 +123,7 @@ void dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::strin
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
-	if(tablicaSemaforow[pozycja].dlugosc()<0)
+	if(tablicaSemaforow[pozycja].dlugosc()>=0)
 	{
 		throw brakDostepuDoPliku();
 	}
@@ -214,7 +214,7 @@ std::string dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* 
 	short ileDanychPierwszyBlok;
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
-	if (tablicaSemaforow[pozycja].dlugosc()<0)
+	if (tablicaSemaforow[pozycja].dlugosc()>=0)
 	{
 		throw brakDostepuDoPliku();
 	}
@@ -304,7 +304,7 @@ void dysk::otowrzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proc
 	short ileDanychPierwszyBlok;
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
-	if (tablicaSemaforow[pozycja].dlugosc()<0)
+	if (tablicaSemaforow[pozycja].dlugosc()>=0)
 	{
 		throw brakDostepuDoPliku();
 	}
