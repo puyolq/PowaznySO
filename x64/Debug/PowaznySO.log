@@ -1,2 +1,12 @@
 ﻿  ZarzadzanieProcesami.cpp
-  PowaznySO.vcxproj -> C:\Users\Damian\Source\Repos\SO\PowaznySO\x64\Debug\PowaznySO.exe
+  Generating Code...
+  Compiling...
+  dysk.cpp
+c:\users\bartosz\documents\github\powaznyso\dysk.cpp(181): warning C4244: '=': conversion from 'short' to 'char', possible loss of data
+  Source.cpp
+  Semafory.cpp
+  RAM.cpp
+c:\users\bartosz\documents\github\powaznyso\ram.cpp(118): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Kolejka procesow.cpp
+  Generating Code...
+  PowaznySO.vcxproj -> C:\Users\Bartosz\Documents\GitHub\PowaznySO\x64\Debug\PowaznySO.exe

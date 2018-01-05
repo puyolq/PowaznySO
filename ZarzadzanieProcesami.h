@@ -3,12 +3,6 @@
 #include <vector>
 
 
-struct Socket
-{
-};
-
-//
-
 //
 /* STANY
  * 0 - nowy
@@ -42,11 +36,15 @@ public:
 	void dodajPotomka(PCB* potomek);
 	void wyswietlPotomkow(int lvl);
 	void wyswietlProces(std::string nazwa);
+	void wyswietlProces(int pid);
 	PCB* znajdzProces(std::string nazwa);
+	PCB* znajdzProces(int pid);
 	PCB* dajRodzica();
 	int dajId();
 	void usunProces(std::string nazwa);
+	void usunProces(int pid);
 	void usunPotomka(std::string nazwa);
+	void usunPotomka(int pid);
 	void przeniesPotomkow(PCB* init, PCB* doPrzeniesienia);
 	void ustawRodzica(PCB* _rodzic);
 	int zliczProcesy();
@@ -74,14 +72,10 @@ public:
 
 	//dla Cezarego (komunikacja miêdzyprocesowa)
 private:
-	std::vector<Socket*> listaSocketow;
-	Socket* socket;
+	int deskryptorGniazda;
 public:
-	Socket*dajSocket();
-	void ustawSocket(Socket*_socket);
-	std::vector<Socket*>dajListeSocketow();
-	void usunSocket(Socket*_socket);
-	void dodajSocket(Socket*_socket);
+	void ustawDeskryptorGniazda(int wartosc);
+	int dajDeskryptorGnizda();
 
 	//dla Mariana (RAM)
 public:
@@ -112,7 +106,9 @@ public:
 	void wyswietlIloscProcesow();
 	void wyswietlWszystkieProcesy();
 	void wyswietlProces(std::string nazwa);
+	void wyswietlProces(int pid);
 
 	PCB* dodajProces(std::string nazwa, std::string rodzic);
 	void usunProces(std::string nazwa);
+	void usunProces(int pid);
 };
