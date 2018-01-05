@@ -2,6 +2,26 @@
 class PCB;
 #include "ZarzadzanieProcesami.h"
 #include <queue>
+#include <exception>
+
+class bledneWywolanieWait : public std::exception
+{
+public:
+	const char* what() const throw()
+	{
+		return "Nieaktywny Proces wykonał wait().";
+	}
+};
+class bledneWywolanieSignal : public std::exception
+{
+public:
+	const char* what() const throw()
+	{
+		return "Nieaktywny Proces wykonał signal().";
+	}
+
+
+};
 
 class Semafory
 {
