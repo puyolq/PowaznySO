@@ -1,21 +1,33 @@
 #include "Kolejka procesow.hpp"
 #include "ZarzadzanieProcesami.h"
+#include "dysk.h"
 #include <iostream>
 
 int main()
 {
-	ZarzadzanieProcesami zarzadzanie;
-	zarzadzanie.dodajProces("nazwa", "init");
-	zarzadzanie.dodajProces("nazwa2", "init");
-	zarzadzanie.dodajProces("nazwa3", "init");
-	PCB*local=zarzadzanie.dodajProces("nazwa4", "init");
-	local->ustawStatus(3);
-	local->ustawStatus(2);
-	zarzadzanie.wyswietlProces("nazwa4");
-	zarzadzanie.dodajProces("nazwa6", "init");
-	zarzadzanie.dodajProces("nazwa7", "init");
-	zarzadzanie.dodajProces("nazwa8", "init");
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
+	ZarzadzanieProcesami* zarzadzanie = new ZarzadzanieProcesami();
+	std::vector<std::string> wynik;
+	dysk dysk;
+	dysk.utworzPlik("Plik", "txt");
+	wynik = dysk.bledy();
+	for (auto it = wynik.begin(); it != wynik.end(); it++) {
+		std::cout << *it << "\n";
+	}
+
+	dysk.utworzFolder("Folder");
+	wynik = dysk.bledy();
+	for (auto it = wynik.begin(); it != wynik.end(); it++) {
+		std::cout << *it << "\n";
+	}
+
+	dysk.dodajPlikDoKatalogu("Folder", "Plik", "txt", "as");
+	wynik = dysk.bledy();
+	for (auto it = wynik.begin(); it != wynik.end(); it++) {
+		std::cout << *it << "\n";
+	}
+	
+	dysk.wypiszDysk();
+	dysk.wypiszDrzewo();
+	bool k = dysk.pobierzBlednaNazwaFolderu();
 	return 0;
 }

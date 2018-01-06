@@ -102,13 +102,13 @@ class ZarzadzanieProcesami
 {
 private:
 	int idLicznik;
-	PCB* init;
+	
 	int dajLicznik();
 
 public:
 	ZarzadzanieProcesami();
 	~ZarzadzanieProcesami();
-
+	PCB* init;
 	void wyswietlIloscProcesow();
 	void wyswietlWszystkieProcesy();
 	void wyswietlProces(std::string nazwa);

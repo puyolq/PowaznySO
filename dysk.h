@@ -5,6 +5,7 @@
 #include "wpisKatalogowy.h"
 #include "Semafory.h"
 #include "ZarzadzanieProcesami.h"
+
 class dysk 
 {
 public:
@@ -38,7 +39,29 @@ public:
 	void wypiszTabliceWpisow();
 #pragma endregion  wpypisywanie elementow dyskowych
 	
+#pragma region poprawnosc
+	bool pobierzBlednaNazwaPliku();
+	bool pobierzBlednaNazwaFolderu();
+	bool pobierzBrakDostepuDoPliku();
+	bool pobierzBrakMiejsca();
+	bool pobierzBrakWolnychSynow();
+	bool pobierzNiejednoznacznaNazwa();
+
+	std::vector<std::string> bledy();
+#pragma endregion poprawnosc
+
 private:
+#pragma region poprawnosc 
+	// Jeœli operacja przebieg³a pomyœlnie zmienna jest flase, w innym wypadku true;
+	bool blednaNazwaFolderu;
+	bool blednaNazwaPliku;
+	bool brakDostepuDoPliku;
+	bool brakMiejsca;
+	bool brakWolnychSynow;
+	bool niejednoznacznaNazwa;
+	void zeruj();
+#pragma endregion poprawnosc
+
 #pragma region dysk
 	std::array<iWezel, 32> tablicaIwezlow; // Tablica w której przechowywane s¹ iWezel
 	std::array<char, 1024> tablicaDysk; // Tablica na dane
@@ -62,7 +85,6 @@ private:
 	short znajdzIwezel(); // Metoda zwraca numer pierwszego wolnego iWêz³a, jeœli brak zwraca -1
 	std::string pobierzNazweFolder(short poz);
 #pragma endregion metody pomocnicze
-
 
 	void otworzPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); // Blokuje dostêp do pliku opuczaj¹c semafor
 };
