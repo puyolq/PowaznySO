@@ -15,11 +15,11 @@ class RAM {
 	bool isFreeBlock(int a); // Sprawdza dostêpn¹ pamiêæ (blok)
 	void FBRemove(PCB*a);//usuniecie wolnego bloku
 	void memWrite(PCB* a, std::string polecenie);//Zapisywanie w pamieci
-	void RAM::WriteToRam(std::string a, writtenBlock &writtenTo);//wpisywanie do ramu
+	void RAM::WriteToRam(std::string a, writtenBlock &writtenTo, int localisation);//wpisywanie do ramu
 	void memMerge();//laczy 2 wolne bloki w 1 jezeli sa obok siebie
 public:
 	RAM(); // konstruktor
-
+	
 	void addToMem(PCB*a, std::string polecenie); //dodaj do pamieci
 	void deleteFromMem(PCB*a); //usun z pamieci
 	void showRam();//wypisz cala zawartosc
@@ -32,3 +32,5 @@ public:
 															   ///////////// DO WYJEBANIA //////////////////////
 	void printBLOCKS();
 };
+
+extern RAM ram;

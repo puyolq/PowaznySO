@@ -80,7 +80,7 @@ void Interpreter::UstawRejestr() {
 	kolejkaGotowych.glowa->proces->ustawRamLokalizacja(LokalizacjaProgramu);
 }
 
-void Interpreter::WpiszDoKomurki(int lokalizacja, std::string dane)
+void Interpreter::WpiszDoKomurki(int lokalizacja, std::string dane)//za to powinno byc wiezienie -.-
 {
 
 }
@@ -195,7 +195,7 @@ void Interpreter::WykonywanieProgramu() {
 				i++;
 				}
 				Indeks = stoi(indeks);
-				//A += RAM[indeks];  wartosc zwracana z dnej komurki
+				//A += RAM[indeks];  wartosc zwracana z dnej komurki-> do kurwy nedzy
 				}*/
 
 				//Sumowanie Rejestr Liczba

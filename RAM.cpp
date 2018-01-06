@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <iostream>
-
+RAM ram;
 
 void RAM::memMerge()
 {
@@ -96,31 +96,12 @@ void RAM::memWrite(PCB* a, std::string polecenie)
 	}
 }
 
-void RAM::WriteToRam(std::string a, writtenBlock &writtenTo)
+void RAM::WriteToRam(std::string a, writtenBlock &writtenTo,int localisation)
 {
 
-	int i = 0;
-	for (; i<freeBlocks.size(); ++i) { //while nie dzialalo dla 1 elementu bo i tak robil i++
-		if (freeBlocks[i].limit >= a.size() + 1) {
-			break;
-		}
-	}//rozmiar bloku nie mniejszy niz wymagane
-	int base = freeBlocks[i].base;
-	int limit = a.size() + 1;
-	if (freeBlocks[i].limit == limit) { freeBlocks.erase(freeBlocks.begin() + i); }
-	else {
-		freeBlocks[i].base += limit;
-		freeBlocks[i].limit -= limit;
-	}
-	writtenTo.base = base;//zapisuje polozenie procesu
-	Block claimed;
-	claimed.base = base;
-	claimed.limit = limit;
-	claimedBlocks.push_back(claimed);
-	std::sort(claimedBlocks.begin(), claimedBlocks.end(), [](const Block &b1, const Block &b2) {return b1.base < b2.base; });
-	writtenBlocks.push_back(writtenTo);
+	a += ',';
 	int j = 0;
-	for (int g = base; g < base + limit; g++, j++)
+	for (int g = localisation; g < localisation + a.size(); g++, j++)
 	{
 		RAM_Content[g] = a[j];
 	}
@@ -193,12 +174,13 @@ void RAM::deleteFromMem(PCB* a)
 	{
 		if (e.origin == base)
 		{
-			base = e.origin;
+			base = e.base;
 			limit = e.limit;
 			for (int pos = base; pos<base + limit; pos++)
 			{
 				RAM_Content[pos] = 'w';
 			}//czyszczenie ramu
+			for (i = 0; i < claimedBlocks.size(); i++) { if (claimedBlocks[i].base == base)  break; }
 			claimedBlocks.erase(claimedBlocks.begin() + i);
 			free.base = base;
 			free.limit = limit;
@@ -246,23 +228,58 @@ std::string RAM::showProcess(int base)
 
 void RAM::saveToRam(int a, int localisation, std::string value)
 {
-	int i = 0;
+	int memClaimed = value.size() + 1;
+	int freeBase, freeLimit;
+	int freePosition = -1;
+	Block freeBlock, claimedBlock;
+	for(int i = 0; i< memClaimed;i++)
+	{
+		if (RAM_Content[localisation + i] != 'w') std::cout << "Pamiec zajeta" << std::endl; return;
+	}//sprawdzanie czy mozna zapisac
+
+	//jesli mozna
+
+	for(auto e : freeBlocks)
+	{
+		freePosition++;
+		if(e.base<= localisation && e.base + e.limit >= localisation + memClaimed)
+		{
+			freeBase = e.base;
+			freeLimit = e.limit;
+		}
+	}//szukanie w ktorym wolnym bloku to zapiszemy
+
+	freeBlocks.erase(freeBlocks.begin() + freePosition);
+	if (freeBase != localisation)
+	{
+		freeBlock.base = freeBase;
+		freeBlock.limit = localisation - freeBase;
+		freeBlocks.push_back(freeBlock);
+	}
+
+	if(freeBase + freeLimit != localisation + memClaimed)
+	{
+		freeBlock.base = localisation + memClaimed;
+		freeBlock.limit = freeLimit - freeBlock.base;
+		freeBlocks.push_back(freeBlock);
+	}
+	std::sort(freeBlocks.begin(), freeBlocks.end(), [](const Block &b1, const Block &b2) {return b1.base < b2.base; });
+	memMerge();
+	//dodanie nowych wolnych blokow
+
+	claimedBlock.base = localisation;
+	claimedBlock.limit = memClaimed;
+	claimedBlocks.push_back(claimedBlock);
+	std::sort(claimedBlocks.begin(), claimedBlocks.end(), [](const Block &b1, const Block &b2) {return b1.base < b2.base; });
+
 	writtenBlock writtenTo;
 	writtenTo.origin = a;
 	writtenTo.limit = value.size() + 1;
+	writtenTo.base = localisation;
+	writtenBlocks.push_back(writtenTo);
+	WriteToRam(value, writtenTo,localisation);
 
-	if (value.size() <= freeRAM)
-	{
-		if (isFreeBlock(value.size() + 1))
-		{
-			WriteToRam(value, writtenTo);
-
-			freeRAM -= value.size() + 1;
-		}
-		else { std::cout << "Brak pamieci"; }
-	}
-	else { std::cout << "Brak pamieci"; }
-
+	freeRAM -= memClaimed;
 }
 
 
