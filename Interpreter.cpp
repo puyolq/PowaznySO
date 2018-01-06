@@ -768,8 +768,13 @@ void Interpreter::WykonywanieProgramu() {
 		}
 
 		else if (Symbol == "RM") {
-			if (komunikacja.rozkazOdebraniaKomunikatu(kolejkaGotowych.glowa->proces->dajId()) == false)
+			PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
+			if (komunikacja.rozkazOdebraniaKomunikatu(kolejkaGotowych.glowa->proces->dajId()) == false) {
 				LicznikRozkazow -= 4;
+				kolejkaGotowych.glowa->proces->ustawStatus(3);
+				procesTymczasowy->ustawLicznikRozkazow(LicznikRozkazow);
+				return;
+			}
 		}
 
 		else if (Symbol == "") {
@@ -786,6 +791,7 @@ void Interpreter::WykonywanieProgramu() {
 	else {
 		UstawRejestr();
 		kolejkaGotowych.uruchomEkspedytor(true);
+		NumerRozkazu = 0; //dodano - test
 		PobierzRejestry();
 		return;
 	}

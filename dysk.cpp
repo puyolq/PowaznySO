@@ -53,9 +53,6 @@ void Dysk::otworzPlik(std::string nazwa, std::string rozszerzenie, std::string d
 	}
 	else if (pozycja != -1 && pozycjaFolderu != -1)
 	{
-		for (auto e : tablicaSemaforow) {
-			std::cout <<pozycja<<":"<< e.dlugosc() << ", ";
-		}
 		tablicaSemaforow[pozycja].wait(proces);
 	}
 }
@@ -77,9 +74,6 @@ void Dysk::zamknijPlik(std::string nazwa, std::string rozszerzenie, PCB * proces
 	}
 	else if (pozycja != -1 && pozycjaFolderu != -1)
 	{
-		for (auto e : tablicaSemaforow) {
-			std::cout << ":" << e.dlugosc() << ", ";
-		}
 		tablicaSemaforow[pozycja].signal(proces);
 	}
 }

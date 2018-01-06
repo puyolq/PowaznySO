@@ -121,7 +121,6 @@ KomunikacjaMiedzyprocesowa::KomunikacjaMiedzyprocesowa() {}
 bool KomunikacjaMiedzyprocesowa::rozkazOdebraniaKomunikatu(int numerIDProcesuOdbiorcy)
 {
 	//?????????????????????
-	std::cout << "SIUSIAK";
 	PCB* wskaznikNaProcesOdbiorcy = zarzadzanieProcesami.znajdzProces(numerIDProcesuOdbiorcy);
 	if (wskaznikNaProcesOdbiorcy->dajDeskryptorGniazda() == 0)
 	{
@@ -131,7 +130,7 @@ bool KomunikacjaMiedzyprocesowa::rozkazOdebraniaKomunikatu(int numerIDProcesuOdb
 	if (spisWszystkichGniazd[indeksGniazdaOdbiorcy].wyswietlWiadomosc() == false)
 	{
 		//ZABLOKUJ PROCES O NUMERZE ID = numerIDProcesuOdbiorcy;
-£UKI JEST G£UPI		wskaznikNaProcesOdbiorcy->ustawStatus(2);
+	wskaznikNaProcesOdbiorcy->ustawStatus(2);
 		return false;
 	}
 	else {
