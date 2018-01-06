@@ -1,108 +1,46 @@
+#include <iostream>
+#include <string>
+#include <Windows.h>
+#include "Interpreter.h"
 #include "Kolejka procesow.hpp"
+#include "RAM.hpp"
 #include "ZarzadzanieProcesami.h"
 #include "dysk.h"
-#include <iostream>
+#include "Semafory.h"
+
 
 int main()
 {
+	Dysk *dysk = new Dysk;
+	RAM *ram = new RAM;
 	ZarzadzanieProcesami zarzadzanie;
-	Dysk dysk;
-	dysk.utworzFolder("Dokumenty"); dysk.wypiszDrzewo();
-	std::cout << "----------------------------" << std::endl;
-	dysk.utworzPlik("cv", "pdf"); dysk.wypiszDrzewo();
-	std::cout << "----------------------------" << std::endl;
-	dysk.dodajPlikDoKatalogu("Dokumenty", "cv", "pdf");dysk.wypiszDrzewo();
-	std::cout << "----------------------------" << std::endl;
-	
-	zarzadzanie.dodajProces("nazwa", "init");
-	zarzadzanie.dodajProces("nazwa2", "init");
-	zarzadzanie.dodajProces("nazwa3", "init");
-	PCB*local=zarzadzanie.dodajProces("nazwa4", "init");
-	local->ustawStatus(3);
-	local->ustawStatus(2);
-	std::cout << "KOLEJKA OCZEKUJACYCH" << std::endl;
-	kolejkaOczekujacych.wyswietlKolejke();
-	
-	zarzadzanie.dodajProces("nazwa5", "init");
-	std::cout << "Normalna kolejka bez 4" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(false);
-	std::cout << "1Cykl" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(true);
-	std::cout << "2Usun poczatek" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(true);
-	std::cout << "3Usun poczatek" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(false);
-	std::cout << "4Cykl" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(false);
-	std::cout << "5Cykl" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(true);
-	std::cout << "6Usun poczatek" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(false);
-	std::cout << "7Cykl" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(false);
-	std::cout << "8Cykl" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(true);
-	std::cout << "9Usun poczatek" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(true);
-	local->ustawStatus(1);
-	std::cout << "10Usun poczatek, obudz 4" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
+	Interpreter interpreter(dysk, ram);
+	PCB* kupka = zarzadzanie.dodajProces("proces1", "init");
+	PCB* kupkaa = zarzadzanie.dodajProces("proces2", "init");
+	PCB* kupkaaa = zarzadzanie.dodajProces("proces3", "init");
+	interpreter.WpiszDoRam(kupka, "prog.txt");
+	interpreter.WpiszDoRam(kupkaa, "prog1.txt");
+	interpreter.WpiszDoRam(kupkaaa, "prog2.txt");
+	std::cout << ".........................";
+	ram->showRam();
+	//dysk.wypiszDrzewo();
+	//interpreter.WykonywanieProgramu();
+	dysk->wypiszDrzewo();
+	do {
+		interpreter.PobierzRozkaz(kolejkaGotowych.glowa->proces);
+		std::cout << " ROZKAZ: " << interpreter.Rozkaz << std::endl;
+		interpreter.WykonywanieProgramu();
+		interpreter.StanRejestrow();
+		kolejkaGotowych.wyswietlKolejke();
+	} while (kolejkaGotowych.glowa->proces->dajId() != 99);
+	std::cout << std::endl << "KONIEC" <<std::endl << std::endl;;
+	dysk->wypiszDrzewo();
+	std::cout<<std::endl<<dysk->pobierzDane("p1","txt",kolejkaGotowych.glowa->proces);
+	//cout << "2:" << endl;
+	//ram->showRam();
 
-	kolejkaGotowych.uruchomEkspedytor(true);
-	std::cout << "11Usun poczatek" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(false);
-	std::cout << "12Cykl" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	zarzadzanie.dodajProces("nazwa1", "init");
-	zarzadzanie.dodajProces("nazwa2", "init");
-	std::cout << "13Dwa procesy dodane" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(false);
-	std::cout << "14Cykl" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(true);
-	std::cout << "15Usun poczatek" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(true);
-	std::cout << "16Usun poczatek" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(true);
-	std::cout << "17Usun poczatek" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-	kolejkaGotowych.uruchomEkspedytor(false);
-	std::cout << "18Cykl" << std::endl;
-	kolejkaGotowych.wyswietlKolejke();
-	zarzadzanie.wyswietlWszystkieProcesy();
-
+	std::cin.ignore();
+	getchar();
 
 	return 0;
 }

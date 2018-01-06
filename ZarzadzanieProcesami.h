@@ -5,12 +5,12 @@ class Semafory;
 #include "Semafory.h"
 //
 /* STANY
- * 0 - nowy
- * 1 - gotowy
- * 2 - oczekuj¹cy
- * 3 - aktywny
- * 4 - zakoñczony
- */
+* 0 - nowy
+* 1 - gotowy
+* 2 - oczekuj¹cy
+* 3 - aktywny
+* 4 - zakoñczony
+*/
 
 
 class PCB
@@ -88,7 +88,7 @@ public:
 	int dajRamRozmiar();
 
 	//dla Mariusza (semafory)
-	Semafory semafor;
+	Semafory *semafor;
 
 };
 

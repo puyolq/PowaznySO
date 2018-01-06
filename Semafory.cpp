@@ -1,3 +1,4 @@
+
 #include "Semafory.h"
 
 Semafory::Semafory()
@@ -9,37 +10,42 @@ Semafory::~Semafory()
 {
 }
 
-void Semafory::czekaj(PCB * proces)
+void Semafory::wait(PCB * proces)
 {
-	if(proces->status==3){
-	if(wartosc>0)
-	{
-		--wartosc;
+	if (proces->dajStatus() == 3) {
+		if (wartosc>0)
+		{
+			--wartosc;
+		}
+		else
+		{
+			kolejka.push(proces);
+			proces->ustawStatus(2);
+			--wartosc;
+		}
 	}
-	else
-	{
-		kolejka.push(proces);
-		proces->ustawStatus(2);
-		--wartosc;
+	else {
+
+		throw bledneWywolanieWait();
 	}
-	}
-	else{throw bledneWywolanieWait();}
+
 }
 
-void Semafory::rusz(PCB * proces)
-{	
-	if(proces->status==3){
-	if(kolejka.empty())
-	{
-		++wartosc;
-	}else
-	{
-		kolejka.front()->ustawStatus(1);
-		kolejka.pop();
-		++wartosc;
+void Semafory::signal(PCB * proces)
+{
+	if (proces->dajStatus() == 3) {
+		if (kolejka.empty())
+		{
+			++wartosc;
+		}
+		else
+		{
+			kolejka.front()->ustawStatus(1);
+			kolejka.pop();
+			++wartosc;
+		}
 	}
-	}
-	else{throw bledneWywolanieSignal();}
+	else { throw bledneWywolanieSignal(); }
 }
 
 int Semafory::dlugosc()

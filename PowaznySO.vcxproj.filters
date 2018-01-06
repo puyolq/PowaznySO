@@ -42,6 +42,9 @@
     <ClCompile Include="RAM.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Interpreter.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dysk.h">
@@ -69,6 +72,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Wyjatki.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Interpreter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
