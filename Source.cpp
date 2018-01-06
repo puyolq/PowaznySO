@@ -9,6 +9,11 @@
 #include "Semafory.h"
 
 
+//wymienic bledy semafora na boole
+//pomyslec nad rozwaizaniem martwych procesow, czy mamy miec do nich dostep czy sprawdzamy stan 1 2 3 a dla reszty cos innego
+
+
+
 int main()
 {
 	PCB* kupka = zarzadzanieProcesami.dodajProces("proces1", "init");
@@ -25,8 +30,6 @@ int main()
 	//	kolejkaGotowych.wyswietlKolejke();
 	//	kolejkaGotowych.uruchomEkspedytor(true);
 	//}
-
-
 	//NAPRAWIC ¯EBY INACZEJ SIE WYKONYWALY METODY GDY GLOWA->PROCES == &IDLE || JU¯ SIÊ USUN¥£ (sprawdzanie stanu == 4 nie dzia³a, trzeba by 1 2 3 sprawdzic)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	interpreter.WpiszDoRam(kupka, "prog.txt");	//TUTAJ PROBUJE WPISAC KUPKE, A ONA JEST JUZ USUNIÊTA, METODA WYPIERDALA B£ÊDY
 	interpreter.WpiszDoRam(kupkaa, "prog1.txt");
@@ -46,6 +49,9 @@ int main()
 	std::cout << std::endl << "KONIEC" <<std::endl << std::endl;;
 	dysk.wypiszDrzewo();
 	std::cout<<std::endl<<dysk.pobierzDane("p1","txt",kolejkaGotowych.glowa->proces);
+	dysk.zamknijPlik("p1", "txt", kolejkaGotowych.glowa->proces);
+	std::cout << std::endl << dysk.pobierzDane("p1", "txt", kupka);
+	dysk.zamknijPlik("p1", "txt", kupka);
 	//cout << "2:" << endl;
 	//ram->showRam();
 

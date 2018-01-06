@@ -1,51 +1,80 @@
-#pragma once
+ï»¿#pragma once
 #include <array>
 #include "iwezel.h"
 #include "katalog.h"
 #include "wpisKatalogowy.h"
 #include "Semafory.h"
 #include "ZarzadzanieProcesami.h"
-class Dysk 
+
+//README
+//JEÅšLI WYKONUJESZ OPERACJE NA PLIKACH/FOLDERACH TO SPRAWDZ CZY DYSK.POPRAWNOSC() == TRUE - nowa obsÅ‚uga bÅ‚Ä™dÃ³w
+
+
+class Dysk
 {
 public:
-	Dysk ();
-	void zamknijPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); // Odblokuje dostep do pliku podnocz¹c semafor 
+	Dysk();
+	void zamknijPlik(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Odblokuje dostep do pliku podnoczï¿½c semafor 
 
 #pragma region obsluga plikow
 	void utworzPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu = "Dysk"); // Tworzy pusty plik i zajmuje jeden blok dyskowy.
-	void usunPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu = "Dysk"); // Zwalnia bloki, czyœci wpis na dysku
-	void zmienNazwePliku(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu = "Dysk"); // Zmiania nazwê pliku
-	#pragma region po tych metodach wywo³aj zamknij plik
-		void zapiszDoPliku(std::string nazwa, std::string rozszerzenie,std::string dane, PCB* proces, std::string nazwaFolderu ="Dysk"); //Pozwala na dopisywanie danych na koñcu pliku.
-		std::string pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Zwraca dane z pliku.
-		void otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Czyœwi plik, zwalnia bloki poza pierwszym blokiem.
-	#pragma endregion po tych metodach wywo³aj zamknij plik
-	
+	void usunPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu = "Dysk"); // Zwalnia bloki, czyï¿½ci wpis na dysku
+	void zmienNazwePliku(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu = "Dysk"); // Zmiania nazwï¿½ pliku
+#pragma region po tych metodach wywoï¿½aj zaknij plik
+	void zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); //Pozwala na dopisywanie danych na koï¿½cu pliku.
+	std::string pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Zwraca dane z pliku.
+	void otowrzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Czyï¿½wi plik, zwalnia bloki poza pierwszym blokiem.
+#pragma endregion po tych metodach wywoï¿½aj zaknij plik
+
 #pragma  endregion obsluga plikow
 
 #pragma region obsluga folderow
-	void utworzFolder(std::string nazwa, std::string nazwaNadrzednego = "Dysk"); // Tworzy folder podrzêdny w zadanym folderze 
-	void dodajPlikDoKatalogu(std::string nazwaDolcelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem = "Dysk"); //Do skoñczenie
-	void usunFolder(int pozycja); // Usuwa folder o zadanej pozycji nale¿y wywol³ywaæ w po³¹czniu z znajdzFolder, prawid³owy przyk³ad: dysk.usunFolder(dysk.znajdzFolder("Folder"));
+	void utworzFolder(std::string nazwa, std::string nazwaNadrzednego = "Dysk"); // Tworzy folder podrzï¿½dny w zadanym folderze 
+	void dodajPlikDoKatalogu(std::string nazwaDolcelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem = "Dysk"); //Do skoï¿½czenie
+	void usunFolder(int pozycja); // Usuwa folder o zadanej pozycji naleï¿½y wywolï¿½ywaï¿½ w poï¿½ï¿½czniu z znajdzFolder, prawidï¿½owy przykï¿½ad: dysk.usunFolder(dysk.znajdzFolder("Folder"));
 	short znajdzFolder(std::string nazwa);
 #pragma endregion obsluga folderow
 
-#pragma region wypisywanie elementow dyskowych
-	void wypiszDrzewo(); // Wypisuje "drzewo" plików i katalogów na dysku.
-	void wypiszDysk(); // Wypisuje na ekran sam¹ tablicê dyskow¹.
+#pragma region wpypisywanie elementow dyskowych
+	void wypiszDrzewo(); // Wypisuje "drzewo" plikï¿½w i katalogï¿½w na dysku.
+	void wypiszDysk(); // Wypisuje na ekran samï¿½ tablicï¿½ dyskowï¿½.
 	void wypiszWektorBitowy();
 	void wypiszTabliceIwezelow();
 	void wypiszTabliceWpisow();
-#pragma endregion  wypisywanie elementow dyskowych
-	
+#pragma endregion  wpypisywanie elementow dyskowych
+
+#pragma region poprawnosc
+	bool pobierzBlednaNazwaPliku();
+	bool pobierzBlednaNazwaFolderu();
+	bool pobierzBrakDostepuDoPliku();
+	bool pobierzBrakMiejsca();
+	bool pobierzBrakWolnychSynow();
+	bool pobierzNiejednoznacznaNazwa();
+
+	bool poprawnosc();
+
+	std::vector<std::string> bledy();
+#pragma endregion poprawnosc
+
 private:
+#pragma region poprawnosc 
+	// Jeï¿½li operacja przebiegï¿½a pomyï¿½lnie zmienna jest flase, w innym wypadku true;
+	bool blednaNazwaFolderu;
+	bool blednaNazwaPliku;
+	bool brakDostepuDoPliku;
+	bool brakMiejsca;
+	bool brakWolnychSynow;
+	bool niejednoznacznaNazwa;
+	void zeruj();
+#pragma endregion poprawnosc
+
 #pragma region dysk
-	std::array<iWezel, 32> tablicaIwezlow; // Tablica w której przechowywane s¹ iWezel
+	std::array<iWezel, 32> tablicaIwezlow; // Tablica w ktï¿½rej przechowywane sï¿½ iWezel
 	std::array<char, 1024> tablicaDysk; // Tablica na dane
-	std::array<katalog, 1024> tablicaKatalogow; // Tablica z danymi katalogów
+	std::array<katalog, 1024> tablicaKatalogow; // Tablica z danymi katalogï¿½w
 	std::array<wpis, 32> tablicaWpisow; // Tablica z wpisami katalogowymi plikow
-	std::array<bool, 32> wektorBitowy; // 1 Blok wolny, 0 Blok zajêty
-	std::array<Semafory, 32> tablicaSemaforow; // Ka¿demu iWêz³owi odpowiada 1 semafor o pozycji tego iWêz³a;
+	std::array<bool, 32> wektorBitowy; // 1 Blok wolny, 0 Blok zajï¿½ty
+	std::array<Semafory, 32> tablicaSemaforow; // Kaï¿½demu iWï¿½zï¿½owi odpowiada 1 semafor o pozycji tego iWï¿½zï¿½a;
 #pragma endregion dysk
 
 #pragma region zmienne pomocnicze
@@ -57,13 +86,13 @@ private:
 
 #pragma region metody pomocnicze
 	void ileWolnych();
-	short znajdzPlik(std::string nazwa, std::string rozszerzenie); // Metoda zwraca numer iWez³a w kolekcji w którym znajduje siê plik, jeœli pliku nie odnazleziono zwraca -1
-	short znajdzWolnyBlok(); // Metoda zwraca numer pierwszego wolnego bloku na dysku, jeœli brak zwraca -1
-	short znajdzIwezel(); // Metoda zwraca numer pierwszego wolnego iWêz³a, jeœli brak zwraca -1
+	short znajdzPlik(std::string nazwa, std::string rozszerzenie); // Metoda zwraca numer iWezï¿½a w kolekcji w ktï¿½rym znajduje siï¿½ plik, jeï¿½li pliku nie odnazleziono zwraca -1
+	short znajdzWolnyBlok(); // Metoda zwraca numer pierwszego wolnego bloku na dysku, jeï¿½li brak zwraca -1
+	short znajdzIwezel(); // Metoda zwraca numer pierwszego wolnego iWï¿½zï¿½a, jeï¿½li brak zwraca -1
 	std::string pobierzNazweFolder(short poz);
 #pragma endregion metody pomocnicze
 
-
-	void otworzPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); // Blokuje dostêp do pliku opuczaj¹c semafor
+	void otworzPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); // Blokuje dostï¿½p do pliku opuczajï¿½c semafor
 };
+
 extern Dysk dysk;

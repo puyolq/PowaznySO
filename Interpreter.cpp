@@ -731,7 +731,7 @@ void Interpreter::WykonywanieProgramu() {
 			else {
 				dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, kolejkaGotowych.glowa->proces);
 			}
-			dysk.zamknijPlik(nazwa, rozszerzenie, "", kolejkaGotowych.glowa->proces);
+			dysk.zamknijPlik(nazwa, rozszerzenie, kolejkaGotowych.glowa->proces);
 		}
 
 		// Tworzenie folderów - dzia³a 
