@@ -6,7 +6,7 @@
 //2. niejednoznacznaNazwa
 //3. blednaNazwaPliku
 
-
+Dysk dysk;
 
 Dysk::Dysk()
 {

@@ -5,10 +5,10 @@
 
 #include"Interpreter.h"
 
-
+Interpreter interpreter;
 
 //Konstruktor
-Interpreter::Interpreter(Dysk *dysk, RAM *ram)
+Interpreter::Interpreter()
 {
 	A = 0;
 	B = 0;
@@ -18,10 +18,7 @@ Interpreter::Interpreter(Dysk *dysk, RAM *ram)
 	LicznikRozkazow = 0;
 	StanProcesu = 0;
 	LokalizacjaProgramu = 0;
-
 	Rozkaz = "";
-	dyskInter = dysk;
-	ramInter = ram;
 }
 
 //Destruktor
@@ -38,7 +35,7 @@ void Interpreter::WpiszDoRam(PCB *pcb, std::string program) {
 	else {
 
 	}
-	ramInter->addToMem(pcb, pom);
+	ram.addToMem(pcb, pom);
 }
 
 //Wypisywanie stanow rejestrow aktualnie zapisanych w interpreterze 
@@ -49,7 +46,6 @@ void Interpreter::StanRejestrow() {
 	std::cout << "D: " << this->D << std::endl;
 	std::cout << "Licz: " << this->LicznikRozkazow << std::endl;
 	std::cout << "Stan: " << this->StanProcesu << std::endl;
-	std::cout << "Licznik pcb: " << kolejkaGotowych.glowa->proces->dajLicznikRozkazow() << std::endl;
 }
 
 //metoda do pobierania pojedynczego rozkazu z ramu
@@ -58,7 +54,7 @@ void Interpreter::PobierzRozkaz(PCB *pcb) {
 	int lokalizacja = pcb->ramLokalizacja + LicznikRozkazow;
 	LokalizacjaProgramu = pcb->ramLokalizacja;
 	// metoda mariana ktora odsyla std::stringa 
-	Rozkaz = ramInter->showProcess(lokalizacja);
+	Rozkaz = ram.showProcess(lokalizacja);
 	LicznikRozkazow += Rozkaz.size();
 	LicznikRozkazow += 1;
 	pcb->ustawLicznikRozkazow(LicznikRozkazow);
@@ -342,7 +338,7 @@ void Interpreter::WykonywanieProgramu() {
 				Indeks = stoi(indeks);
 				//TU MUSZE CIE WYWOLAC Z 
 				// Dodac funkce wpisujaca do ramo dowolna warotcs 
-				//ramInter->saveToRam(33,Indeks, liczba);
+				//ram.saveToRam(33,Indeks, liczba);
 			}
 
 		}
@@ -691,7 +687,7 @@ void Interpreter::WykonywanieProgramu() {
 					rozszerzenie += Dane[i];
 				}
 			}
-			dyskInter->utworzPlik(nazwa, rozszerzenie);
+			dysk.utworzPlik(nazwa, rozszerzenie);
 		}
 
 		//Wpisywanie danych do pliku - dzia³a 
@@ -720,22 +716,22 @@ void Interpreter::WykonywanieProgramu() {
 			}
 			if (dane[0] == '~') {
 				if (dane[1] == 'A') {
-					dyskInter->zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces);
+					dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces);
 				}
 				if (dane[1] == 'B') {
-					dyskInter->zapiszDoPliku(nazwa, rozszerzenie, std::to_string(B), kolejkaGotowych.glowa->proces);
+					dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(B), kolejkaGotowych.glowa->proces);
 				}
 				if (dane[1] == 'C') {
-					dyskInter->zapiszDoPliku(nazwa, rozszerzenie, std::to_string(C), kolejkaGotowych.glowa->proces);
+					dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(C), kolejkaGotowych.glowa->proces);
 				}
 				if (dane[1] == 'D') {
-					dyskInter->zapiszDoPliku(nazwa, rozszerzenie, std::to_string(D), kolejkaGotowych.glowa->proces);
+					dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(D), kolejkaGotowych.glowa->proces);
 				}
 			}
 			else {
-				dyskInter->zapiszDoPliku(nazwa, rozszerzenie, dane, kolejkaGotowych.glowa->proces);
+				dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, kolejkaGotowych.glowa->proces);
 			}
-			dyskInter->zamknijPlik(nazwa, rozszerzenie, "", kolejkaGotowych.glowa->proces);
+			dysk.zamknijPlik(nazwa, rozszerzenie, "", kolejkaGotowych.glowa->proces);
 		}
 
 		// Tworzenie folderów - dzia³a 
@@ -751,7 +747,7 @@ void Interpreter::WykonywanieProgramu() {
 					break;
 				}
 			}
-			dyskInter->utworzFolder(folder1, folder2);
+			dysk.utworzFolder(folder1, folder2);
 		}
 
 		//Rozkazy do procesow

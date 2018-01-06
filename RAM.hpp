@@ -32,3 +32,4 @@ public:
 															   ///////////// DO WYJEBANIA //////////////////////
 	void printBLOCKS();
 };
+extern RAM ram;

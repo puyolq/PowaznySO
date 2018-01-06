@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
+RAM ram;
 
 void RAM::memMerge()
 {

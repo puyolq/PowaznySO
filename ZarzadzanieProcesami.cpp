@@ -2,6 +2,9 @@
 #include "Kolejka procesow.hpp"
 #include <iostream>
 
+ZarzadzanieProcesami zarzadzanieProcesami;
+PCB idle(99, "idle", nullptr);
+
 PCB::PCB(int _id, std::string _nazwa, PCB* _rodzic)
 {
 	id = _id;
@@ -71,7 +74,7 @@ void PCB::ustawStatus(int _status)
 		else if(status==3 && _status==4)
 		{
 			status = _status;
-			usunProces(this->dajNazwe());
+			usunProces(this->dajNazwe()); //DAMIAN: skutkuje tym ¿e nigdy prcoes nie jest zakoñczony, PCB siê zeruje, dane wskazuj¹ce s¹ losowe
 		}
 		
 	}

@@ -66,4 +66,4 @@ private:
 
 	void otworzPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); // Blokuje dostêp do pliku opuczaj¹c semafor
 };
-
+extern Dysk dysk;

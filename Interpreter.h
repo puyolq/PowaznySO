@@ -12,11 +12,9 @@ public:
 	int LokalizacjaProgramu;
 	int NumerRozkazu;
 	std::string Rozkaz; //pojedynczy rozkaz asemblerowy wraz z argumentami
-	Dysk *dyskInter;
-	RAM *ramInter;
 public:
 	// Konstruktor domyslnie wypelniajacy zmienne zerami
-	Interpreter(Dysk *dysk, RAM *ram);
+	Interpreter();
 	//Destruktor
 	~Interpreter();
 	//Wpisywanie programu z TXT do RAM          
@@ -34,3 +32,4 @@ public:
 	//Metoda wykonuj¹ca 1 rozkaz asemblerowy
 	void WykonywanieProgramu();
 };
+extern Interpreter interpreter;

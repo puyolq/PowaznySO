@@ -5,9 +5,8 @@
 KolejkaProcesow kolejkaGotowych("gotowych");
 KolejkaProcesow kolejkaOczekujacych("oczekujacych");
 
-PCB* idle = new PCB(99, "idle", nullptr);
 
-Wezel* bezczynnosc = new Wezel(idle);
+Wezel* bezczynnosc = new Wezel(&idle);
 	
 Wezel::Wezel(PCB* proces) : proces(proces), nastepny(NULL){}
 

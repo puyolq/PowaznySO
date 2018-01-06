@@ -112,3 +112,5 @@ public:
 	void usunProces(std::string nazwa);
 	void usunProces(int pid);
 };
+extern ZarzadzanieProcesami zarzadzanieProcesami;
+extern PCB idle;
