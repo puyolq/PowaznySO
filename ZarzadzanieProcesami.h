@@ -75,7 +75,7 @@ private:
 	int deskryptorGniazda;
 public:
 	void ustawDeskryptorGniazda(int wartosc);
-	int dajDeskryptorGnizda();
+	int dajDeskryptorGniazda();
 
 	//dla Mariana (RAM)
 public:
@@ -107,6 +107,8 @@ public:
 	void wyswietlWszystkieProcesy();
 	void wyswietlProces(std::string nazwa);
 	void wyswietlProces(int pid);
+	PCB* znajdzProces(int pid);
+	PCB* znajdzProces(std::string nazwa);
 
 	PCB* dodajProces(std::string nazwa, std::string rodzic);
 	void usunProces(std::string nazwa);

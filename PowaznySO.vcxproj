@@ -147,6 +147,7 @@
     <ClCompile Include="iwezel.cpp" />
     <ClCompile Include="katalog.cpp" />
     <ClCompile Include="Kolejka procesow.cpp" />
+    <ClCompile Include="Komunikacja.cpp" />
     <ClCompile Include="RAM.cpp" />
     <ClCompile Include="Semafory.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="iwezel.h" />
     <ClInclude Include="katalog.h" />
     <ClInclude Include="Kolejka procesow.hpp" />
+    <ClInclude Include="Komunikacja.h" />
     <ClInclude Include="RAM.hpp" />
     <ClInclude Include="Semafory.h" />
     <ClInclude Include="wpisKatalogowy.h" />

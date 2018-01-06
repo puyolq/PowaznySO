@@ -3,7 +3,7 @@
 #include"Kolejka procesow.hpp"
 #include"ZarzadzanieProcesami.h"
 #include"dysk.h"
-
+#include"Komunikacja.h"
 
 class Interpreter {
 public:

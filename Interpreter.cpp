@@ -5,6 +5,7 @@
 
 #include"Interpreter.h"
 
+
 Interpreter interpreter;
 
 //Konstruktor
@@ -752,12 +753,23 @@ void Interpreter::WykonywanieProgramu() {
 
 		//Rozkazy do procesow
 
-		else if (Symbol == "") {
-
+		else if (Symbol == "SM") {
+			std::string odbiorca = "";
+			int a = 0;
+			for (int i = 0; i < Dane.size(); i++)
+			{
+				if (Dane[i] != ' ') {
+					odbiorca += Dane[i];
+					a++;
+					break;
+				}
+			}
+			komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(),odbiorca, Dane.substr(a, Dane.size() - a));
 		}
 
-		else if (Symbol == "") {
-
+		else if (Symbol == "RM") {
+			if (komunikacja.rozkazOdebraniaKomunikatu(kolejkaGotowych.glowa->proces->dajId()) == false)
+				LicznikRozkazow -= 4;
 		}
 
 		else if (Symbol == "") {

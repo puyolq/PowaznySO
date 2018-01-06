@@ -16,9 +16,10 @@
 
 int main()
 {
+	
+	PCB* kupkaa = zarzadzanieProcesami.dodajProces("p", "init");
 	PCB* kupka = zarzadzanieProcesami.dodajProces("proces1", "init");
-	PCB* kupkaa = zarzadzanieProcesami.dodajProces("proces2", "init");
-	PCB* kupkaaa = zarzadzanieProcesami.dodajProces("proces3", "init");
+	//PCB* kupkaaa = zarzadzanieProcesami.dodajProces("proces3", "init");
 	bool x = false;
 
 	//ustawia idle jako proces aktywny, do testów poni¿szego b³êdu
@@ -31,9 +32,9 @@ int main()
 	//	kolejkaGotowych.uruchomEkspedytor(true);
 	//}
 	//NAPRAWIC ¯EBY INACZEJ SIE WYKONYWALY METODY GDY GLOWA->PROCES == &IDLE || JU¯ SIÊ USUN¥£ (sprawdzanie stanu == 4 nie dzia³a, trzeba by 1 2 3 sprawdzic)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	interpreter.WpiszDoRam(kupka, "prog.txt");	//TUTAJ PROBUJE WPISAC KUPKE, A ONA JEST JUZ USUNIÊTA, METODA WYPIERDALA B£ÊDY
-	interpreter.WpiszDoRam(kupkaa, "prog1.txt");
-	interpreter.WpiszDoRam(kupkaaa, "prog2.txt");
+	interpreter.WpiszDoRam(kupkaa, "RM.txt");
+	interpreter.WpiszDoRam(kupka, "SM.txt");	//TUTAJ PROBUJE WPISAC KUPKE, A ONA JEST JUZ USUNIÊTA, METODA WYPIERDALA B£ÊDY
+	//interpreter.WpiszDoRam(kupkaaa, "prog2.txt");
 	std::cout << ".........................";
 	ram.showRam();
 	//dysk.wypiszDrzewo();

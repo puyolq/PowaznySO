@@ -141,7 +141,7 @@ void PCB::ustawDeskryptorGniazda(int wartosc)
 	deskryptorGniazda = wartosc;
 }
 
-int PCB::dajDeskryptorGnizda()
+int PCB::dajDeskryptorGniazda()
 {
 	return deskryptorGniazda;
 }
@@ -409,4 +409,13 @@ void ZarzadzanieProcesami::usunProces(std::string nazwa)
 void ZarzadzanieProcesami::usunProces(int pid)
 {
 	init->usunProces(pid);
+}
+
+PCB* ZarzadzanieProcesami::znajdzProces(int pid)
+{
+	return init->znajdzProces(pid);
+}
+
+PCB* ZarzadzanieProcesami::znajdzProces(std::string nazwa) {
+	return init->znajdzProces(nazwa);
 }
