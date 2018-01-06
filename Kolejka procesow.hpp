@@ -5,7 +5,6 @@ struct Wezel
 {
 	PCB* proces;
 	Wezel* nastepny;
-
 	Wezel(PCB* proces);
 	Wezel();
 };
@@ -14,7 +13,7 @@ class KolejkaProcesow
 {
 public:
 	std::string nazwa;
-	Wezel *glowa, *ogon;	//glowa to ten aktywny proces
+	Wezel *glowa, *ogon;	//glowa to ten aktywny process
 	KolejkaProcesow(std::string);
 	~KolejkaProcesow();
 

@@ -5,7 +5,6 @@
 #include "wpisKatalogowy.h"
 #include "Semafory.h"
 #include "ZarzadzanieProcesami.h"
-
 //README
 //JEŚLI WYKONUJESZ OPERACJE NA PLIKACH/FOLDERACH TO SPRAWDZ CZY DYSK.POPRAWNOSC() == TRUE - nowa obsługa błędów
 

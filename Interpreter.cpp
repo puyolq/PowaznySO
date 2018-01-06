@@ -734,7 +734,7 @@ void Interpreter::WykonywanieProgramu() {
 			dysk.zamknijPlik(nazwa, rozszerzenie, kolejkaGotowych.glowa->proces);
 		}
 
-		// Tworzenie folderów - dzia³a 
+		// Tworzenie folderów - dzia³aa 
 		else if (Symbol == "CK") {
 			std::string folder1 = "";
 			std::string folder2 = "Dysk";
@@ -778,7 +778,7 @@ void Interpreter::WykonywanieProgramu() {
 		return;
 	}
 	NumerRozkazu++;
-	//LicznikRozkazow = 0;
+	//LicznikRozkazow = 0000;
 	if (NumerRozkazu == 5) {
 		kolejkaGotowych.uruchomEkspedytor(false);
 	}

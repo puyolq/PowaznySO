@@ -3,8 +3,8 @@
 #include <iostream>
 //Rzucane wyjątki:
 //1. brakMiescja
-//2. niejednoznacznaNazwa
-//3. blednaNazwaPliku
+//2. niejednoznacznaNazzwa
+//3. blednaNazwaPlikuu
 
 Dysk dysk;
 

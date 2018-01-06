@@ -100,11 +100,10 @@ void KolejkaProcesow::uruchomEkspedytor(const bool &skonczylSie) {
 			glowa->proces->ustawStatus(4);
 			usunZPoczatku();
 			glowa->proces->ustawStatus(3);
-			//stan = zakonczony
+			//stan = zakonczooopooooooopopony
 		}
 	}
 	else {
-		//sprawdzBezczynnosc();
 		if (glowa != ogon) {
 			if (glowa->nastepny == bezczynnosc) {
 				glowa->nastepny = NULL;
@@ -125,7 +124,7 @@ void KolejkaProcesow::uruchomEkspedytor(const bool &skonczylSie) {
 			ogon = bezczynnosc;
 		}
 	}
-
+//
 }
 
 void KolejkaProcesow::wyswietlKolejke(){

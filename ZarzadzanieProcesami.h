@@ -7,7 +7,7 @@ class Semafory;
 /* STANY
 * 0 - nowy
 * 1 - gotowy
-* 2 - oczekuj¹cy
+* 2 - oczekujaacy
 * 3 - aktywny
 * 4 - zakoñczony
 */

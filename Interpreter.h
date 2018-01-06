@@ -4,6 +4,7 @@
 #include"ZarzadzanieProcesami.h"
 #include"dysk.h"
 
+
 class Interpreter {
 public:
 	int A, B, C, D;

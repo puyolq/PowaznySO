@@ -9,7 +9,7 @@ class bledneWywolanieWait : public std::exception
 public:
 	const char* what() const throw()
 	{
-		return "Nieaktywny Proces wykonał wait().";
+		return "Nieaktywny Proces wykonał wait()";
 	}
 };
 class bledneWywolanieSignal : public std::exception
@@ -17,7 +17,7 @@ class bledneWywolanieSignal : public std::exception
 public:
 	const char* what() const throw()
 	{
-		return "Nieaktywny Proces wykonał signal().";
+		return "Nieaktywny Proces wykonał signal()";
 	}
 
 
@@ -32,7 +32,7 @@ public:
 	void wait(PCB* proces);
 	void signal(PCB* proces);
 	int dlugosc();			//sprawdzanie czy otwarty za pomoca tej metody
-							//<0 to otwarty >=0 zamkniety
+							//<0 to otwarty >=0 zamknietyy
 private:
 	int wartosc;
 	std::queue<PCB*> kolejka;

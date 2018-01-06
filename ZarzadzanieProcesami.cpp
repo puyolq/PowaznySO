@@ -48,6 +48,7 @@ void PCB::ustawStatus(int _status)
 {
 	if(_status>0 && _status<5)
 	{
+		//
 		//zmiana z nowy na gotowy
 		if (status == 0 && _status == 1)
 		{

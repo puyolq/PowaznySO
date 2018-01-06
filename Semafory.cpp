@@ -47,8 +47,10 @@ void Semafory::signal(PCB * proces)
 	}
 	else { throw bledneWywolanieSignal(); }
 }
-
+//WYJATKI WYRZUCIC
 int Semafory::dlugosc()
 {
 	return (-1)*(this->wartosc);
 }
+//
+//

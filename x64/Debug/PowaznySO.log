@@ -1,3 +1,2 @@
-﻿  Interpreter.cpp
-c:\users\damian\source\repos\projekt\powaznyso\interpreter.cpp(58): warning C4267: "+=": konwersja z "size_t" do "int", możliwa utrata danych
+﻿  Source.cpp
   PowaznySO.vcxproj -> C:\Users\Damian\Source\Repos\Projekt\PowaznySO\x64\Debug\PowaznySO.exe

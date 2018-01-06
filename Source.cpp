@@ -50,8 +50,8 @@ int main()
 	dysk.wypiszDrzewo();
 	std::cout<<std::endl<<dysk.pobierzDane("p1","txt",kolejkaGotowych.glowa->proces);
 	dysk.zamknijPlik("p1", "txt", kolejkaGotowych.glowa->proces);
-	std::cout << std::endl << dysk.pobierzDane("p1", "txt", kupka);
-	dysk.zamknijPlik("p1", "txt", kupka);
+	//std::cout << std::endl << dysk.pobierzDane("p1", "txt", kupka);
+	//dysk.zamknijPlik("p1", "txt", kupka);
 	//cout << "2:" << endl;
 	//ram->showRam();
 
