@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <iostream>
 
-RAM ram;
 
 void RAM::memMerge()
 {
@@ -50,7 +49,7 @@ void RAM::defragment()
 	freeBlocks.clear();
 	Block tmp;
 	tmp.base = claimedBlocks.back().base + claimedBlocks.back().limit;
-	tmp.limit = 256 - tmp.base;
+	tmp.limit = 64 - tmp.base;
 	freeBlocks.push_back(tmp);//wolny blok pamieci na koncu
 }
 
@@ -140,13 +139,13 @@ void RAM::WriteToRam(std::string a, writtenBlock &writtenTo)
 RAM::RAM()
 {
 
-	freeRAM = 256;
+	freeRAM = 64;
 	processNum = 0;
-	for (int i = 0; i < 256; ++i) { RAM_Content[i] = 'w'; } // "pusty" RAM
+	for (int i = 0; i < 64; ++i) { RAM_Content[i] = 'w'; } // "pusty" RAM
 	Block start;
 	start.base = 0;
-	start.limit = 256;
-	freeBlocks.push_back(start);//tworze blok wolnej pamieci o wielkosci 256
+	start.limit = 64;
+	freeBlocks.push_back(start);//tworze blok wolnej pamieci o wielkosci 64
 }
 
 void RAM::addToMem(PCB* a, std::string polecenie)
@@ -216,7 +215,7 @@ void RAM::deleteFromMem(PCB* a)
 void RAM::showRam()
 {
 	system("cls");
-	for (int i = 0; i < 256; i++)
+	for (int i = 0; i < 64; i++)
 	{
 		if (i % 8 != 0) {
 			std::cout << "|" << RAM_Content[i] << "|";
@@ -245,11 +244,11 @@ std::string RAM::showProcess(int base)
 	return process;
 }
 
-void RAM::saveToRam(PCB * a, int localisation, std::string value)
+void RAM::saveToRam(int a, int localisation, std::string value)
 {
 	int i = 0;
 	writtenBlock writtenTo;
-	writtenTo.origin = a->dajRamLokalizacja();
+	writtenTo.origin = a;
 	writtenTo.limit = value.size() + 1;
 
 	if (value.size() <= freeRAM)
@@ -265,3 +264,5 @@ void RAM::saveToRam(PCB * a, int localisation, std::string value)
 	else { std::cout << "Brak pamieci"; }
 
 }
+
+
