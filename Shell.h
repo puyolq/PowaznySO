@@ -17,8 +17,8 @@
 class Shell {
 
 	ZarzadzanieProcesami *zarzadzanieProcesami = new ZarzadzanieProcesami();
-	dysk Dysk;
-	RAM ram;
+	dysk  *Dysk = new dysk();
+	RAM *ram = new RAM();
 
 
 public:

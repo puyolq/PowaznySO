@@ -44,48 +44,48 @@ void Shell::MC(int adres, int rozmiar)
 
 void Shell::MS()
 {
-	ram.showRam();
+	ram->showRam();
 }
 
 
 
 void Shell::MF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
 {
-	Dysk.utworzPlik(nazwa, rozszerzenie, nazwaFolderu);
+	Dysk->utworzPlik(nazwa, rozszerzenie, nazwaFolderu);
 }
 
 void Shell::DF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
 {
-	Dysk.usunPlik(nazwa, rozszerzenie, nazwaFolderu);
+	Dysk->usunPlik(nazwa, rozszerzenie, nazwaFolderu);
 }
 
 void Shell::RF(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu)
 {
-	Dysk.zmienNazwePliku(nazwa, rozszerzenie, nowaNazwa, nazwaFolderu);
+	Dysk->zmienNazwePliku(nazwa, rozszerzenie, nowaNazwa, nazwaFolderu);
 }
 
 void Shell::SF(std::string nazwa, std::string rozszerzenie, std::string dane, PCB * proces, std::string nazwaFolderu)
 {
-	Dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, proces, nazwaFolderu);
-	Dysk.zamknijPlik(nazwa, rozszerzenie, "", zarzadzanieProcesami->init, nazwaFolderu);
+	Dysk->zapiszDoPliku(nazwa, rozszerzenie, dane, proces, nazwaFolderu);
+	Dysk->zamknijPlik(nazwa, rozszerzenie, "", zarzadzanieProcesami->init, nazwaFolderu);
 }
 
 void Shell::PF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::string nazwaFolderu)
 {
-	string wyjscie = Dysk.pobierzDane(nazwa, rozszerzenie, proces, nazwaFolderu);
+	string wyjscie = Dysk->pobierzDane(nazwa, rozszerzenie, proces, nazwaFolderu);
 	cout << wyjscie << endl;
-	Dysk.zamknijPlik(nazwa, rozszerzenie, "", zarzadzanieProcesami->init, nazwaFolderu);
+	Dysk->zamknijPlik(nazwa, rozszerzenie, "", zarzadzanieProcesami->init, nazwaFolderu);
 }
 
 void Shell::XF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::string nazwaFolderu)
 {
-	Dysk.otowrzStratnie(nazwa, rozszerzenie, zarzadzanieProcesami->init, nazwaFolderu);
-	Dysk.zamknijPlik(nazwa, rozszerzenie, "", zarzadzanieProcesami->init, nazwaFolderu);
+	Dysk->otowrzStratnie(nazwa, rozszerzenie, zarzadzanieProcesami->init, nazwaFolderu);
+	Dysk->zamknijPlik(nazwa, rozszerzenie, "", zarzadzanieProcesami->init, nazwaFolderu);
 }
 
 void Shell::CF(std::string nazwa, std::string rozszerzenie, std::string dane, PCB * proces, std::string nazwaFolderu)
 {
-	Dysk.zamknijPlik(nazwa, rozszerzenie, dane, zarzadzanieProcesami->init, nazwaFolderu);
+	Dysk->zamknijPlik(nazwa, rozszerzenie, dane, zarzadzanieProcesami->init, nazwaFolderu);
 }
 
 
@@ -93,48 +93,48 @@ void Shell::CF(std::string nazwa, std::string rozszerzenie, std::string dane, PC
 
 void Shell::MD(std::string nazwa, std::string nazwaNadrzednego)
 {
-	Dysk.utworzFolder(nazwa, nazwaNadrzednego);
+	Dysk->utworzFolder(nazwa, nazwaNadrzednego);
 }
 
 void Shell::AD(std::string nazwaDocelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem)
 {
-	Dysk.dodajPlikDoKatalogu(nazwaDocelowego, nazwaPliku, rozszerzenie, nazwaFolderuZPlikiem);
+	Dysk->dodajPlikDoKatalogu(nazwaDocelowego, nazwaPliku, rozszerzenie, nazwaFolderuZPlikiem);
 }
 
 void Shell::DD(std::string nazwa)
 {
-	int pozycja = Dysk.znajdzFolder(nazwa);
-	Dysk.usunFolder(pozycja);
+	int pozycja = Dysk->znajdzFolder(nazwa);
+	Dysk->usunFolder(pozycja);
 }
 
 void Shell::FD(std::string nazwa)
 {
-	Dysk.znajdzFolder(nazwa);
+	Dysk->znajdzFolder(nazwa);
 }
 
 void Shell::PT()
 {
-	Dysk.wypiszDrzewo();
+	Dysk->wypiszDrzewo();
 }
 
 void Shell::PD()
 {
-	Dysk.wypiszDysk();
+	Dysk->wypiszDysk();
 }
 
 void Shell::PV()
 {
-	Dysk.wypiszWektorBitowy();
+	Dysk->wypiszWektorBitowy();
 }
 
 void Shell::PN()
 {
-	Dysk.wypiszTabliceIwezelow();
+	Dysk->wypiszTabliceIwezelow();
 }
 
 void Shell::PX()
 {
-	Dysk.wypiszTabliceWpisow();
+	Dysk->wypiszTabliceWpisow();
 }
 
 

@@ -1,12 +1,4 @@
-﻿  ZarzadzanieProcesami.cpp
-  Shell.cpp
+﻿  Shell.cpp
 g:\github\powaznyso\shell.cpp(333): warning C4018: '<': signed/unsigned mismatch
 g:\github\powaznyso\shell.cpp(334): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  dysk.cpp
-  Source.cpp
-  Semafory.cpp
-  RAM.cpp
-  Kolejka procesow.cpp
   PowaznySO.vcxproj -> G:\GitHub\PowaznySO\Debug\PowaznySO.exe
