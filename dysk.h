@@ -5,21 +5,21 @@
 #include "wpisKatalogowy.h"
 #include "Semafory.h"
 #include "ZarzadzanieProcesami.h"
-class dysk 
+class Dysk 
 {
 public:
-	dysk ();
+	Dysk ();
 	void zamknijPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); // Odblokuje dostep do pliku podnocz¹c semafor 
 
 #pragma region obsluga plikow
 	void utworzPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu = "Dysk"); // Tworzy pusty plik i zajmuje jeden blok dyskowy.
 	void usunPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu = "Dysk"); // Zwalnia bloki, czyœci wpis na dysku
 	void zmienNazwePliku(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu = "Dysk"); // Zmiania nazwê pliku
-	#pragma region po tych metodach wywo³aj zaknij plik
+	#pragma region po tych metodach wywo³aj zamknij plik
 		void zapiszDoPliku(std::string nazwa, std::string rozszerzenie,std::string dane, PCB* proces, std::string nazwaFolderu ="Dysk"); //Pozwala na dopisywanie danych na koñcu pliku.
 		std::string pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Zwraca dane z pliku.
-		void otowrzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Czyœwi plik, zwalnia bloki poza pierwszym blokiem.
-	#pragma endregion po tych metodach wywo³aj zaknij plik
+		void otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Czyœwi plik, zwalnia bloki poza pierwszym blokiem.
+	#pragma endregion po tych metodach wywo³aj zamknij plik
 	
 #pragma  endregion obsluga plikow
 
@@ -30,13 +30,13 @@ public:
 	short znajdzFolder(std::string nazwa);
 #pragma endregion obsluga folderow
 
-#pragma region wpypisywanie elementow dyskowych
+#pragma region wypisywanie elementow dyskowych
 	void wypiszDrzewo(); // Wypisuje "drzewo" plików i katalogów na dysku.
 	void wypiszDysk(); // Wypisuje na ekran sam¹ tablicê dyskow¹.
 	void wypiszWektorBitowy();
 	void wypiszTabliceIwezelow();
 	void wypiszTabliceWpisow();
-#pragma endregion  wpypisywanie elementow dyskowych
+#pragma endregion  wypisywanie elementow dyskowych
 	
 private:
 #pragma region dysk
@@ -66,4 +66,4 @@ private:
 
 	void otworzPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); // Blokuje dostêp do pliku opuczaj¹c semafor
 };
-
+extern Dysk dysk;

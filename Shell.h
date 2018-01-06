@@ -8,18 +8,16 @@
 #include "ZarzadzanieProcesami.h"
 #include "RAM.hpp"
 #include "dysk.h"
-#include "brakMiejsca.h"
-#include "niejednoznacznaNazwa.h"
-#include "blednaNazwaPliku.h"
-#include "blednaNazwaFolderu.h"
-#include "brakWolnychSynow.h"
+#include "Interpreter.h"
+#include "Wyjatki.h"
+
 
 class Shell {
 
 	ZarzadzanieProcesami *zarzadzanieProcesami = new ZarzadzanieProcesami();
-	dysk  *Dysk = new dysk();
+	Dysk *dysk = new Dysk();
 	RAM *ram = new RAM();
-
+	Interpreter *interpreter = new Interpreter();
 
 public:
 	Shell();

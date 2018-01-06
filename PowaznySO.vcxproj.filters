@@ -45,20 +45,11 @@
     <ClCompile Include="Shell.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Interpreter.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="blednaNazwaFolderu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="blednaNazwaPliku.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="brakMiejsca.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="brakWolnychSynow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="dysk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -86,10 +77,10 @@
     <ClInclude Include="RAM.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="brakDostepuDoPliku.h">
+    <ClInclude Include="Shell.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shell.h">
+    <ClInclude Include="Interpreter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

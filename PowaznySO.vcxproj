@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dysk.cpp" />
+    <ClCompile Include="Interpreter.cpp" />
     <ClCompile Include="iwezel.cpp" />
     <ClCompile Include="katalog.cpp" />
     <ClCompile Include="Kolejka procesow.cpp" />
@@ -154,12 +155,8 @@
     <ClCompile Include="ZarzadzanieProcesami.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="blednaNazwaFolderu.h" />
-    <ClInclude Include="blednaNazwaPliku.h" />
-    <ClInclude Include="brakDostepuDoPliku.h" />
-    <ClInclude Include="brakMiejsca.h" />
-    <ClInclude Include="brakWolnychSynow.h" />
     <ClInclude Include="dysk.h" />
+    <ClInclude Include="Interpreter.h" />
     <ClInclude Include="iwezel.h" />
     <ClInclude Include="katalog.h" />
     <ClInclude Include="Kolejka procesow.hpp" />

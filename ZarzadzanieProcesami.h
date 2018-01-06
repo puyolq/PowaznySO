@@ -1,28 +1,22 @@
 #pragma once
 #include <string>
 #include <vector>
-
-
-struct Socket
-{
-};
-
-//
-
+class Semafory;
+#include "Semafory.h"
 //
 /* STANY
- * 0 - nowy
- * 1 - gotowy
- * 2 - oczekuj¹cy
- * 3 - aktywny
- * 4 - zakoñczony
- */
+* 0 - nowy
+* 1 - gotowy
+* 2 - oczekujÂ¹cy
+* 3 - aktywny
+* 4 - zakoÃ±czony
+*/
 
 
 class PCB
 {
 private:
-	//ogólne sk³adniki
+	//ogÃ³lne skÂ³adniki
 	int id;
 	std::string nazwa;
 	std::vector<PCB*> potomkowie;
@@ -42,17 +36,21 @@ public:
 	void dodajPotomka(PCB* potomek);
 	void wyswietlPotomkow(int lvl);
 	void wyswietlProces(std::string nazwa);
+	void wyswietlProces(int pid);
 	PCB* znajdzProces(std::string nazwa);
+	PCB* znajdzProces(int pid);
 	PCB* dajRodzica();
 	int dajId();
 	void usunProces(std::string nazwa);
+	void usunProces(int pid);
 	void usunPotomka(std::string nazwa);
+	void usunPotomka(int pid);
 	void przeniesPotomkow(PCB* init, PCB* doPrzeniesienia);
 	void ustawRodzica(PCB* _rodzic);
 	int zliczProcesy();
 
 
-	//dla ¯egalskiego (interpreter)
+	//dla Â¯egalskiego (interpreter)
 private:
 	int status;
 	int rej1, rej2, rej3, rej4;
@@ -72,16 +70,12 @@ public:
 	int dajLicznikRozkazow();
 
 
-	//dla Cezarego (komunikacja miêdzyprocesowa)
+	//dla Cezarego (komunikacja miÃªdzyprocesowa)
 private:
-	std::vector<Socket*> listaSocketow;
-	Socket* socket;
+	int deskryptorGniazda;
 public:
-	Socket*dajSocket();
-	void ustawSocket(Socket*_socket);
-	std::vector<Socket*>dajListeSocketow();
-	void usunSocket(Socket*_socket);
-	void dodajSocket(Socket*_socket);
+	void ustawDeskryptorGniazda(int wartosc);
+	int dajDeskryptorGnizda();
 
 	//dla Mariana (RAM)
 public:
@@ -94,7 +88,7 @@ public:
 	int dajRamRozmiar();
 
 	//dla Mariusza (semafory)
-
+	Semafory *semafor;
 
 };
 
@@ -108,11 +102,15 @@ private:
 public:
 	ZarzadzanieProcesami();
 	~ZarzadzanieProcesami();
-	PCB* init;
+
 	void wyswietlIloscProcesow();
 	void wyswietlWszystkieProcesy();
 	void wyswietlProces(std::string nazwa);
-
+	void wyswietlProces(int pid);
+	PCB* init;
 	PCB* dodajProces(std::string nazwa, std::string rodzic);
 	void usunProces(std::string nazwa);
+	void usunProces(int pid);
 };
+extern ZarzadzanieProcesami zarzadzanieProcesami;
+extern PCB idle;

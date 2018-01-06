@@ -2,11 +2,11 @@
 #include <string>
 #include "Kolejka procesow.hpp"
 
-	int x = 50;
-	KolejkaProcesow kolejkaGotowych("gotowych");
-	KolejkaProcesow kolejkaOczekujacych("oczekujacych");
-	PCB* idle = new PCB(99, "idle", nullptr);
-	Wezel* bezczynnosc = new Wezel(idle);
+KolejkaProcesow kolejkaGotowych("gotowych");
+KolejkaProcesow kolejkaOczekujacych("oczekujacych");
+
+
+Wezel* bezczynnosc = new Wezel(&idle);
 	
 Wezel::Wezel(PCB* proces) : proces(proces), nastepny(NULL){}
 
@@ -25,6 +25,7 @@ void KolejkaProcesow::dodajDoKolejki(PCB* proces){
 	Wezel* temp2 = glowa;
 	if (!glowa || glowa == bezczynnosc){
 		glowa = temp1;
+		glowa->proces->ustawStatus(3);
 		ogon = glowa;
 		return;
 	}
@@ -58,8 +59,9 @@ void KolejkaProcesow::usunProces(const short& idProcesu){
 void KolejkaProcesow::usunZPoczatku(){
 	sprawdzBezczynnosc();
 	Wezel* temp1 = glowa;
-	if(temp1->nastepny)
+	if (temp1->nastepny) {
 		glowa = temp1->nastepny;
+	}
 	
 }
 
@@ -81,24 +83,42 @@ void KolejkaProcesow::usunZKonca(){
 void KolejkaProcesow::sprawdzBezczynnosc(){
 	if (!glowa->nastepny) {
 		glowa = bezczynnosc;
+		glowa->proces->ustawStatus(3);
 		ogon = bezczynnosc;
 		glowa->nastepny = NULL;
 	}
 }
 
 void KolejkaProcesow::uruchomEkspedytor(const bool &skonczylSie) {
+	if (!glowa->nastepny && glowa!=bezczynnosc) {
+		glowa->nastepny = bezczynnosc;
+		ogon = bezczynnosc;
+
+	}
 	if (skonczylSie) {
-		usunZPoczatku();
-		//stan = zakonczony
+		if (glowa != bezczynnosc) {
+			glowa->proces->ustawStatus(4);
+			usunZPoczatku();
+			glowa->proces->ustawStatus(3);
+			//stan = zakonczony
+		}
 	}
 	else {
-		sprawdzBezczynnosc();
+		//sprawdzBezczynnosc();
 		if (glowa != ogon) {
+			if (glowa->nastepny == bezczynnosc) {
+				glowa->nastepny = NULL;
+				ogon = glowa;
+				return;
+			}
+			glowa->proces->ustawStatus(1);
 			ogon->nastepny = glowa;
 			if (glowa->nastepny)
 				glowa = glowa->nastepny;
 			ogon->nastepny->nastepny = NULL;
 			ogon = ogon->nastepny;
+			glowa->proces->ustawStatus(3);
+			return;
 		}
 		else {
 			glowa = bezczynnosc;
@@ -114,7 +134,7 @@ void KolejkaProcesow::wyswietlKolejke(){
 	std::clog << "Kolejka procesow "<<nazwa<<":" << std::endl;
 
 	while (temp){
-		std::clog <<lp<<". PID:"<<temp->proces->dajId() <<" Nazwa:"<< temp->proces->dajNazwe() <<std::endl;
+		std::clog <<lp<<". PID:"<<temp->proces->dajId() <<" Nazwa:"<< temp->proces->dajNazwe()<< " Stan: "<<temp->proces->dajStatus() <<std::endl;
 		temp = temp->nastepny;
 		lp++;
 	}

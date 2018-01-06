@@ -1,4 +1,2 @@
-﻿  Shell.cpp
-g:\github\powaznyso\shell.cpp(333): warning C4018: '<': signed/unsigned mismatch
-g:\github\powaznyso\shell.cpp(334): warning C4018: '<': signed/unsigned mismatch
+﻿  Source.cpp
   PowaznySO.vcxproj -> G:\GitHub\PowaznySO\Debug\PowaznySO.exe
