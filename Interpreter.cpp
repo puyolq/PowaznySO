@@ -52,6 +52,8 @@ void Interpreter::StanRejestrow() {
 //metoda do pobierania pojedynczego rozkazu z ramu
 void Interpreter::PobierzRozkaz(PCB *pcb) {
 	Rozkaz.clear();
+	LicznikRozkazow = kolejkaGotowych.glowa->proces->dajLicznikRozkazow();
+	LokalizacjaProgramu = kolejkaGotowych.glowa->proces->dajRamLokalizacja();
 	int lokalizacja = pcb->ramLokalizacja + LicznikRozkazow;
 	LokalizacjaProgramu = pcb->ramLokalizacja;
 	// metoda mariana ktora odsyla std::stringa 
@@ -754,6 +756,7 @@ void Interpreter::WykonywanieProgramu() {
 		//Rozkazy do procesow
 
 		else if (Symbol == "SM") {
+			PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
 			std::string odbiorca = "";
 			int a = 0;
 			for (int i = 0; i < Dane.size(); i++)
@@ -761,17 +764,20 @@ void Interpreter::WykonywanieProgramu() {
 				if (Dane[i] != ' ') {
 					odbiorca += Dane[i];
 					a++;
-					break;
 				}
+				else
+					break;
 			}
-			komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(),odbiorca, Dane.substr(a, Dane.size() - a));
+			if (komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(), odbiorca, Dane.substr(a, Dane.size() - a)) == false)
+			{
+				return;
+			}
 		}
 
 		else if (Symbol == "RM") {
 			PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
 			if (komunikacja.rozkazOdebraniaKomunikatu(kolejkaGotowych.glowa->proces->dajId()) == false) {
 				LicznikRozkazow -= 4;
-				kolejkaGotowych.glowa->proces->ustawStatus(3);
 				procesTymczasowy->ustawLicznikRozkazow(LicznikRozkazow);
 				return;
 			}
@@ -783,6 +789,7 @@ void Interpreter::WykonywanieProgramu() {
 
 		else {
 			std::clog << "Nie ma takiej komendy." << std::endl;
+			kolejkaGotowych.glowa->proces->ustawStatus(4);
 			return;
 		}
 
@@ -796,7 +803,6 @@ void Interpreter::WykonywanieProgramu() {
 		return;
 	}
 	NumerRozkazu++;
-	//LicznikRozkazow = 0000;
 	if (NumerRozkazu == 5) {
 		kolejkaGotowych.uruchomEkspedytor(false);
 	}

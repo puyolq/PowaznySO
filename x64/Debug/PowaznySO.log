@@ -1,6 +1,2 @@
-﻿  dysk.cpp
-c:\users\cwali\source\repos\powaznyso2\dysk.cpp(217): warning C4244: "=": konwersja z "short" do "char", możliwa utrata danych
-  Interpreter.cpp
-c:\users\cwali\source\repos\powaznyso2\interpreter.cpp(59): warning C4267: "+=": konwersja z "size_t" do "int", możliwa utrata danych
-  Generowanie kodu...
+﻿  Source.cpp
   PowaznySO.vcxproj -> C:\Users\cwali\Source\Repos\PowaznySO2\x64\Debug\PowaznySO.exe

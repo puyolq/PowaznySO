@@ -66,6 +66,7 @@ void KolejkaProcesow::usunZPoczatku(){
 	Wezel* temp1 = glowa;
 	if (temp1->nastepny) {
 		glowa = temp1->nastepny;
+		glowa->proces->ustawStatus(3);
 	}
 	else if (nazwa == "oczekujacych")
 		glowa = NULL;

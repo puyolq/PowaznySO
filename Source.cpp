@@ -19,7 +19,9 @@ int main()
 	
 	PCB* kupka = zarzadzanieProcesami.dodajProces("proces1", "init");
 	PCB* kupkaa = zarzadzanieProcesami.dodajProces("proces2", "init");
-	PCB* kupkaaa = zarzadzanieProcesami.dodajProces("proces3", "init");
+	PCB* kupkaaa = zarzadzanieProcesami.dodajProces("po", "init");
+	PCB* kupkaaaa = zarzadzanieProcesami.dodajProces("sm", "init");
+	PCB* kupkaaaaa = zarzadzanieProcesami.dodajProces("sm2", "init");
 	bool x = false;
 
 	//ustawia idle jako proces aktywny, do testów poni¿szego b³êdu
@@ -34,14 +36,18 @@ int main()
 	//NAPRAWIC ¯EBY INACZEJ SIE WYKONYWALY METODY GDY GLOWA->PROCES == &IDLE || JU¯ SIÊ USUN¥£ (sprawdzanie stanu == 4 nie dzia³a, trzeba by 1 2 3 sprawdzic)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	interpreter.WpiszDoRam(kupka, "prog.txt");
 	interpreter.WpiszDoRam(kupkaa, "prog1.txt");
-	interpreter.WpiszDoRam(kupkaaa, "prog2.txt");	//TUTAJ PROBUJE WPISAC KUPKE, A ONA JEST JUZ USUNIÊTA, METODA WYPIERDALA B£ÊDY
+	interpreter.WpiszDoRam(kupkaaa, "RM2.txt");	//TUTAJ PROBUJE WPISAC KUPKE, A ONA JEST JUZ USUNIÊTA, METODA WYPIERDALA B£ÊDY
+	interpreter.WpiszDoRam(kupkaaaa, "SM.txt");
+	interpreter.WpiszDoRam(kupkaaaaa, "SM2.txt");
+	
+	
 	//interpreter.WpiszDoRam(kupkaaa, "prog2.txt");
 	std::cout << ".........................";
 	ram.showRam();
 	//dysk.wypiszDrzewo();
 	//interpreter.WykonywanieProgramu();
 	dysk.wypiszDrzewo();
-	while (kolejkaGotowych.glowa->proces != &idle){
+	while(kolejkaGotowych.glowa->proces != &idle){
 		interpreter.PobierzRozkaz(kolejkaGotowych.glowa->proces);
 		std::cout << " ROZKAZ: " << interpreter.Rozkaz << std::endl;
 		interpreter.WykonywanieProgramu();
