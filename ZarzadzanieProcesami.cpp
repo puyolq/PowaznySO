@@ -16,6 +16,7 @@ PCB::PCB(int _id, std::string _nazwa, PCB* _rodzic)
 	rej2 = 0;
 	rej3 = 0;
 	rej4 = 0;
+	blad = 0;
 	licznikRozkazow = 0;
 	ramLokalizacja = 0;
 	ramRozmiar = 0;
@@ -60,7 +61,7 @@ void PCB::ustawStatus(int _status)
 		//zmiana z aktywny na gotowy
 		else if (status == 3 && _status == 1) status = _status;
 		//zmiana z aktywnego na oczekuj¹cy
-		else if (status == 3 && _status == 2)
+		else if (status == 3 && _status == 2 || status == 1 && _status == 2)	//dodano z 1 na 2 ???
 		{
 			status = _status;
 			uspijProces(this);
@@ -211,6 +212,12 @@ void PCB::wyswietlProces(std::string nazwa)
 	else if (status == 4) std::clog << "4(zakonczony)";
 	std::clog << std::endl;
 	std::clog << "\tIlosc potomkow: " << local->zliczProcesy() - 1 << std::endl;
+	std::clog << "\tA: " << local->dajRej1() << std::endl;
+	std::clog << "\tB: " << local->dajRej2() << std::endl;
+	std::clog << "\tC: " << local->dajRej3() << std::endl;
+	std::clog << "\tD: " << local->dajRej4() << std::endl;
+	std::clog << "\tLicznik rozkazow: " << local->dajLicznikRozkazow() << std::endl;
+	std::clog << "\t Lok. w RAMie: " << local->dajRamLokalizacja() << std::endl;
 	std::clog << "\t************\n\n";
 }
 
@@ -229,6 +236,12 @@ void PCB::wyswietlProces(int pid)
 	else if (status == 4) std::clog << "4(zakonczony)";
 	std::clog << std::endl;
 	std::clog << "\tIlosc potomkow: " << local->zliczProcesy() - 1 << std::endl;
+	std::clog << "\tA: " << local->dajRej1() << std::endl;
+	std::clog << "\tB: " << local->dajRej2() << std::endl;
+	std::clog << "\tC: " << local->dajRej3() << std::endl;
+	std::clog << "\tD: " << local->dajRej4() << std::endl;
+	std::clog << "\tLicznik rozkazow: " << local->dajLicznikRozkazow() << std::endl;
+	std::clog << "\t Lok. w RAMie: " << local->dajRamLokalizacja() << std::endl;
 	std::clog << "\t************\n\n";
 }
 
@@ -271,6 +284,16 @@ int PCB::dajId()
 	return id;
 }
 
+int PCB::dajBlad()
+{
+	return blad;
+}
+
+void PCB::ustawBlad(int wartosc)
+{
+	blad = wartosc;
+}
+
 void PCB::usunProces(std::string nazwa)
 {
 	PCB* local = znajdzProces(nazwa);
@@ -279,7 +302,11 @@ void PCB::usunProces(std::string nazwa)
 		przeniesPotomkow(this, local);
 		PCB* ojciec = local->dajRodzica();
 		ojciec->usunPotomka(nazwa);
-		kolejkaGotowych.usunProces(local->dajId());
+		if(this->dajStatus() == 2)
+			kolejkaOczekujacych.usunProces(local->dajId());
+		else
+			kolejkaGotowych.usunProces(local->dajId());
+		
 		delete local;
 	}
 }

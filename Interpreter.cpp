@@ -28,6 +28,7 @@ Interpreter::~Interpreter() {};
 //Wpisywanie programu z TXT do RAM          
 void Interpreter::WpiszDoRam(PCB *pcb, std::string program) {
 	std::string pom;
+	program = program + ".txt";
 	std::fstream plik;
 	plik.open(program, std::ios::in);
 	if (plik.good() == true) {
@@ -83,7 +84,7 @@ void Interpreter::UstawRejestr() {
 	kolejkaGotowych.glowa->proces->ustawRamLokalizacja(LokalizacjaProgramu);
 }
 
-void Interpreter::WpiszDoKomurki(int lokalizacja, std::string dane)
+void Interpreter::WpiszDoKomorki(int lokalizacja, std::string dane)
 {
 
 }
@@ -807,4 +808,5 @@ void Interpreter::WykonywanieProgramu() {
 		kolejkaGotowych.uruchomEkspedytor(false);
 	}
 	PobierzRejestry();
+	std::clog << std::endl;
 }

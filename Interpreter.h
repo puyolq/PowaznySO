@@ -29,7 +29,7 @@ public:
 	//Kopiowanie rejestrow z interpretera do PCB
 	void UstawRejestr();
 	// Dodawanie w komkretnej czesci ramu 
-	void WpiszDoKomurki(int lokalizacja,std::string dane);
+	void WpiszDoKomorki(int lokalizacja,std::string dane);
 	//Metoda wykonuj¹ca 1 rozkaz asemblerowy
 	void WykonywanieProgramu();
 };

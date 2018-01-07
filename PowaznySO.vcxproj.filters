@@ -48,6 +48,9 @@
     <ClCompile Include="Komunikacja.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shell.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dysk.h">
@@ -81,6 +84,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Komunikacja.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shell.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

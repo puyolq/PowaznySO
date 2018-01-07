@@ -7,7 +7,7 @@
 #include "ZarzadzanieProcesami.h"
 #include "dysk.h"
 #include "Semafory.h"
-
+#include "Shell.h"
 
 //wymienic bledy semafora na boole
 //pomyslec nad rozwaizaniem martwych procesow, czy mamy miec do nich dostep czy sprawdzamy stan 1 2 3 a dla reszty cos innego
@@ -17,6 +17,14 @@
 int main()
 {
 	
+	Shell shell;
+	shell.wlaczone = true;
+	std::string wejscie;
+	while (shell.wlaczone) {
+		std::getline(std::cin, wejscie);
+		shell.czytajWejscie(wejscie);
+	}
+	/*
 	PCB* kupka = zarzadzanieProcesami.dodajProces("proces1", "init");
 	PCB* kupkaa = zarzadzanieProcesami.dodajProces("proces2", "init");
 	PCB* kupkaaa = zarzadzanieProcesami.dodajProces("po", "init");
@@ -67,6 +75,6 @@ int main()
 
 	std::cin.ignore();
 	getchar();
-
+	*/
 	return 0;
 }

@@ -34,6 +34,7 @@ Dysk::Dysk()
 	brakMiejsca = false;
 	brakWolnychSynow = false;
 	niejednoznacznaNazwa = false;
+	nazwaBlednegoProcesu = "";
 }
 
 void Dysk::otworzPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu)
@@ -42,7 +43,7 @@ void Dysk::otworzPlik(std::string nazwa, std::string rozszerzenie, std::string d
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
 	zeruj();
-
+	
 	if (pozycja == -1)
 	{
 		blednaNazwaPliku = true;
@@ -152,10 +153,12 @@ void Dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::strin
 		if (tablicaSemaforow[pozycja].dlugosc() >= 0)
 		{
 			brakDostepuDoPliku = true;
+			proces->ustawBlad(1);
+			nazwaBlednegoProcesu = proces->dajNazwe();
 		}
 	}
 
-	if (pozycja != -1 && brakDostepuDoPliku != true)
+	if (pozycja != -1/* && brakDostepuDoPliku != true*/)
 	{
 		otworzPlik(nazwa, rozszerzenie, "", proces, nazwaFolderu);
 	}
@@ -259,10 +262,12 @@ std::string Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* 
 		if (tablicaSemaforow[pozycja].dlugosc() >= 0)
 		{
 			brakDostepuDoPliku = true;
+			proces->ustawBlad(1);
+			nazwaBlednegoProcesu = proces->dajNazwe();
 		}
 	}
 
-	if (pozycja != -1 && brakDostepuDoPliku != true)
+	if (pozycja != -1/* && brakDostepuDoPliku != true*/)
 	{
 		otworzPlik(nazwa, rozszerzenie, "", proces, nazwaFolderu);
 	}
@@ -345,7 +350,7 @@ std::string Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* 
 	return doZwrotu;
 }
 
-void Dysk::otowrzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu)
+void Dysk::otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu)
 {
 	short ileBlokowOczytano = 0;
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
@@ -361,6 +366,7 @@ void Dysk::otowrzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proc
 	if (tablicaSemaforow[pozycja].dlugosc() >= 0)
 	{
 		brakDostepuDoPliku = true;
+		nazwaBlednegoProcesu = proces->dajNazwe();
 	}
 	tablicaSemaforow[pozycja].wait(proces);
 	if (pozycja == -1)
@@ -795,6 +801,7 @@ bool Dysk::poprawnosc()
 std::vector<std::string> Dysk::bledy()
 {
 	std::vector<std::string> doZwrotu;
+
 	if (blednaNazwaFolderu == true)
 	{
 		doZwrotu.push_back("blednaNazwaFolderu");
@@ -805,7 +812,7 @@ std::vector<std::string> Dysk::bledy()
 	}
 	if (brakDostepuDoPliku == true)
 	{
-		doZwrotu.push_back("brakDostepuDoPliku");
+		doZwrotu.push_back("brakDostepuDoPliku:"+ nazwaBlednegoProcesu);
 	}
 	if (brakMiejsca == true)
 	{
@@ -897,4 +904,5 @@ void Dysk::zeruj()
 	brakMiejsca = false;
 	brakWolnychSynow = false;
 	niejednoznacznaNazwa = false;
+	nazwaBlednegoProcesu = "";
 }

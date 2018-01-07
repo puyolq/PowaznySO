@@ -22,7 +22,7 @@ public:
 #pragma region po tych metodach wywo�aj zaknij plik
 	void zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); //Pozwala na dopisywanie danych na ko�cu pliku.
 	std::string pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Zwraca dane z pliku.
-	void otowrzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Czy�wi plik, zwalnia bloki poza pierwszym blokiem.
+	void otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Czy�wi plik, zwalnia bloki poza pierwszym blokiem.
 #pragma endregion po tych metodach wywo�aj zaknij plik
 
 #pragma  endregion obsluga plikow
@@ -49,7 +49,7 @@ public:
 	bool pobierzBrakMiejsca();
 	bool pobierzBrakWolnychSynow();
 	bool pobierzNiejednoznacznaNazwa();
-
+	std::string nazwaBlednegoProcesu;
 	bool poprawnosc();
 
 	std::vector<std::string> bledy();

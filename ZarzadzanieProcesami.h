@@ -17,7 +17,8 @@ class PCB
 {
 private:
 	//ogólne sk³adniki
-	int id;
+	int id;		
+	int blad;				//dodane do obslugi bledow
 	std::string nazwa;
 	std::vector<PCB*> potomkowie;
 	PCB* rodzic;
@@ -26,6 +27,7 @@ public:
 	PCB()
 	{
 		id = 0;
+		
 		//potomkowie = nullptr;
 		rodzic = nullptr;
 	}
@@ -76,6 +78,8 @@ private:
 public:
 	void ustawDeskryptorGniazda(int wartosc);
 	int dajDeskryptorGniazda();
+	int dajBlad();			//dodane blad
+	void ustawBlad(int wartosc);
 
 	//dla Mariana (RAM)
 public:
@@ -96,7 +100,7 @@ class ZarzadzanieProcesami
 {
 private:
 	int idLicznik;
-	PCB* init;
+	
 	int dajLicznik();
 
 public:
@@ -109,6 +113,8 @@ public:
 	void wyswietlProces(int pid);
 	PCB* znajdzProces(int pid);
 	PCB* znajdzProces(std::string nazwa);
+
+	PCB* init;
 
 	PCB* dodajProces(std::string nazwa, std::string rodzic);
 	void usunProces(std::string nazwa);
