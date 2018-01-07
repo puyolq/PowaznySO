@@ -16,6 +16,7 @@ public:
 	void zamknijPlik(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Odblokuje dostep do pliku podnocz�c semafor 
 
 #pragma region obsluga plikow
+	short znajdzPlik(std::string nazwa, std::string rozszerzenie); // Metoda zwraca numer iWez�a w kolekcji w kt�rym znajduje si� plik, je�li pliku nie odnazleziono zwraca -1
 	void utworzPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu = "Dysk"); // Tworzy pusty plik i zajmuje jeden blok dyskowy.
 	void usunPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu = "Dysk"); // Zwalnia bloki, czy�ci wpis na dysku
 	void zmienNazwePliku(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu = "Dysk"); // Zmiania nazw� pliku
@@ -55,6 +56,8 @@ public:
 	std::vector<std::string> bledy();
 #pragma endregion poprawnosc
 
+
+
 private:
 #pragma region poprawnosc 
 	// Je�li operacja przebieg�a pomy�lnie zmienna jest flase, w innym wypadku true;
@@ -85,7 +88,7 @@ private:
 
 #pragma region metody pomocnicze
 	void ileWolnych();
-	short znajdzPlik(std::string nazwa, std::string rozszerzenie); // Metoda zwraca numer iWez�a w kolekcji w kt�rym znajduje si� plik, je�li pliku nie odnazleziono zwraca -1
+	
 	short znajdzWolnyBlok(); // Metoda zwraca numer pierwszego wolnego bloku na dysku, je�li brak zwraca -1
 	short znajdzIwezel(); // Metoda zwraca numer pierwszego wolnego iW�z�a, je�li brak zwraca -1
 	std::string pobierzNazweFolder(short poz);

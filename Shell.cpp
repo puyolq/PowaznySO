@@ -220,7 +220,12 @@ void Shell::czytajWejscie(std::string wejscie)
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
-			DF(args[1], args[2], args[3]);
+			if (dysk.znajdzPlik(args[1], args[2]) == -1) {
+				clog << "Nie znaleziono pliku." << endl;
+				return;
+			}
+			else
+				DF(args[1], args[2], args[3]);
 		}
 	}
 	else if (komenda == "RF") {
@@ -229,7 +234,12 @@ void Shell::czytajWejscie(std::string wejscie)
 		else {
 			if (args.size() != 5)
 				args.push_back("Dysk");
-			RF(args[1], args[2], args[3], args[4]);
+			if (dysk.znajdzPlik(args[1], args[2]) == -1) {
+				clog << "Nie znaleziono pliku." << endl;
+				return;
+			}
+			else
+				RF(args[1], args[2], args[3], args[4]);
 		}
 	}
 
@@ -303,9 +313,15 @@ void Shell::czytajWejscie(std::string wejscie)
 		else {
 			if (args.size() != 5)
 				args.push_back("Dysk");
-			CP("plikcostam", "init", "");
-			SF(args[1], args[2], args[3], zarzadzanieProcesami.znajdzProces("plikcostam"), args[4]);
-			DP("plikcostam");
+			if (dysk.znajdzPlik(args[1], args[2]) == -1) {
+				clog << "Nie znaleziono pliku." << endl;
+				return;
+			}
+			else {
+				CP("plikcostam", "init", "");
+				SF(args[1], args[2], args[3], zarzadzanieProcesami.znajdzProces("plikcostam"), args[4]);
+				DP("plikcostam");
+			}
 
 		}
 	}
@@ -315,10 +331,15 @@ void Shell::czytajWejscie(std::string wejscie)
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
-			CP("plikcostam", "init", "");
-			PF(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"), args[3]);
-			DP("plikcostam");
-
+			if (dysk.znajdzPlik(args[1], args[2]) == -1) {
+				clog << "Nie znaleziono pliku." << endl;
+				return;
+			}
+			else {
+				CP("plikcostam", "init", "");
+				PF(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"), args[3]);
+				DP("plikcostam");
+			}
 		}
 	}
 
@@ -328,9 +349,15 @@ void Shell::czytajWejscie(std::string wejscie)
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
-			CP("plikcostam", "init", "");
-			XF(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"), args[3]);
-			DP("plikcostam");
+			if (dysk.znajdzPlik(args[1], args[2]) == -1) {
+				clog << "Nie znaleziono pliku." << endl;
+				return;
+			}
+			else {
+				CP("plikcostam", "init", "");
+				XF(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"), args[3]);
+				DP("plikcostam");
+			}
 		}
 	}
 	else if (komenda == "OF") {
@@ -339,14 +366,18 @@ void Shell::czytajWejscie(std::string wejscie)
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
-			
+			if (dysk.znajdzPlik(args[1], args[2]) == -1) {
+				clog << "Nie znaleziono pliku." << endl;
+				return;
+			}
+			else {
 
-			std::string temp = random_string(8);
-			CP(temp, "init", "");
-			PlikProces temp2 = { temp, args[1], args[2] };
-			PlikiProcesy.push_back(temp2);
-			OF(args[1], args[2], zarzadzanieProcesami.znajdzProces(temp), args[3]);
-
+				std::string temp = random_string(8);
+				CP(temp, "init", "");
+				PlikProces temp2 = { temp, args[1], args[2] };
+				PlikiProcesy.push_back(temp2);
+				OF(args[1], args[2], zarzadzanieProcesami.znajdzProces(temp), args[3]);
+			}
 		}
 	}
 
@@ -356,37 +387,46 @@ void Shell::czytajWejscie(std::string wejscie)
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
-
-			std::string temp = "";
+			if (dysk.znajdzPlik(args[1], args[2]) == -1) {
+				clog << "Nie znaleziono pliku." << endl;
+				return;
+			}
+			else {
+				std::string temp = "";
 
 				vector<string> bledy = dysk.bledy();
 
 				for (auto e : bledy) {
 					std::clog << e << std::endl;
 				}
-						for (auto e : PlikiProcesy) {
-							if (e.nazwaPliku == args[1] && e.rozszerzeniePliku == args[2]) {
-								temp = e.nazwaProcesu;
-								break;
-							}
-						}
-						if (zarzadzanieProcesami.znajdzProces(temp)->dajBlad() == 0) {
-							CF(args[1], args[2], zarzadzanieProcesami.znajdzProces(temp), args[3]);
-							DP(temp);
-							short x = -1;
-							//	this->numeryIwezlow.erase(std::find(this->numeryIwezlow.begin(), this->numeryIwezlow.end(), numer) + 0);
-							for (auto e : PlikiProcesy) {
-								x++;
-								if (e.nazwaProcesu == temp)
-									break;
-							}
-							PlikiProcesy.erase(PlikiProcesy.begin() + x);
-						}
-						else
-							std::clog << "Blad procesu: " <<temp<<" = "<< zarzadzanieProcesami.znajdzProces(temp)->dajBlad() << std::endl;
+				for (auto e : PlikiProcesy) {
+					if (e.nazwaPliku == args[1] && e.rozszerzeniePliku == args[2]) {
+						temp = e.nazwaProcesu;
+						break;
+					}
+				}
+				if (zarzadzanieProcesami.znajdzProces(temp) == nullptr) {
+					clog << "Plik nie jest otwarty" << endl;
+					return;
+				}
+				if (zarzadzanieProcesami.znajdzProces(temp)->dajBlad() == 0) {
+					CF(args[1], args[2], zarzadzanieProcesami.znajdzProces(temp), args[3]);
+					DP(temp);
+					short x = -1;
+					//	this->numeryIwezlow.erase(std::find(this->numeryIwezlow.begin(), this->numeryIwezlow.end(), numer) + 0);
+					for (auto e : PlikiProcesy) {
+						x++;
+						if (e.nazwaProcesu == temp)
+							break;
+					}
+					PlikiProcesy.erase(PlikiProcesy.begin() + x);
+				}
+				else
+					std::clog << "Blad procesu: " << temp << " = " << zarzadzanieProcesami.znajdzProces(temp)->dajBlad() << std::endl;
 
-					
-								
+
+
+			}
 		}
 	}
 	else if (komenda == "GO") {
