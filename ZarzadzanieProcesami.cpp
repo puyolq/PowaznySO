@@ -1,5 +1,6 @@
 #include "ZarzadzanieProcesami.h"
 #include "Kolejka procesow.hpp"
+#include "RAM.hpp"
 #include <iostream>
 
 ZarzadzanieProcesami zarzadzanieProcesami;
@@ -18,7 +19,7 @@ PCB::PCB(int _id, std::string _nazwa, PCB* _rodzic)
 	rej4 = 0;
 	blad = 0;
 	licznikRozkazow = 0;
-	ramLokalizacja = 0;
+	ramLokalizacja = -1;
 	ramRozmiar = 0;
 }
 
@@ -297,10 +298,13 @@ void PCB::ustawBlad(int wartosc)
 void PCB::usunProces(std::string nazwa)
 {
 	PCB* local = znajdzProces(nazwa);
+	//ram.deleteFromMem(local);
 	if (local != nullptr)
 	{
-		przeniesPotomkow(this, local);
+		
 		PCB* ojciec = local->dajRodzica();
+		przeniesPotomkow(ojciec, local);
+		//przeniesPotomkow(this, local) bylo, ale costam zmiana :)
 		ojciec->usunPotomka(nazwa);
 		if(this->dajStatus() == 2)
 			kolejkaOczekujacych.usunProces(local->dajId());
@@ -314,6 +318,7 @@ void PCB::usunProces(std::string nazwa)
 void PCB::usunProces(int pid)
 {
 	PCB* local = znajdzProces(pid);
+	ram.deleteFromMem(local);
 	if (local != nullptr)
 	{
 		przeniesPotomkow(this, local);
@@ -330,6 +335,7 @@ void PCB::usunPotomka(std::string nazwa)
 	{
 		if ((*i)->dajNazwe() == nazwa)
 		{
+			ram.deleteFromMem(*i);
 			potomkowie.erase(i);
 			break;
 		}
@@ -342,6 +348,7 @@ void PCB::usunPotomka(int pid)
 	{
 		if ((*i)->dajId() == pid)
 		{
+			ram.deleteFromMem(*i);
 			potomkowie.erase(i);
 			break;
 		}

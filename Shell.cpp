@@ -27,7 +27,10 @@ void Shell::CP(std::string nazwa, std::string rodzic, std::string program)
 
 void Shell::DP(std::string nazwa)
 {
-	zarzadzanieProcesami.usunProces(nazwa);
+	if (zarzadzanieProcesami.znajdzProces(nazwa) == nullptr)
+		clog << "Proces nie istnieje" << endl;
+	else
+		zarzadzanieProcesami.usunProces(nazwa);
 }
 
 
@@ -123,7 +126,11 @@ void Shell::AD(std::string nazwaDocelowego, std::string nazwaPliku, std::string 
 void Shell::DD(std::string nazwa)
 {
 	int pozycja = dysk.znajdzFolder(nazwa);
-	dysk.usunFolder(pozycja);
+	if (pozycja == -1) {
+		clog << "Folder nie istnieje" << endl;
+	}
+	else
+		dysk.usunFolder(pozycja);
 }
 
 void Shell::FD(std::string nazwa)
@@ -182,12 +189,18 @@ void Shell::czytajWejscie(std::string wejscie)
 	string komenda = args[0];
 	//cout << args[0] << endl << args[1] << endl;
 	if (komenda == "CP") {
-		if (args.size() < 3)
+		if (args.size() < 2)
 			cout << "niepoprawne uzycie komendy" << endl;
-		else
+		else {
+			//ustalamy rodzica
+			if (args.size() != 3) {
+				args.push_back("init");
+			}
+			//program ""
 			if (args.size() != 4)
 				args.push_back("");
 			CP(args[1], args[2], args[3]);
+		}
 	}
 	else if (komenda == "DP") {
 		if (args.size() != 2)
@@ -264,6 +277,9 @@ void Shell::czytajWejscie(std::string wejscie)
 	else if (komenda == "DD") {
 		if (args.size() != 2)
 			cout << "niepoprawne uzycie komendy" << endl;
+		else if (args[1] == "Dysk") {
+			clog << "Nie mozna usunac katalogu glownego" << endl;
+		}
 		else
 			DD(args[1]);
 	}
@@ -298,7 +314,7 @@ void Shell::czytajWejscie(std::string wejscie)
 			MC(stoi(args[1]), stoi(args[2]));
 	}
 
-	else if (komenda == "open") {
+	else if (komenda == "LS") {
 		if (args.size() != 2)
 			cout << "niepoprawne uzycie komendy" << endl;
 		else

@@ -49,7 +49,7 @@ public:
 	void PF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu);
 
 	//otwieranie stratnie
-	void XF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk");
+	void XF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu);
 
 	//PF ale bez zamykania :)
 	void OF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu);

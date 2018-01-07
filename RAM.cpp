@@ -152,46 +152,48 @@ void RAM::addToMem(PCB* a, std::string polecenie)
 
 void RAM::deleteFromMem(PCB* a)
 {
-	int i = 0;
-	for (; i<claimedBlocks.size(); ++i) {
-		if (claimedBlocks[i].base == a->ramLokalizacja) {
-			break;
+	if (a->dajRamLokalizacja() != -1) {
+		int i = 0;
+		for (; i < claimedBlocks.size(); ++i) {
+			if (claimedBlocks[i].base == a->ramLokalizacja) {
+				break;
+			}
 		}
-	}
-	int limit = claimedBlocks[i].limit;
-	int base = claimedBlocks[i].base;
-	for (int pos = base; pos<base + limit; pos++)
-	{
-		RAM_Content[pos] = 'w';
-	}//czyszczenie ramu
-	claimedBlocks.erase(claimedBlocks.begin() + i);
-	Block free;
-	free.base = base;
-	free.limit = limit;
-	freeBlocks.push_back(free);
-	freeRAM += limit;
-	for (auto e : writtenBlocks)
-	{
-		if (e.origin == base)
+		int limit = claimedBlocks[i].limit;
+		int base = claimedBlocks[i].base;
+		for (int pos = base; pos < base + limit; pos++)
 		{
-			base = e.base;
-			limit = e.limit;
-			for (int pos = base; pos<base + limit; pos++)
+			RAM_Content[pos] = 'w';
+		}//czyszczenie ramu
+		claimedBlocks.erase(claimedBlocks.begin() + i);
+		Block free;
+		free.base = base;
+		free.limit = limit;
+		freeBlocks.push_back(free);
+		freeRAM += limit;
+		for (auto e : writtenBlocks)
+		{
+			if (e.origin == base)
 			{
-				RAM_Content[pos] = 'w';
-			}//czyszczenie ramu
-			for (i = 0; i < claimedBlocks.size(); i++) { if (claimedBlocks[i].base == base)  break; }
-			claimedBlocks.erase(claimedBlocks.begin() + i);
-			free.base = base;
-			free.limit = limit;
-			freeBlocks.push_back(free);
-			freeRAM += limit;
-			break;
+				base = e.base;
+				limit = e.limit;
+				for (int pos = base; pos < base + limit; pos++)
+				{
+					RAM_Content[pos] = 'w';
+				}//czyszczenie ramu
+				for (i = 0; i < claimedBlocks.size(); i++) { if (claimedBlocks[i].base == base)  break; }
+				claimedBlocks.erase(claimedBlocks.begin() + i);
+				free.base = base;
+				free.limit = limit;
+				freeBlocks.push_back(free);
+				freeRAM += limit;
+				break;
+			}
 		}
-	}
 
-	std::sort(freeBlocks.begin(), freeBlocks.end(), [](const Block &b1, const Block &b2) {return b1.base < b2.base; });
-	memMerge();
+		std::sort(freeBlocks.begin(), freeBlocks.end(), [](const Block &b1, const Block &b2) {return b1.base < b2.base; });
+		memMerge();
+	}
 }
 
 void RAM::showRam()
