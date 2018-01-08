@@ -7,3 +7,5 @@
 x64/
 Debug/
 *.obj
+v15/.suo
+v15/Browse.VC.db
