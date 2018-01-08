@@ -4,7 +4,7 @@
 #include <iostream>
 
 ZarzadzanieProcesami zarzadzanieProcesami;
-PCB idle(99, "idle", nullptr);
+PCB idle(1, "idle", nullptr);
 
 PCB::PCB(int _id, std::string _nazwa, PCB* _rodzic)
 {
@@ -404,8 +404,7 @@ int ZarzadzanieProcesami::dajLicznik()
 
 ZarzadzanieProcesami::ZarzadzanieProcesami()
 {
-	std::clog << ">> Proces init uruchomiony.\n";
-	idLicznik = 0;
+	idLicznik = 1;
 	init = new PCB(0, "init", nullptr);
 }
 
@@ -455,6 +454,11 @@ void ZarzadzanieProcesami::usunProces(std::string nazwa)
 void ZarzadzanieProcesami::usunProces(int pid)
 {
 	init->usunProces(pid);
+}
+
+void ZarzadzanieProcesami::przeniesPotomkow(std::string co, std::string dokad)
+{
+	std::clog << "Jeszcze nic nie robie" << std::endl;
 }
 
 PCB* ZarzadzanieProcesami::znajdzProces(int pid)

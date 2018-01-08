@@ -121,6 +121,7 @@ public:
 	PCB* dodajProces(std::string nazwa, std::string rodzic);
 	void usunProces(std::string nazwa);
 	void usunProces(int pid);
+	void przeniesPotomkow(std::string co, std::string dokad);
 };
 extern ZarzadzanieProcesami zarzadzanieProcesami;
 extern PCB idle;
