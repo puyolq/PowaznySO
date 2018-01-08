@@ -27,7 +27,10 @@ void Shell::CP(std::string nazwa, std::string rodzic, std::string program)
 
 void Shell::DP(std::string nazwa)
 {
-	if (zarzadzanieProcesami.znajdzProces(nazwa) == nullptr)
+	if (nazwa == "init") {
+		clog << "Zakaz usuwania procesu init" << endl;
+	}
+	else if (zarzadzanieProcesami.znajdzProces(nazwa) == nullptr)
 		clog << "Proces nie istnieje" << endl;
 	else
 		zarzadzanieProcesami.usunProces(nazwa);
