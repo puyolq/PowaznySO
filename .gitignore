@@ -4,3 +4,6 @@
 
 *.opendb
 *.ipch
+x64/
+Debug/
+*.obj
