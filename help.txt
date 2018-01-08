@@ -1,17 +1,17 @@
 Tworzenie procesu - CP nazwa rodzic* program**
 Usuwanie procesu - DP nazwa
-Wyswietlanie wszystkich procesów - PP
+Wyswietlanie wszystkich procesow - PP
 Wyswietlanie bloku kontrolnego procesu - BC nazwa
 Wywolanie rozkazu programu - GO
 Zawartosc pamieci od adresu - MC adres rozmiar
-Ca³a zawartosc pamieci - MS
+Cala zawartosc pamieci - MS
 Tworzenie pliku - MF nazwa rozszerzenie folder*
 Usuwanie pliku - DF nazwa rozszerzenie folder*
 Zmiana nazwy pliku - RF nazwa rozszerzenie nowaNazwa folder*
 Zapis do pliku - SF nazwa rozszerzenie dane folder*
 Pobranie danych z pliku - PF nazwa rozszerzenie folder*
 Otwieranie stratne - XF nazwa rozszerzenie folder*
-Pobranie danych bez zamkniêcia - OF nazwa rozszerzenie folder*
+Pobranie danych bez zamkniecia pliku - OF nazwa rozszerzenie folder*
 Zamkniecie pliku - CF nazwa rozszerzenie folder*
 Tworzenie folderu - MD nazwa nazwaNadrzednego*
 Dodawanie pliku do katalogu - AD nazwaDocelowego nazwaPliku rozszerzenie nazwaFolderuZPlikiem*
@@ -28,3 +28,5 @@ Wczytywanie skryptu - LS nazwa
 Przeniesienie potomkow procesu pod inny - MP nazwaZKtorego nazwaDoKtorego
 Wyswietlanie bloczkow pamieci RAM - RB
 Spis komend - help
+* - oznacza, ze komenda nie musi zawierac tego argumentu
+** - oznacza, ze komenda wymaga podania wszystkich argumentow, aby moc podac ten
