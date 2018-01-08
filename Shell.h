@@ -25,6 +25,9 @@ public:
 	void PP();
 	//wyswietl blok kontrolny procesu
 	void BC(std::string nazwa);
+	//przeniesienie potomkow procesu pod inny
+	void MP(std::string co, std::string dokad);
+
 	//interpreter wywolanie rozkazu procesu
 	void GO();
 
@@ -81,9 +84,14 @@ public:
 	void RQ();
 	//WQ kolejka oczekujacych
 	void WQ();
+	//wypisz niezajete i zajete bloczki RAM
+	void RB();
+	//spis komend
+	void help();
 
 	void exit();
 	void czytajWejscie(std::string komenda);
+	std::ifstream komendy;
 	std::ifstream skrypt;
 	void ladujSkrypt(std::string nazwa);
 	bool wlaczone = false;

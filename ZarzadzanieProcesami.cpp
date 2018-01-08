@@ -310,8 +310,8 @@ void PCB::usunProces(std::string nazwa)
 	{
 		
 		PCB* ojciec = local->dajRodzica();
-		przeniesPotomkow(ojciec, local);
-		//przeniesPotomkow(this, local) bylo, ale costam zmiana :)
+		przeniesPotomkow(this, local);
+		//przeniesPotomkow(ojciec, local) popsulismy wczoraj
 		ojciec->usunPotomka(nazwa);
 		if(this->dajStatus() == 2)
 			kolejkaOczekujacych.usunProces(local->dajId());

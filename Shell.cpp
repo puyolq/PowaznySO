@@ -15,7 +15,7 @@ void Shell::CP(std::string nazwa, std::string rodzic, std::string program)
 {
 	if (zarzadzanieProcesami.znajdzProces(nazwa) == nullptr) {
 		zarzadzanieProcesami.dodajProces(nazwa, rodzic);
-		
+
 		if (program == "") {
 			;
 		}
@@ -36,17 +36,29 @@ void Shell::DP(std::string nazwa)
 
 void Shell::BC(std::string nazwa)
 {
-	zarzadzanieProcesami.wyswietlProces(nazwa);
+	if (zarzadzanieProcesami.znajdzProces(nazwa) != nullptr)
+		zarzadzanieProcesami.wyswietlProces(nazwa);
+	else
+		clog << "Proces o danej nazwie nie istnieje" << endl;
+}
+
+void Shell::MP(std::string co, std::string dokad)
+{
+	if (zarzadzanieProcesami.znajdzProces(co) != nullptr && zarzadzanieProcesami.znajdzProces(dokad) != nullptr) {
+		zarzadzanieProcesami.przeniesPotomkow(co, dokad);
+	}
+	else
+		clog << "Jeden z procesow lub oba nie istnieja" << endl;
 }
 
 void Shell::GO()
 {
-	if (zarzadzanieProcesami.iloscProcesow()!=1) {
+	if (zarzadzanieProcesami.iloscProcesow() != 1) {
 
-			interpreter.PobierzRozkaz(kolejkaGotowych.glowa->proces);
-			std::cout << " ROZKAZ: " << interpreter.Rozkaz << std::endl;
-			interpreter.WykonywanieProgramu();
-		
+		interpreter.PobierzRozkaz(kolejkaGotowych.glowa->proces);
+		std::cout << " ROZKAZ: " << interpreter.Rozkaz << std::endl;
+		interpreter.WykonywanieProgramu();
+
 	}
 	else std::cout << "Nie ma zaladowanego programu" << std::endl;
 	//interpreter.StanRejestrow();
@@ -176,6 +188,26 @@ void Shell::RQ()
 void Shell::WQ()
 {
 	kolejkaOczekujacych.wyswietlKolejke();
+}
+
+void Shell::RB()
+{
+	ram.printBLOCKS();
+}
+
+void Shell::help()
+{
+	komendy.open("help.txt");
+	if (!komendy.good()) {
+		cout << "Brak pliku z komendami" << endl;
+	}
+	string linia;
+	clog << "______________________SPIS KOMEND______________________" << endl << endl;
+	while (getline(komendy, linia)) {
+		clog << linia << endl;
+	}
+
+	komendy.close();
 }
 
 
@@ -474,8 +506,17 @@ void Shell::czytajWejscie(std::string wejscie)
 	else if (komenda == "WQ") {
 		WQ();
 	}
-	else if (komenda == "penis") {
-		ram.printBLOCKS();
+	else if (komenda == "RB") {
+		RB();
+	}
+	else if (komenda == "MP") {
+		if (args.size() != 3)
+			cout << "niepoprawne uzycie komendy" << endl;
+		else
+			MP(args[1], args[2]);
+	}
+	else if (komenda == "help") {
+		help();
 	}
 	args.clear();
 
