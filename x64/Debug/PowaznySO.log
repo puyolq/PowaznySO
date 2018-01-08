@@ -1,3 +1,5 @@
-﻿  Interpreter.cpp
-g:\github\powaznyso\interpreter.cpp(63): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
+﻿  RAM.cpp
+g:\github\powaznyso\ram.cpp(193): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+g:\github\powaznyso\ram.cpp(274): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+g:\github\powaznyso\ram.cpp(324): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
   PowaznySO.vcxproj -> G:\GitHub\PowaznySO\x64\Debug\PowaznySO.exe

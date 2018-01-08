@@ -349,7 +349,7 @@ void Interpreter::WykonywanieProgramu() {
 					Indeks = stoi(indeks);
 					//TU MUSZE CIE WYWOLAC Z 
 					// Dodac funkce wpisujaca do ramo dowolna warotcs 
-					//ram.saveToRam(33,Indeks, liczba);
+					ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, liczba);
 				}
 
 			}
@@ -846,9 +846,9 @@ void Interpreter::WykonywanieProgramu() {
 		PobierzRejestry();
 		std::clog << std::endl;
 	}
-else {
+	else {
 	zarzadzanieProcesami.usunProces(kolejkaGotowych.glowa->proces->dajId());
 	//kolejkaGotowych.glowa->proces.usunProces(kolejkaGotowych.glowa->proces);
-}
+	}
 }
 

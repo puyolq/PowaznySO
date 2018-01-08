@@ -1,8 +1,12 @@
 #pragma once
 #include "ZarzadzanieProcesami.h" //Bartosz Ptak
 #include <vector>
+#define RAM_SIZE 32
+
 class RAM {
-	char RAM_Content[256]; // caly ram 
+
+	//PCB *pcb = new PCB();
+	char RAM_Content[RAM_SIZE]; // caly ram 
 	int freeRAM; //dostepna wolna pamiec
 	void defragment(); //defragmentacja
 	void rewrite(int base1, int base2, int size);
@@ -17,6 +21,7 @@ class RAM {
 	void memWrite(PCB* a, std::string polecenie);//Zapisywanie w pamieci
 	void RAM::WriteToRam(std::string a, writtenBlock &writtenTo, int localisation);//wpisywanie do ramu
 	void memMerge();//laczy 2 wolne bloki w 1 jezeli sa obok siebie
+	void deleteWritten(int base);// usuwa wpisane
 public:
 	RAM(); // konstruktor
 

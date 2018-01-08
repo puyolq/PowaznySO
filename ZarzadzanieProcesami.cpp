@@ -174,9 +174,16 @@ std::string PCB::dajNazwe()
 	return nazwa;
 }
 
+
+
 std::vector<PCB*> PCB::dajPotomkow()
 {
-	return std::vector<PCB*>();
+	return potomkowie;
+}
+
+std::vector<PCB*>& PCB::dajPotomkowRAM()
+{
+	return potomkowie;
 }
 
 void PCB::dodajPotomka(PCB* potomek)
@@ -409,6 +416,11 @@ ZarzadzanieProcesami::~ZarzadzanieProcesami()
 void ZarzadzanieProcesami::wyswietlIloscProcesow()
 {
 	std::clog << "Ilosc procesow: " << init->zliczProcesy() << std::endl;
+}
+
+int ZarzadzanieProcesami::iloscProcesow()
+{
+	return init->zliczProcesy();
 }
 
 void ZarzadzanieProcesami::wyswietlWszystkieProcesy()

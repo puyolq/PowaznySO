@@ -35,6 +35,7 @@ public:
 	PCB* dodajProces(int id, std::string nazwa, std::string rodzic);
 	std::string dajNazwe();
 	std::vector<PCB*> dajPotomkow();
+	std::vector<PCB*> &dajPotomkowRAM();
 	void dodajPotomka(PCB* potomek);
 	void wyswietlPotomkow(int lvl);
 	void wyswietlProces(std::string nazwa);
@@ -108,6 +109,7 @@ public:
 	~ZarzadzanieProcesami();
 
 	void wyswietlIloscProcesow();
+	int iloscProcesow();
 	void wyswietlWszystkieProcesy();
 	void wyswietlProces(std::string nazwa);
 	void wyswietlProces(int pid);

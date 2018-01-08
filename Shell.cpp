@@ -41,9 +41,14 @@ void Shell::BC(std::string nazwa)
 
 void Shell::GO()
 {
-	interpreter.PobierzRozkaz(kolejkaGotowych.glowa->proces);
-	std::cout << " ROZKAZ: " << interpreter.Rozkaz << std::endl;
-	interpreter.WykonywanieProgramu();
+	if (zarzadzanieProcesami.iloscProcesow()!=1) {
+
+			interpreter.PobierzRozkaz(kolejkaGotowych.glowa->proces);
+			std::cout << " ROZKAZ: " << interpreter.Rozkaz << std::endl;
+			interpreter.WykonywanieProgramu();
+		
+	}
+	else std::cout << "Nie ma zaladowanego programu" << std::endl;
 	//interpreter.StanRejestrow();
 }
 
@@ -185,9 +190,12 @@ void Shell::czytajWejscie(std::string wejscie)
 	istringstream buffer(wejscie);
 	istream_iterator<string> beg(buffer), end;
 	vector<string>args(beg, end);
-
+	if (wejscie.size() == 0) {
+		return;
+	}
 	string komenda = args[0];
 	//cout << args[0] << endl << args[1] << endl;
+
 	if (komenda == "CP") {
 		if (args.size() < 2)
 			cout << "niepoprawne uzycie komendy" << endl;
@@ -388,10 +396,22 @@ void Shell::czytajWejscie(std::string wejscie)
 			}
 			else {
 
+				bool nazwaZajeta = true;
 				std::string temp = random_string(8);
-				CP(temp, "init", "");
 				PlikProces temp2 = { temp, args[1], args[2] };
+				while (nazwaZajeta) {
+					for (auto a : PlikiProcesy) {
+						if (a.nazwaProcesu == temp) {
+							temp = random_string(8);
+						}
+					}
+					nazwaZajeta = false;
+				}
+				temp2.nazwaProcesu = temp;
 				PlikiProcesy.push_back(temp2);
+
+				CP(temp, "init", "");
+
 				OF(args[1], args[2], zarzadzanieProcesami.znajdzProces(temp), args[3]);
 			}
 		}
@@ -453,6 +473,9 @@ void Shell::czytajWejscie(std::string wejscie)
 	}
 	else if (komenda == "WQ") {
 		WQ();
+	}
+	else if (komenda == "penis") {
+		ram.printBLOCKS();
 	}
 	args.clear();
 

@@ -1,0 +1,4 @@
+CP 1 init RAM1
+CP 2 init RAM2
+CP 3 init RAM1
+CP 4 init RAM2
