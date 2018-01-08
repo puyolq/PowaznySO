@@ -96,6 +96,8 @@ public:
 	void ladujSkrypt(std::string nazwa);
 	bool wlaczone = false;
 
+	void obsluzBledy(short blad);
+
 	std::string random_string(size_t length);
 	struct PlikProces {
 		std::string nazwaProcesu;

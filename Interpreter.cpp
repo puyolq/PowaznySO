@@ -804,7 +804,8 @@ void Interpreter::WykonywanieProgramu() {
 				}
 				a++;
 				rozszerzenie += Dane.substr(a, Dane.size() - a);
-				std::string komunikat = dysk.pobierzDane(plik, rozszerzenie, procesTymczasowy);
+				pobieDane wyjscie = dysk.pobierzDane(plik, rozszerzenie, procesTymczasowy);
+				std::string komunikat = wyjscie.dane;
 				if (komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(), odbiorca, komunikat) == false)
 				{
 					return;
