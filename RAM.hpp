@@ -1,7 +1,7 @@
 #pragma once
 #include "ZarzadzanieProcesami.h" //Bartosz Ptak
 #include <vector>
-#define RAM_SIZE 128
+#define RAM_SIZE 126
 
 class RAM {
 
@@ -16,7 +16,7 @@ class RAM {
 	std::vector<Block> freeBlocks; //lista zajetych blokow
 	std::vector<Block> claimedBlocks; //lista zajetych blokow(potrzebne to komu???)
 	std::vector<writtenBlock> writtenBlocks;//bloki pamieci
-	bool isFreeBlock(int a); // Sprawdza dostêpn¹ pamiêæ (blok)
+	bool isFreeBlock(int a); // Sprawdza dostÃªpnÂ¹ pamiÃªÃ¦ (blok)
 	void FBRemove(PCB*a);//usuniecie wolnego bloku
 	void memWrite(PCB* a, std::string polecenie);//Zapisywanie w pamieci
 	void RAM::WriteToRam(std::string a, writtenBlock &writtenTo, int localisation);//wpisywanie do ramu
