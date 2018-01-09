@@ -1,0 +1,6 @@
+CF plik1.txt
+WF plik1.txt kanapeczka
+CF plik2.txt
+CK Muzyka Dysk
+WF plik2.txt Bamboszek
+EX

@@ -8,20 +8,7 @@
 //README
 //JEŚLI WYKONUJESZ OPERACJE NA PLIKACH/FOLDERACH TO SPRAWDZ CZY DYSK.POPRAWNOSC() == TRUE - nowa obsługa błędów
 
-//KODY BŁĘDóW
-//  1 : wszystko ok;
-// -1 : Błedna nazwa folderu
-//- 2 : Nie odnaleziono pliku.
-//- 3 : Semafor zablokowany, brak dostepu.
-//- 4 : Brak miejsca na dysku.
-//- 5 : W folderze nie mozna utworzyc nowych podfolderow.
-//- 6 : Nazwa nie jest jednoznaczna.
 
-struct pobieDane
-{
-	std::string dane;
-	short blad;
-};
 
 class Dysk
 {
@@ -31,21 +18,21 @@ public:
 
 #pragma region obsluga plikow
 	short znajdzPlik(std::string nazwa, std::string rozszerzenie); // Metoda zwraca numer iWez�a w kolekcji w kt�rym znajduje si� plik, je�li pliku nie odnazleziono zwraca -1
-	short utworzPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu = "Dysk"); // Tworzy pusty plik i zajmuje jeden blok dyskowy.
-	short usunPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu = "Dysk"); // Zwalnia bloki, czy�ci wpis na dysku
-	short zmienNazwePliku(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu = "Dysk"); // Zmiania nazw� pliku
+	void utworzPlik(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Tworzy pusty plik i zajmuje jeden blok dyskowy.
+	void usunPlik(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Zwalnia bloki, czy�ci wpis na dysku
+	void zmienNazwePliku(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nowaNazwa, std::string nazwaFolderu = "Dysk"); // Zmiania nazw� pliku
 #pragma region po tych metodach wywo�aj zaknij plik
-	short zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); //Pozwala na dopisywanie danych na ko�cu pliku.
-	pobieDane pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Zwraca dane z pliku.
-	short otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Czy�wi plik, zwalnia bloki poza pierwszym blokiem.
+	void zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); //Pozwala na dopisywanie danych na ko�cu pliku.
+	std::string pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Zwraca dane z pliku.
+	void otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Czy�wi plik, zwalnia bloki poza pierwszym blokiem.
 #pragma endregion po tych metodach wywo�aj zaknij plik
 
 #pragma  endregion obsluga plikow
 
 #pragma region obsluga folderow
-	short utworzFolder(std::string nazwa, std::string nazwaNadrzednego = "Dysk"); // Tworzy folder podrz�dny w zadanym folderze 
-	short dodajPlikDoKatalogu(std::string nazwaDolcelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem = "Dysk"); //Do sko�czenie
-	short usunFolder(int pozycja); // Usuwa folder o zadanej pozycji nale�y wywol�ywa� w po��czniu z znajdzFolder, prawid�owy przyk�ad: dysk.usunFolder(dysk.znajdzFolder("Folder"));
+	void utworzFolder(std::string nazwa, PCB* proces, std::string nazwaNadrzednego = "Dysk"); // Tworzy folder podrz�dny w zadanym folderze 
+	void dodajPlikDoKatalogu(std::string nazwaDolcelowego, std::string nazwaPliku, PCB* proces, std::string rozszerzenie, std::string nazwaFolderuZPlikiem = "Dysk"); //Do sko�czenie
+	void usunFolder(int pozycja, PCB* proces); // Usuwa folder o zadanej pozycji nale�y wywol�ywa� w po��czniu z znajdzFolder, prawid�owy przyk�ad: dysk.usunFolder(dysk.znajdzFolder("Folder"));
 	short znajdzFolder(std::string nazwa);
 #pragma endregion obsluga folderow
 
@@ -57,32 +44,7 @@ public:
 	void wypiszTabliceWpisow();
 #pragma endregion  wpypisywanie elementow dyskowych
 
-#pragma region poprawnosc
-	bool pobierzBlednaNazwaPliku();
-	bool pobierzBlednaNazwaFolderu();
-	bool pobierzBrakDostepuDoPliku();
-	bool pobierzBrakMiejsca();
-	bool pobierzBrakWolnychSynow();
-	bool pobierzNiejednoznacznaNazwa();
-	std::string nazwaBlednegoProcesu;
-	bool poprawnosc();
-
-	std::vector<std::string> bledy();
-#pragma endregion poprawnosc
-
-
-
 private:
-#pragma region poprawnosc 
-	// Je�li operacja przebieg�a pomy�lnie zmienna jest flase, w innym wypadku true;
-	bool blednaNazwaFolderu;
-	bool blednaNazwaPliku;
-	bool brakDostepuDoPliku;
-	bool brakMiejsca;
-	bool brakWolnychSynow;
-	bool niejednoznacznaNazwa;
-	void zeruj();
-#pragma endregion poprawnosc
 
 #pragma region dysk
 	std::array<iWezel, 32> tablicaIwezlow; // Tablica w kt�rej przechowywane s� iWezel

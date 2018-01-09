@@ -811,10 +811,11 @@ void Interpreter::WykonywanieProgramu() {
 						rozszerzenie += Dane[i];
 					}
 				}
-				if (dysk.utworzPlik(nazwa, rozszerzenie) != 1) {
-					obsluzBledy(dysk.utworzPlik(nazwa, rozszerzenie));
-					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
-				};
+				dysk.utworzPlik(nazwa, rozszerzenie, kolejkaGotowych.glowa->proces);
+				//if (kolejkaGotowych.glowa->proces->dajBlad()) {
+					//kolejkaGotowych.usunProces(kolejkaGotowych.glowa->proces->dajId());
+		//		}
+				
 			}
 
 			//Wpisywanie danych do pliku - dzia³a 
@@ -843,37 +844,43 @@ void Interpreter::WykonywanieProgramu() {
 				}
 				if (dane[0] == '~') {
 					if (dane[1] == 'A') {
-						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1) {
-							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
-							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
-						};
+						dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces);
+						//{
+							//dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces);
+							//ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+						//};
 					}
 					if (dane[1] == 'B') {
-						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(B), kolejkaGotowych.glowa->proces) != 1) {
-							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
-							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
-						};
+						//if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(B), kolejkaGotowych.glowa->proces) != 1) {
+						dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces);
+							//ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+						//};
 					}
 					if (dane[1] == 'C') {
-						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(C), kolejkaGotowych.glowa->proces) != 1) {
-							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
-							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
-						};
+						//if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(C), kolejkaGotowych.glowa->proces) != 1) {
+						dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces);
+						//};
 					}
 					if (dane[1] == 'D') {
-						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(D), kolejkaGotowych.glowa->proces) != 1) {
-							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
-							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
-						};
+						//if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(D), kolejkaGotowych.glowa->proces) != 1) {
+						dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces);
+							//ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+						//};
 					}
 				}
 				else {
-					if (dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, kolejkaGotowych.glowa->proces) != 1) {
-						obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
-						ram.deleteFromMem(kolejkaGotowych.glowa->proces);
-					};
+					//if (dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, kolejkaGotowych.glowa->proces) != 1) {
+					dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, kolejkaGotowych.glowa->proces);
+						//ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+					//};
 				}
-				dysk.zamknijPlik(nazwa, rozszerzenie, kolejkaGotowych.glowa->proces);
+				if (kolejkaGotowych.glowa->proces->dajBlad()==false) {
+					dysk.zamknijPlik(nazwa, rozszerzenie, kolejkaGotowych.glowa->proces);
+				}
+				if (kolejkaGotowych.glowa->proces->dajBlad())
+				{
+					kolejkaGotowych.usunProces(kolejkaGotowych.glowa->proces->dajId());
+				}
 			}
 
 			// Tworzenie folderów - dzia³aa 
@@ -889,116 +896,116 @@ void Interpreter::WykonywanieProgramu() {
 						break;
 					}
 				}
-				if (dysk.utworzFolder(folder1, folder2) != 1) {
-					obsluzBledy(dysk.utworzFolder(folder1, folder2) != 1);
-					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
-				};
+				dysk.utworzFolder(folder1,kolejkaGotowych.glowa->proces, folder2);
+					//obsluzBledy(dysk.utworzFolder(folder1, folder2) != 1);
+					//ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+				//};
 			}
 
 			//Rozkazy do procesow
 
-			//wysylanie wiadomosci
-			else if (Symbol == "SM") {
-				PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
-				std::string odbiorca = "";
-				int a = 0;
-				for (int i = 0; i < Dane.size(); i++)
-				{
-					if (Dane[i] != ' ') {
-						odbiorca += Dane[i];
-						a++;
-					}
-					else
-						break;
-				}
-				std::string wys = Dane.substr(a + 1, Dane.size() - a - 1);
-				if (komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(), odbiorca, wys) == false)
-				{
-					return;
-				}
-			}
+			////wysylanie wiadomosci
+			//else if (Symbol == "SM") {
+			//	PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
+			//	std::string odbiorca = "";
+			//	int a = 0;
+			//	for (int i = 0; i < Dane.size(); i++)
+			//	{
+			//		if (Dane[i] != ' ') {
+			//			odbiorca += Dane[i];
+			//			a++;
+			//		}
+			//		else
+			//			break;
+			//	}
+			//	std::string wys = Dane.substr(a + 1, Dane.size() - a - 1);
+			//	if (komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(), odbiorca, wys) == false)
+			//	{
+			//		return;
+			//	}
+			//}
 
-			//wysylanie wiadomosci pobranej z pliku na dysku
-			else if (Symbol == "SP") {
-				PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
-				std::string odbiorca = "";
-				int a = 0;
-				for (int i = 0; i < Dane.size(); i++)
-				{
-					if (Dane[i] != ' ') {
-						odbiorca += Dane[i];
-						a++;
-					}
-					else
-						break;
-				}
-				a++;
-				std::string plik;
-				std::string rozszerzenie;
-				while (Dane[a] != '.') {
-					plik += Dane[a];
-					a++;
-				}
-				a++;
-				rozszerzenie += Dane.substr(a, Dane.size() - a);
-				pobieDane wyjscie = dysk.pobierzDane(plik, rozszerzenie, procesTymczasowy);
-				int stan = wyjscie.blad;
-				if (stan == 1) {
-					std::string komunikat = wyjscie.dane;
-					if (komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(), odbiorca, komunikat) == false)
-					{
-						return;
-					}
-				}
-				else {
-					obsluzBledy(stan);
-					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
-				}
-			}
+			////wysylanie wiadomosci pobranej z pliku na dysku
+			//else if (Symbol == "SP") {
+			//	PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
+			//	std::string odbiorca = "";
+			//	int a = 0;
+			//	for (int i = 0; i < Dane.size(); i++)
+			//	{
+			//		if (Dane[i] != ' ') {
+			//			odbiorca += Dane[i];
+			//			a++;
+			//		}
+			//		else
+			//			break;
+			//	}
+			//	a++;
+			//	std::string plik;
+			//	std::string rozszerzenie;
+			//	while (Dane[a] != '.') {
+			//		plik += Dane[a];
+			//		a++;
+			//	}
+			//	a++;
+			//	rozszerzenie += Dane.substr(a, Dane.size() - a);
+			//	pobieDane wyjscie = dysk.pobierzDane(plik, rozszerzenie, procesTymczasowy);
+			//	int stan = wyjscie.blad;
+			//	if (stan == 1) {
+			//		std::string komunikat = wyjscie.dane;
+			//		if (komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(), odbiorca, komunikat) == false)
+			//		{
+			//			return;
+			//		}
+			//	}
+			//	else {
+			//		obsluzBledy(stan);
+			//		ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+			//	}
+			//}
 
-			//czytanie wiadomosci 
-			else if (Symbol == "RM") {
-				PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
-				Wiadomosc odebranaWiadomosc = komunikacja.rozkazOdebraniaKomunikatu(kolejkaGotowych.glowa->proces->dajId());
-				if (odebranaWiadomosc.pobierzKomunikat() == "") {
-					LicznikRozkazow -= 3;
-					procesTymczasowy->ustawLicznikRozkazow(LicznikRozkazow);
-					return;
-				}
-				std::cout << "Komunikat od procesu o ID: " << odebranaWiadomosc.pobierzNumerPIDNadawcy() << " o tresci: " << odebranaWiadomosc.pobierzKomunikat() << std::endl;
-			}
+			////czytanie wiadomosci 
+			//else if (Symbol == "RM") {
+			//	PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
+			//	Wiadomosc odebranaWiadomosc = komunikacja.rozkazOdebraniaKomunikatu(kolejkaGotowych.glowa->proces->dajId());
+			//	if (odebranaWiadomosc.pobierzKomunikat() == "") {
+			//		LicznikRozkazow -= 3;
+			//		procesTymczasowy->ustawLicznikRozkazow(LicznikRozkazow);
+			//		return;
+			//	}
+			//	std::cout << "Komunikat od procesu o ID: " << odebranaWiadomosc.pobierzNumerPIDNadawcy() << " o tresci: " << odebranaWiadomosc.pobierzKomunikat() << std::endl;
+			//}
 
-			//DLACZEGO USUWA PROCES W RZ Z USUNIECIEM PROCESU SM
-			//czytanie wiadomosci i zapis na dysku do pliku 
-			else if (Symbol == "RP") {
-				PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
-				Wiadomosc odebranaWiadomosc = komunikacja.rozkazOdebraniaKomunikatu(kolejkaGotowych.glowa->proces->dajId());
-				int a = 0;
-				std::string plik;
-				std::string rozszerzenie;
-				while (Dane[a] != '.') {
-					plik += Dane[a];
-					a++;
-				}
-				a++;
-				rozszerzenie += Dane.substr(a, Dane.size() - a);
-				if (odebranaWiadomosc.pobierzKomunikat() == "") {
-					LicznikRozkazow -= (plik.size() + rozszerzenie.size() + 5);
-					procesTymczasowy->ustawLicznikRozkazow(LicznikRozkazow);
-					return;
-				}
-				if (dysk.zapiszDoPliku(plik, rozszerzenie, odebranaWiadomosc.pobierzKomunikat(), kolejkaGotowych.glowa->proces) != 1) {
-					obsluzBledy(dysk.zapiszDoPliku(plik, rozszerzenie, odebranaWiadomosc.pobierzKomunikat(), kolejkaGotowych.glowa->proces) != 1);
-					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
-				}
-			}
+			////DLACZEGO USUWA PROCES W RZ Z USUNIECIEM PROCESU SM
+			////czytanie wiadomosci i zapis na dysku do pliku 
+			//else if (Symbol == "RP") {
+			//	PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
+			//	Wiadomosc odebranaWiadomosc = komunikacja.rozkazOdebraniaKomunikatu(kolejkaGotowych.glowa->proces->dajId());
+			//	int a = 0;
+			//	std::string plik;
+			//	std::string rozszerzenie;
+			//	while (Dane[a] != '.') {
+			//		plik += Dane[a];
+			//		a++;
+			//	}
+			//	a++;
+			//	rozszerzenie += Dane.substr(a, Dane.size() - a);
+			//	if (odebranaWiadomosc.pobierzKomunikat() == "") {
+			//		LicznikRozkazow -= (plik.size() + rozszerzenie.size() + 5);
+			//		procesTymczasowy->ustawLicznikRozkazow(LicznikRozkazow);
+			//		return;
+			//	}
+			//	if (dysk.zapiszDoPliku(plik, rozszerzenie, odebranaWiadomosc.pobierzKomunikat(), kolejkaGotowych.glowa->proces) != 1) {
+			//		obsluzBledy(dysk.zapiszDoPliku(plik, rozszerzenie, odebranaWiadomosc.pobierzKomunikat(), kolejkaGotowych.glowa->proces) != 1);
+			//		ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+			//	}
+			//}
 
 			else {
 				std::clog << "Nie ma takiej komendy." << std::endl;
 				kolejkaGotowych.glowa->proces->ustawStatus(4);
 				return;
 			}
-
+			
 			UstawRejestr();
 		}
 		else {
@@ -1011,6 +1018,8 @@ void Interpreter::WykonywanieProgramu() {
 		if (NumerRozkazu == 5) {
 			kolejkaGotowych.uruchomEkspedytor(false);
 		}
+		////dodac spr flagi
+		
 		PobierzRejestry();
 		std::clog << std::endl;
 	}

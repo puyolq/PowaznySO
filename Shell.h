@@ -39,11 +39,11 @@ public:
 
 
 	//tworzenie pliku
-	void MF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu);
+	void MF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu, PCB* proces);
 	//usuwanie pliku
-	void DF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu);
+	void DF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu, PCB* proces);
 	//zmiana nazwy pliku
-	void RF(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu);
+	void RF(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu, PCB* proces);
 
 	//zapis do pliku
 	void SF(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu);
@@ -61,11 +61,11 @@ public:
 	void CF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu);
 
 	//tworzenie folderu
-	void MD(std::string nazwa, std::string nazwaNadrzednego);
+	void MD(std::string nazwa, std::string nazwaNadrzednego, PCB* proces);
 	//dodawanie pliku do katalogu
-	void AD(std::string nazwaDocelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem);
+	void AD(std::string nazwaDocelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem, PCB* proces);
 	//usuwanie folderu
-	void DD(std::string nazwa);
+	void DD(std::string nazwa, PCB* proces);
 	//szukanie folderu
 	void FD(std::string nazwa);
 
