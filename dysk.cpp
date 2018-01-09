@@ -333,6 +333,34 @@ std::string Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* 
 	return doZwrotu;
 }
 
+std::string Dysk::pobierzWycinekDanych(std::string nazwa, std::string rozszerzenie, PCB* proces, int pozycjaStartowa, int ileZnakow, std::string nazwaFolderu)
+{
+	std::string doZwrotu = "";
+	doZwrotu = pobierzDane(nazwa, rozszerzenie, proces, nazwaFolderu);
+	if (pozycjaStartowa<0 || ileZnakow<0)
+	{
+		proces->ustawBlad(true);
+		return "";
+	}
+	if (pozycjaStartowa > doZwrotu.length())
+	{
+		proces->ustawBlad(true);
+		return "";
+	}
+	if (ileZnakow >doZwrotu.length())
+	{
+		proces->ustawBlad(true);
+		return "";
+	}
+	if (pozycjaStartowa + ileZnakow >doZwrotu.length())
+	{
+		proces->ustawBlad(true);
+		return "";
+	}
+
+	return doZwrotu.substr(pozycjaStartowa, ileZnakow);
+}
+
 void Dysk::otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu)
 {
 	short ileBlokowOczytano = 0;

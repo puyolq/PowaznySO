@@ -146,7 +146,6 @@ void Shell::OF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::s
 void Shell::CF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::string nazwaFolderu)
 {
 	dysk.zamknijPlik(nazwa, rozszerzenie, proces, nazwaFolderu);
-	obsluzBledy(proces->dajBlad());
 }
 
 void Shell::MD(std::string nazwa, std::string nazwaNadrzednego, PCB* proces)
@@ -417,14 +416,8 @@ void Shell::czytajWejscie(std::string wejscie)
 	else if (komenda == "MC") {
 		if (args.size() != 3)
 			cout << "Niepoprawne uzycie komendy! MC adres rozmiar" << endl;
-		else {
-			if(czyStringLiczba(args[1]) && czyStringLiczba(args[2]))
-				MC(stoi(args[1]), stoi(args[2]));
-			else
-			{
-				cout << "Niepoprawne uzycie komendy! MC adres rozmiar" << endl;
-			}
-		}
+		else
+			MC(stoi(args[1]), stoi(args[2]));
 	}
 	else if (komenda == "LS") {
 		if (args.size() != 2)
@@ -453,7 +446,9 @@ void Shell::czytajWejscie(std::string wejscie)
 			else {
 				CP("plikcostam", "init", "");
 				SF(args[1], args[2], args[3], zarzadzanieProcesami.znajdzProces("plikcostam"), args[4]);
-
+				if (zarzadzanieProcesami.znajdzProces("plikcostam")->dajBlad() == 1) {
+					clog << "Brak dostepu do pliku" << endl;
+				}
 				DP("plikcostam");
 			}
 
@@ -472,11 +467,14 @@ void Shell::czytajWejscie(std::string wejscie)
 			else {
 				CP("plikcostam", "init", "");
 				PF(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"), args[3]);
-
+				if (zarzadzanieProcesami.znajdzProces("plikcostam")->dajBlad() == 1) {
+					clog << "Brak dostepu do pliku" << endl;
+				}
 				DP("plikcostam");
 			}
 		}
 	}
+	//	dysk.pobierzWycinekDanych(nazwa, rozszerzenie, proces, pozycjaStartowa, ileZnakow, nazwaFolderu);
 	else if	(komenda == "PE")
 	{
 		if (args.size() < 5 || args.size()>6)
@@ -489,14 +487,12 @@ void Shell::czytajWejscie(std::string wejscie)
 				return;
 			}
 			else {
-				if (czyStringLiczba(args[3]) && czyStringLiczba(args[4])) {
-					CP("plikcostam", "init", "");
-					PE(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"), stoi(args[3]), stoi(args[4]), args[5]);
-
-					DP("plikcostam");
+				CP("plikcostam", "init", "");
+				PE(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"), stoi(args[3]), stoi(args[4]), args[5]);
+				if (zarzadzanieProcesami.znajdzProces("plikcostam")->dajBlad() == 1) {
+					clog << "Brak dostepu do pliku" << endl;
 				}
-				else
-					cout << "Niepoprawne uzycie komendy! PE nazwa rozszerzenie pozycjaStartowa ileZnakow *folder" << endl;
+				DP("plikcostam");
 			}
 		}
 	}
@@ -513,6 +509,9 @@ void Shell::czytajWejscie(std::string wejscie)
 			else {
 				CP("plikcostam", "init", "");
 				XF(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"), args[3]);
+				if (zarzadzanieProcesami.znajdzProces("plikcostam")->dajBlad() == 1) {
+					clog << "Brak dostepu do pliku" << endl;
+				}
 				DP("plikcostam");
 			}
 		}
@@ -546,6 +545,9 @@ void Shell::czytajWejscie(std::string wejscie)
 				CP(temp, "init", "");
 
 				OF(args[1], args[2], zarzadzanieProcesami.znajdzProces(temp), args[3]);
+				if (zarzadzanieProcesami.znajdzProces(temp)->dajBlad() == 1) {
+					clog << "Brak dostepu do pliku" << endl;
+				}
 			}
 		}
 	}
@@ -695,14 +697,6 @@ void Shell::obsluzBledy(short blad)
 	{
 		std::cout << "Wystapil blad.\n";
 	}
-}
-
-bool Shell::czyStringLiczba(std::string& s)
-{
-
-	return !s.empty() && std::find_if(s.begin(), s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
-	return true;
-	
 }
 
 std::string Shell::random_string(size_t length)

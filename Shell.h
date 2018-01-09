@@ -51,6 +51,9 @@ public:
 	//pobranie danych z pliku
 	void PF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu);
 
+	//pobranie wycinka danych z pliku
+	void PE(std::string nazwa, std::string rozszerzenie, PCB* proces, int pozycjaStartowa, int ileZnakow, std::string nazwaFolderu);
+
 	//otwieranie stratnie
 	void XF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu);
 
@@ -97,7 +100,7 @@ public:
 	bool wlaczone = false;
 
 	void obsluzBledy(short blad);
-
+	bool czyStringLiczba(std::string &s);
 	std::string random_string(size_t length);
 	struct PlikProces {
 		std::string nazwaProcesu;

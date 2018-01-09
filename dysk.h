@@ -24,6 +24,7 @@ public:
 #pragma region po tych metodach wywo�aj zaknij plik
 	void zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu = "Dysk"); //Pozwala na dopisywanie danych na ko�cu pliku.
 	std::string pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Zwraca dane z pliku.
+	std::string pobierzWycinekDanych(std::string nazwa, std::string rozszerzenie, PCB* proces, int pozycjaStartowa, int ileZnakow, std::string nazwaFolderu = "Dysk");
 	void otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu = "Dysk"); // Czy�wi plik, zwalnia bloki poza pierwszym blokiem.
 #pragma endregion po tych metodach wywo�aj zaknij plik
 

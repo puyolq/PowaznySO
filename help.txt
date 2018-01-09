@@ -10,6 +10,7 @@ Usuwanie pliku - DF nazwa rozszerzenie folder*
 Zmiana nazwy pliku - RF nazwa rozszerzenie nowaNazwa folder*
 Zapis do pliku - SF nazwa rozszerzenie dane folder*
 Pobranie danych z pliku - PF nazwa rozszerzenie folder*
+Pobranie wycinka danych z pliku - PE nazwa rozszerzenie pozycjStartowa ileZnakow folder*
 Otwieranie stratne - XF nazwa rozszerzenie folder*
 Pobranie danych bez zamkniecia pliku - OF nazwa rozszerzenie folder*
 Zamkniecie pliku - CF nazwa rozszerzenie folder*
@@ -27,6 +28,7 @@ Kolejka procesow oczekujacych - WQ
 Wczytywanie skryptu - LS nazwa
 Przeniesienie potomkow procesu pod inny - MP nazwaZKtorego nazwaDoKtorego
 Wyswietlanie bloczkow pamieci RAM - RB
+Wyswietlenie gniazd - PS
 Spis komend - help
 * - oznacza, ze komenda nie musi zawierac tego argumentu
 ** - oznacza, ze komenda wymaga podania wszystkich argumentow, aby moc podac ten
