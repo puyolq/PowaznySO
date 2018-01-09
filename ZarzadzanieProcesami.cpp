@@ -305,7 +305,7 @@ void PCB::ustawBlad(int wartosc)
 void PCB::usunProces(std::string nazwa)
 {
 	PCB* local = znajdzProces(nazwa);
-	//ram.deleteFromMem(local);
+	ram.deleteFromMem(local);
 	if (local != nullptr)
 	{
 		
@@ -328,10 +328,20 @@ void PCB::usunProces(int pid)
 	ram.deleteFromMem(local);
 	if (local != nullptr)
 	{
-		przeniesPotomkow(this, local);
+		/*przeniesPotomkow(this, local);
 		PCB* ojciec = local->dajRodzica();
 		ojciec->usunPotomka(pid);
 		kolejkaGotowych.usunProces(local->dajId());
+		delete local;*/
+		PCB* ojciec = local->dajRodzica();
+		przeniesPotomkow(this, local);
+		//przeniesPotomkow(ojciec, local) popsulismy wczoraj
+		ojciec->usunPotomka(pid);
+		if (this->dajStatus() == 2)
+			kolejkaOczekujacych.usunProces(local->dajId());
+		else
+			kolejkaGotowych.usunProces(local->dajId());
+
 		delete local;
 	}
 }
@@ -342,7 +352,7 @@ void PCB::usunPotomka(std::string nazwa)
 	{
 		if ((*i)->dajNazwe() == nazwa)
 		{
-			ram.deleteFromMem(*i);
+			//ram.deleteFromMem(*i);
 			potomkowie.erase(i);
 			break;
 		}
@@ -355,7 +365,7 @@ void PCB::usunPotomka(int pid)
 	{
 		if ((*i)->dajId() == pid)
 		{
-			ram.deleteFromMem(*i);
+			//ram.deleteFromMem(*i);
 			potomkowie.erase(i);
 			break;
 		}
@@ -366,10 +376,14 @@ void PCB::przeniesPotomkow(PCB* init, PCB* doPrzeniesienia)
 {
 	if (doPrzeniesienia->potomkowie.size() > 0)
 	{
-		for (auto e : doPrzeniesienia->potomkowie)
+		/*for (auto e : doPrzeniesienia->potomkowie)
 		{
 			e->ustawRodzica(init);
 			init->dodajPotomka(e);
+		}*/
+		for (int e = 0; e < doPrzeniesienia->potomkowie.size(); e++) {
+			doPrzeniesienia->potomkowie[e]->ustawRodzica(init);
+			init->dodajPotomka(doPrzeniesienia->potomkowie[e]);
 		}
 	}
 }

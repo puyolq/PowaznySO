@@ -988,8 +988,8 @@ void Interpreter::WykonywanieProgramu() {
 					return;
 				}
 				if (dysk.zapiszDoPliku(plik, rozszerzenie, odebranaWiadomosc.pobierzKomunikat(), kolejkaGotowych.glowa->proces) != 1) {
-					obsluzBledy(dysk.zapiszDoPliku(plik, rozszerzenie, odebranaWiadomosc.pobierzKomunikat(), kolejkaGotowych.glowa->proces) != 1);
-					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+					obsluzBledy(dysk.zapiszDoPliku(plik, rozszerzenie, odebranaWiadomosc.pobierzKomunikat(), kolejkaGotowych.glowa->proces));
+					zarzadzanieProcesami.usunProces(kolejkaGotowych.glowa->proces->dajId());
 				}
 			}
 

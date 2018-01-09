@@ -167,7 +167,8 @@ bool KomunikacjaMiedzyprocesowa::rozkazWyslaniaKomunikatu(int numerIDProcesuNada
 	if (wskaznikNaProcesOdbiorcy == nullptr || wskaznikNaProcesOdbiorcy->dajDeskryptorGniazda() == 0)
 	{
 		// ZAMKNIJ PROCES I ZAKONCZ JEGO DZIALANIE KOMPLETNIE
-		wskaznikNaProcesNadawcy->ustawStatus(4);
+		zarzadzanieProcesami.usunProces(wskaznikNaProcesNadawcy->dajId());
+		//wskaznikNaProcesNadawcy->ustawStatus(4); Z TYM ROZWIAZANIEM NIE DZIALALO GDY sendMESSAGE jest przed READMESSAGE(syn SM)
 		return false;
 	}
 

@@ -545,6 +545,12 @@ void Shell::czytajWejscie(std::string wejscie)
 	else if (komenda == "help") {
 		help();
 	}
+	else if (komenda == "test") {
+		if (args.size() != 2)
+			cout << "niepoprawne uzycie komendy" << endl;
+		else
+			zarzadzanieProcesami.usunProces(stoi(args[1]));
+	}
 	else {
 		clog << "Niepoprawna komenda. Sprawdz 'help'" << endl;
 	}
