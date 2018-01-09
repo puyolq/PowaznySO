@@ -21,7 +21,13 @@ PCB::PCB(int _id, std::string _nazwa, PCB* _rodzic)
 	blad = 0;
 	licznikRozkazow = 0;
 	ramLokalizacja = -1;
-	ramRozmiar = 0;
+	if (_rodzic == nullptr) {
+		ramLokalizacja = RAM_SIZE;
+	}
+	else {
+		ramLokalizacja = -1;
+	}
+	flagaBledu = false;
 }
 
 PCB::~PCB()

@@ -22,6 +22,7 @@ private:
 	std::string nazwa;
 	std::vector<PCB*> potomkowie;
 	PCB* rodzic;
+	bool flagaBledu;
 public:
 	PCB(int id, std::string nazwa, PCB* rodzic);
 	PCB()

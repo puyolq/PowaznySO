@@ -454,10 +454,15 @@ void Interpreter::WykonywanieProgramu() {
 
 			//Skok warunkowy dopuki Rejestr D<0 albo 1 ..... 
 			else if (Symbol == "JP") {
-				int skok = stoi(Dane);
-				if (D > 0) {
-					LicznikRozkazow -= skok;
-					D -= 1;
+				if (Dane.size() != 0) {
+					int skok = stoi(Dane);
+					if (D > 0) {
+						LicznikRozkazow -= skok;
+						D -= 1;
+					}
+				}
+				else {
+					LicznikRozkazow -= 3;
 				}
 			}
 

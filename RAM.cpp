@@ -188,9 +188,8 @@ RAM::RAM()
 	freeBlocks.push_back(start);//tworze blok wolnej pamieci o wielkosci RAM_SIZE
 	RAM_Content[RAM_SIZE] = 'J';
 	RAM_Content[RAM_SIZE + 1] = 'P';
-	RAM_Content[RAM_SIZE + 2] = ' ';
-	RAM_Content[RAM_SIZE + 3] = '3';
-	RAM_Content[RAM_SIZE + 4] = '\00';
+	RAM_Content[RAM_SIZE + 2] = '\00';
+
 }
 
 void RAM::addToMem(PCB* a, std::string polecenie)
@@ -267,11 +266,15 @@ void RAM::showRange(int start, int lenght)
 
 std::string RAM::showProcess(int base)
 {
+	if (base == -1) {
+		return "";
+	}
+	else {
+		std::string process = "";
 
-	std::string process = "";
-
-	while (RAM_Content[base] != '\00') { process += RAM_Content[base]; base++; }
-	return process;
+		while (RAM_Content[base] != '\00') { process += RAM_Content[base]; base++; }
+		return process;
+	}
 }
 
 void RAM::saveToRam(int a, int localisation, std::string value)
