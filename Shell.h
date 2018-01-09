@@ -11,7 +11,7 @@
 #include "Interpreter.h"
 #include "Wyjatki.h"
 #include <algorithm>
-
+#include <cctype>
 
 class Shell {
 public:
@@ -66,8 +66,6 @@ public:
 	void AD(std::string nazwaDocelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem, PCB* proces);
 	//usuwanie folderu
 	void DD(std::string nazwa, PCB* proces);
-	//szukanie folderu
-	void FD(std::string nazwa);
 
 	//wypisanie drzewa plikow i katalogow na dysku
 	void PT();
@@ -86,6 +84,8 @@ public:
 	void WQ();
 	//wypisz niezajete i zajete bloczki RAM
 	void RB();
+	//wypisz gniazda
+	void PS();
 	//spis komend
 	void help();
 

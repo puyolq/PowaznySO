@@ -37,7 +37,6 @@ void Shell::DP(std::string nazwa)
 		zarzadzanieProcesami.usunProces(nazwa);
 }
 
-
 void Shell::BC(std::string nazwa)
 {
 	if (zarzadzanieProcesami.znajdzProces(nazwa) != nullptr)
@@ -86,7 +85,6 @@ void Shell::MS()
 {
 	ram.showRam();
 }
-
 
 void Shell::MF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu, PCB* proces)
 {
@@ -142,9 +140,6 @@ void Shell::CF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::s
 	dysk.zamknijPlik(nazwa, rozszerzenie, proces, nazwaFolderu);
 }
 
-
-
-
 void Shell::MD(std::string nazwa, std::string nazwaNadrzednego, PCB* proces)
 {
 	dysk.utworzFolder(nazwa, proces, nazwaNadrzednego);
@@ -167,10 +162,6 @@ void Shell::DD(std::string nazwa, PCB* proces)
 		dysk.usunFolder(pozycja, proces);
 		obsluzBledy(proces->dajBlad());
 	}
-}
-void Shell::FD(std::string nazwa)
-{
-	dysk.znajdzFolder(nazwa);
 }
 
 void Shell::PT()
@@ -213,6 +204,11 @@ void Shell::RB()
 	ram.printBLOCKS();
 }
 
+void Shell::PS()
+{
+	cout << "Wywolanie z komunikacji :)" << endl;
+}
+
 void Shell::help()
 {
 	komendy.open("help.txt");
@@ -228,12 +224,10 @@ void Shell::help()
 	komendy.close();
 }
 
-
 void Shell::exit() {
-	cout << "wylaczanka";
+	cout << "Wylaczanie.";
 	wlaczone = false;
 }
-
 
 void Shell::czytajWejscie(std::string wejscie)
 {
@@ -243,12 +237,18 @@ void Shell::czytajWejscie(std::string wejscie)
 	if (wejscie.size() == 0) {
 		return;
 	}
-	string komenda = args[0];
-	//cout << args[0] << endl << args[1] << endl;
+	//string komenda = args[0];
+	string komenda;
+	int i = 0;
+	while(args[0][i])
+	{
+		komenda += toupper(args[0][i]);
+		i++;
+	}
 
 	if (komenda == "CP") {
-		if (args.size() < 2)
-			cout << "niepoprawne uzycie komendy" << endl;
+		if (args.size() < 2 || args.size() > 4)
+			cout << "Niepoprawne uzycie komendy! CP nazwa *rodzic **program" << endl;
 		else {
 			//ustalamy rodzica
 			if (args.size() != 3) {
@@ -262,23 +262,25 @@ void Shell::czytajWejscie(std::string wejscie)
 	}
 	else if (komenda == "DP") {
 		if (args.size() != 2)
-			cout << "niepoprawne uzycie komendy" << endl;
+			cout << "Niepoprawne uzycie komendy! DP nazwa" << endl;
 		else
 			DP(args[1]);
 	}
-
 	else if (komenda == "BC") {
 		if (args.size() != 2)
-			cout << "niepoprawne uzycie komendy" << endl;
+			cout << "Niepoprawne uzycie komendy! BC nazwa" << endl;
 		else
 			BC(args[1]);
 	}
 	else if (komenda == "PP") {
-		PP();
+		if (args.size() != 1)
+			cout << "Niepoprawne uzycie komendy! PP" << endl;
+		else
+			PP();
 	}
 	else if (komenda == "MF") {
-		if (args.size() < 3)
-			cout << "niepoprawne uzycie komendy" << endl;
+		if (args.size() < 3 || args.size() > 4)
+			cout << "Niepoprawne uzycie komendy! MF nazwa rozszerzenie *folder" << endl;
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
@@ -288,8 +290,8 @@ void Shell::czytajWejscie(std::string wejscie)
 		}
 	}
 	else if (komenda == "DF") {
-		if (args.size() < 3)
-			cout << "niepoprawne uzycie komendy" << endl;
+		if (args.size() < 3 || args.size()>4)
+			cout << "Niepoprawne uzycie komendy! DF nazwa rozszerzenie *folder" << endl;
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
@@ -305,8 +307,8 @@ void Shell::czytajWejscie(std::string wejscie)
 		}
 	}
 	else if (komenda == "RF") {
-		if (args.size() < 4)
-			cout << "niepoprawne uzycie komendy" << endl;
+		if (args.size() < 4 || args.size()>5)
+			cout << "Niepoprawne uzycie komendy! RF nazwa rozszerzenie nowaNazwa *folder" << endl;
 		else {
 			if (args.size() != 5)
 				args.push_back("Dysk");
@@ -321,10 +323,9 @@ void Shell::czytajWejscie(std::string wejscie)
 			}
 		}
 	}
-
 	else if (komenda == "MD") {
-		if (args.size() < 2)
-			cout << "niepoprawne uzycie komendy" << endl;
+		if (args.size() < 2 || args.size()>3)
+			cout << "Niepoprawne uzycie komendy! MD nazwa *nazwaNadrzednego" << endl;
 		else {
 			if (args.size() != 3)
 				args.push_back("Dysk");
@@ -334,8 +335,8 @@ void Shell::czytajWejscie(std::string wejscie)
 		}
 	}
 	else if (komenda == "AD") {
-		if (args.size() < 4)
-			cout << "niepoprawne uzycie komendy" << endl;
+		if (args.size() < 4 || args.size()>5)
+			cout << "Niepoprawne uzycie komendy! AD nazwaDocelowego nazwaPliku rozszerzenie *nazwaFolderuZPlikiem" << endl;
 		else {
 			if (args.size() != 5)
 				args.push_back("Dysk");
@@ -346,7 +347,7 @@ void Shell::czytajWejscie(std::string wejscie)
 	}
 	else if (komenda == "DD") {
 		if (args.size() != 2)
-			cout << "niepoprawne uzycie komendy" << endl;
+			cout << "Niepoprawne uzycie komendy! DD nazwa" << endl;
 		else if (args[1] == "Dysk") {
 			clog << "Nie mozna usunac katalogu glownego" << endl;
 		}
@@ -356,49 +357,77 @@ void Shell::czytajWejscie(std::string wejscie)
 			DP("plikcostam");
 		}
 	}
-	else if (komenda == "FD") {
-		if (args.size() != 2)
-			cout << "niepoprawne uzycie komendy" << endl;
-		else
-			FD(args[1]);
-	}
 	else if (komenda == "PT") {
-		PT();
+		if(args.size()!=1)
+		{
+			cout << "Niepoprawne uzycie komendy! PT" << endl;
+		}
+		else
+			PT();
 	}
 	else if (komenda == "PD") {
-		PD();
+		if (args.size() != 1)
+		{
+			cout << "Niepoprawne uzycie komendy! PD" << endl;
+		}
+		else
+			PD();
 	}
 	else if (komenda == "PV") {
-		PV();
+		if (args.size() != 1)
+		{
+			cout << "Niepoprawne uzycie komendy! PV" << endl;
+		}
+		else
+			PV();
 	}
 	else if (komenda == "PN") {
-		PN();
+		if (args.size() != 1)
+		{
+			cout << "Niepoprawne uzycie komendy! PN" << endl;
+		}
+		else
+			PN();
 	}
 	else if (komenda == "PX") {
-		PX();
+		if (args.size() != 1)
+		{
+			cout << "Niepoprawne uzycie komendy! PX" << endl;
+		}
+		else
+			PX();
 	}
 	else if (komenda == "MS") {
-		MS();
+		if (args.size() != 1)
+		{
+			cout << "Niepoprawne uzycie komendy! MS" << endl;
+		}
+		else
+			MS();
 	}
 	else if (komenda == "MC") {
 		if (args.size() != 3)
-			cout << "niepoprawne uzycie komendy" << endl;
+			cout << "Niepoprawne uzycie komendy! MC adres rozmiar" << endl;
 		else
 			MC(stoi(args[1]), stoi(args[2]));
 	}
-
 	else if (komenda == "LS") {
 		if (args.size() != 2)
-			cout << "niepoprawne uzycie komendy" << endl;
+			cout << "Niepoprawne uzycie komendy! LS nazwaSkryptu" << endl;
 		else
 			ladujSkrypt(args[1]);
 	}
-	else if (komenda == "exit") {
-		exit();
+	else if (komenda == "EXIT") {
+		if(args.size()!=1)
+		{
+			cout << "Niepoprawne uzycie komendy! exit" << endl;
+		}
+		else
+			exit();
 	}
 	else if (komenda == "SF") {
-		if (args.size() < 4)
-			cout << "niepoprawne uzycie komendy" << endl;
+		if (args.size() < 4 || args.size()>5)
+			cout << "Niepoprawne uzycie komendy! SF nazwa rozszerzenie dane *folder" << endl;
 		else {
 			if (args.size() != 5)
 				args.push_back("Dysk");
@@ -418,8 +447,8 @@ void Shell::czytajWejscie(std::string wejscie)
 		}
 	}
 	else if (komenda == "PF") {
-		if (args.size() < 3)
-			cout << "niepoprawne uzycie komendy" << endl;
+		if (args.size() < 3 || args.size()>4)
+			cout << "Niepoprawne uzycie komendy! PF nazwa rozszerzenie *folder" << endl;
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
@@ -437,10 +466,9 @@ void Shell::czytajWejscie(std::string wejscie)
 			}
 		}
 	}
-
 	else if (komenda == "XF") {
-		if (args.size() < 3)
-			cout << "niepoprawne uzycie komendy" << endl;
+		if (args.size() < 3 || args.size()>4)
+			cout << "Niepoprawne uzycie komendy! XF nazwa rozszerzenie *folder" << endl;
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
@@ -459,8 +487,8 @@ void Shell::czytajWejscie(std::string wejscie)
 		}
 	}
 	else if (komenda == "OF") {
-		if (args.size() < 3)
-			cout << "niepoprawne uzycie komendy" << endl;
+		if (args.size() < 3 || args.size()>4)
+			cout << "Niepoprawne uzycie komendy! OF nazwa rozszerzenie *folder" << endl;
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
@@ -487,16 +515,15 @@ void Shell::czytajWejscie(std::string wejscie)
 				CP(temp, "init", "");
 
 				OF(args[1], args[2], zarzadzanieProcesami.znajdzProces(temp), args[3]);
-				if (zarzadzanieProcesami.znajdzProces("plikcostam")->dajBlad() == 1) {
+				if (zarzadzanieProcesami.znajdzProces(temp)->dajBlad() == 1) {
 					clog << "Brak dostepu do pliku" << endl;
 				}
 			}
 		}
 	}
-
 	else if (komenda == "CF") {
-		if (args.size() < 3)
-			cout << "niepoprawne uzycie komendy" << endl;
+		if (args.size() < 3 || args.size()>4)
+			cout << "Niepoprawne uzycie komendy! CF nazwa rozszerzenie *folder" << endl;
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
@@ -538,37 +565,65 @@ void Shell::czytajWejscie(std::string wejscie)
 		}
 	}
 	else if (komenda == "GO") {
-		GO();
+		if(args.size()!=1)
+		{
+			cout << "Niepoprawne uzycie komendy! GO" << endl;
+		}
+		else
+			GO();
 	}
 	else if (komenda == "RQ") {
-		RQ();
+		if (args.size() != 1)
+		{
+			cout << "Niepoprawne uzycie komendy! RQ" << endl;
+		}
+		else
+			RQ();
 	}
 	else if (komenda == "WQ") {
-		WQ();
+		if (args.size() != 1)
+		{
+			cout << "Niepoprawne uzycie komendy! WQ" << endl;
+		}
+		else
+			WQ();
+	}
+	else if (komenda == "PS")
+	{
+		if (args.size() != 1)
+		{
+			cout << "Niepoprawne uzycie komendy! PS" << endl;
+		}
+		else
+			PS();
 	}
 	else if (komenda == "RB") {
-		RB();
+		if (args.size() != 1)
+		{
+			cout << "Niepoprawne uzycie komendy! RB" << endl;
+		}
+		else
+			RB();
 	}
 	else if (komenda == "MP") {
 		if (args.size() != 3)
-			cout << "niepoprawne uzycie komendy" << endl;
+			cout << "Niepoprawne uzycie komendy! MP nazwaKtorego nazwaDoKtorego" << endl;
 		else
 			MP(args[1], args[2]);
 	}
-	else if (komenda == "help") {
-		help();
-	}
-	else if (komenda == "test") {
-		if (args.size() != 2)
-			cout << "niepoprawne uzycie komendy" << endl;
+	else if (komenda == "HELP") {
+		if(args.size()!=1)
+		{
+			cout << "Niepoprawne uzycie komendy! help" << endl;
+		}
 		else
-			zarzadzanieProcesami.usunProces(stoi(args[1]));
+			help();
 	}
 	else {
 		clog << "Niepoprawna komenda. Sprawdz 'help'" << endl;
 	}
 	args.clear();
-
+	komenda.clear();
 }
 
 void Shell::ladujSkrypt(string nazwa)
@@ -581,7 +636,8 @@ void Shell::ladujSkrypt(string nazwa)
 	string linia;
 	vector<vector<string>>polecenia;
 	vector<string>polecenie;
-
+	//wczytywanie linii z pliku, rozbicie na elementy na podstawie spacji i wpisanie do wektora
+	//polecenie, nastepnie polecenie do wektora polecen
 	while (getline(skrypt, linia)) {
 		istringstream buffer(linia);
 		istream_iterator<string> beg(buffer), end;
@@ -590,12 +646,9 @@ void Shell::ladujSkrypt(string nazwa)
 		polecenie.clear();
 
 	}
-
-
+//odczytywanie komend i wykonywanie
 	for (int i = 0; i < polecenia.size(); i++) {
 		for (int j = 0; j < polecenia[i].size(); j++) {
-
-			//cout << polecenia[i][j];
 			if (j != polecenia[i].size())
 				komenda = komenda + polecenia[i][j] + " ";
 			else
@@ -603,9 +656,7 @@ void Shell::ladujSkrypt(string nazwa)
 		}
 		czytajWejscie(komenda);
 		komenda = "";
-		//cout << endl;
 	}
-
 	polecenia.clear();
 	skrypt.close();
 }
