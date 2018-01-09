@@ -188,9 +188,9 @@ RAM::RAM()
 	freeBlocks.push_back(start);//tworze blok wolnej pamieci o wielkosci RAM_SIZE
 	RAM_Content[RAM_SIZE] = 'J';
 	RAM_Content[RAM_SIZE + 1] = 'P';
-	RAM_Content[RAM_SIZE] = ' ';
-	RAM_Content[RAM_SIZE + 1] = '3';
-	RAM_Content[RAM_SIZE] = '\00';
+	RAM_Content[RAM_SIZE + 2] = ' ';
+	RAM_Content[RAM_SIZE + 3] = '3';
+	RAM_Content[RAM_SIZE + 4] = '\00';
 }
 
 void RAM::addToMem(PCB* a, std::string polecenie)
