@@ -5,6 +5,7 @@
 
 ZarzadzanieProcesami zarzadzanieProcesami;
 PCB idle(1, "idle", nullptr);
+PCB *initxd;
 
 PCB::PCB(int _id, std::string _nazwa, PCB* _rodzic)
 {
@@ -254,18 +255,25 @@ void PCB::wyswietlProces(int pid)
 }
 
 
-PCB* PCB::znajdzProces(std::string _nazwa)
+PCB* PCB::szukajSzukaj(std::string _nazwa)
 {
 	if (dajNazwe() == _nazwa) return this;
 	if (potomkowie.size() > 0)
 	{
 		for (auto e : potomkowie)
 		{
-			PCB* local = e->znajdzProces(_nazwa);
+			PCB* local = e->szukajSzukaj(_nazwa);
 			if (local != nullptr)return local;
 		}
 	}
 	return nullptr;
+}
+
+
+PCB* PCB::znajdzProces(std::string _nazwa)
+{
+	if (initxd->dajNazwe() == _nazwa) return initxd;
+	else return initxd->szukajSzukaj(_nazwa);
 }
 
 PCB* PCB::znajdzProces(int pid)
@@ -310,7 +318,7 @@ void PCB::usunProces(std::string nazwa)
 	{
 		
 		PCB* ojciec = local->dajRodzica();
-		przeniesPotomkow(this, local);
+		przeniesPotomkow(znajdzProces("init"), local);
 		//przeniesPotomkow(ojciec, local) popsulismy wczoraj
 		ojciec->usunPotomka(nazwa);
 		if(this->dajStatus() == 2)
@@ -334,7 +342,7 @@ void PCB::usunProces(int pid)
 		kolejkaGotowych.usunProces(local->dajId());
 		delete local;*/
 		PCB* ojciec = local->dajRodzica();
-		przeniesPotomkow(this, local);
+		przeniesPotomkow(znajdzProces("init"), local);
 		//przeniesPotomkow(ojciec, local) popsulismy wczoraj
 		ojciec->usunPotomka(pid);
 		if (this->dajStatus() == 2)
@@ -407,6 +415,26 @@ int PCB::zliczProcesy()
 	return suma;
 }
 
+bool PCB::czyJestemOjcem(PCB* proces)
+{
+	bool a = false;
+	for (auto e = 0; e<potomkowie.size(); e++)
+	{
+		a = potomkowie[e]->czyJestemOjcem(proces);
+		if (potomkowie[e]->dajNazwe() == proces->dajNazwe()) return true;
+	}
+	return a;
+}
+
+void PCB::przeniesProces(PCB* proces)
+{
+	if (!czyJestemOjcem(proces))
+	{
+		this->rodzic->usunPotomka(this->dajNazwe());
+		this->rodzic = proces;
+		proces->dodajPotomka(this);
+	}
+}
 
 /* ZARZADZANIE PROCESAMI */
 
@@ -420,6 +448,7 @@ ZarzadzanieProcesami::ZarzadzanieProcesami()
 {
 	idLicznik = 1;
 	init = new PCB(0, "init", nullptr);
+	initxd = init;
 }
 
 ZarzadzanieProcesami::~ZarzadzanieProcesami()
@@ -470,10 +499,15 @@ void ZarzadzanieProcesami::usunProces(int pid)
 	init->usunProces(pid);
 }
 
-void ZarzadzanieProcesami::przeniesPotomkow(std::string co, std::string dokad)
+void ZarzadzanieProcesami::przeniesProces(std::string co, std::string dokad)
 {
-	std::clog << "Jeszcze nic nie robie" << std::endl;
+	if(co!=dokad)
+		znajdzProces(co)->przeniesProces(znajdzProces(dokad));
+	else 
+		std::clog << "Proces nie moze zostac wlasnym rodzicem." << std::endl;
 }
+
+
 
 PCB* ZarzadzanieProcesami::znajdzProces(int pid)
 {
@@ -481,5 +515,6 @@ PCB* ZarzadzanieProcesami::znajdzProces(int pid)
 }
 
 PCB* ZarzadzanieProcesami::znajdzProces(std::string nazwa) {
-	return init->znajdzProces(nazwa);
+	if (nazwa != "init")	return init->znajdzProces(nazwa);
+	else return init;
 }

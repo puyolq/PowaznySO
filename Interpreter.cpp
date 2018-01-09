@@ -813,7 +813,7 @@ void Interpreter::WykonywanieProgramu() {
 				}
 				if (dysk.utworzPlik(nazwa, rozszerzenie) != 1) {
 					obsluzBledy(dysk.utworzPlik(nazwa, rozszerzenie));
-					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+					kolejkaGotowych.glowa->proces->ustawStatus(4);
 				};
 			}
 
@@ -845,32 +845,32 @@ void Interpreter::WykonywanieProgramu() {
 					if (dane[1] == 'A') {
 						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1) {
 							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
-							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+							kolejkaGotowych.glowa->proces->ustawStatus(4);
 						};
 					}
 					if (dane[1] == 'B') {
 						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(B), kolejkaGotowych.glowa->proces) != 1) {
 							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
-							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+							kolejkaGotowych.glowa->proces->ustawStatus(4);
 						};
 					}
 					if (dane[1] == 'C') {
 						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(C), kolejkaGotowych.glowa->proces) != 1) {
 							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
-							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+							kolejkaGotowych.glowa->proces->ustawStatus(4);
 						};
 					}
 					if (dane[1] == 'D') {
 						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(D), kolejkaGotowych.glowa->proces) != 1) {
 							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
-							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+							kolejkaGotowych.glowa->proces->ustawStatus(4);
 						};
 					}
 				}
 				else {
 					if (dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, kolejkaGotowych.glowa->proces) != 1) {
 						obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
-						ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+						kolejkaGotowych.glowa->proces->ustawStatus(4);
 					};
 				}
 				dysk.zamknijPlik(nazwa, rozszerzenie, kolejkaGotowych.glowa->proces);
@@ -891,7 +891,7 @@ void Interpreter::WykonywanieProgramu() {
 				}
 				if (dysk.utworzFolder(folder1, folder2) != 1) {
 					obsluzBledy(dysk.utworzFolder(folder1, folder2) != 1);
-					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+					kolejkaGotowych.glowa->proces->ustawStatus(4);
 				};
 			}
 
@@ -952,7 +952,7 @@ void Interpreter::WykonywanieProgramu() {
 				}
 				else {
 					obsluzBledy(stan);
-					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+					kolejkaGotowych.glowa->proces->ustawStatus(4);
 				}
 			}
 
