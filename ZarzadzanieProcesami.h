@@ -40,6 +40,7 @@ public:
 	void wyswietlPotomkow(int lvl);
 	void wyswietlProces(std::string nazwa);
 	void wyswietlProces(int pid);
+	PCB* szukajSzukaj(std::string _nazwa);
 	PCB* znajdzProces(std::string nazwa);
 	PCB* znajdzProces(int pid);
 	PCB* dajRodzica();
@@ -51,7 +52,8 @@ public:
 	void przeniesPotomkow(PCB* init, PCB* doPrzeniesienia);
 	void ustawRodzica(PCB* _rodzic);
 	int zliczProcesy();
-
+	bool czyJestemOjcem(PCB*proces);
+	void przeniesProces(PCB*proces);
 
 	//dla ¯egalskiego (interpreter)
 private:
@@ -121,7 +123,7 @@ public:
 	PCB* dodajProces(std::string nazwa, std::string rodzic);
 	void usunProces(std::string nazwa);
 	void usunProces(int pid);
-	void przeniesPotomkow(std::string co, std::string dokad);
+	void przeniesProces(std::string co, std::string dokad);
 };
 extern ZarzadzanieProcesami zarzadzanieProcesami;
 extern PCB idle;

@@ -1,1 +1,4 @@
-MV A -1223,CF p1.txt,WF p1.txt ~A,EX,
+MV A -1223
+CF p1.txt
+WF p1.txt ~A
+EX

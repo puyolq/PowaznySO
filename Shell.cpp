@@ -8,7 +8,8 @@ using namespace std;
 Shell::Shell()
 {
 	clog << "Shell initialized" << endl;
-
+	idle.ustawStatus(3);
+	kolejkaGotowych.dodajDoKolejki(&idle);
 }
 
 void Shell::CP(std::string nazwa, std::string rodzic, std::string program)
@@ -48,7 +49,7 @@ void Shell::BC(std::string nazwa)
 void Shell::MP(std::string co, std::string dokad)
 {
 	if (zarzadzanieProcesami.znajdzProces(co) != nullptr && zarzadzanieProcesami.znajdzProces(dokad) != nullptr) {
-		zarzadzanieProcesami.przeniesPotomkow(co, dokad);
+		zarzadzanieProcesami.przeniesProces(co, dokad);
 	}
 	else
 		clog << "Jeden z procesow lub oba nie istnieja" << endl;
@@ -59,8 +60,11 @@ void Shell::GO()
 	if (zarzadzanieProcesami.iloscProcesow() != 1 && kolejkaGotowych.rozmiarKolejki()>0) {
 
 		interpreter.PobierzRozkaz(kolejkaGotowych.glowa->proces);
-		if(interpreter.Rozkaz!="")
+		if (interpreter.Rozkaz != "") {
+			std::cout << " ******************************" << std::endl;
+			std::cout << " Proces aktywny: " << kolejkaGotowych.glowa->proces->dajNazwe() << std::endl;
 			std::cout << " ROZKAZ: " << interpreter.Rozkaz << std::endl;
+		}
 		interpreter.WykonywanieProgramu();
 
 	}
@@ -544,6 +548,12 @@ void Shell::czytajWejscie(std::string wejscie)
 	}
 	else if (komenda == "help") {
 		help();
+	}
+	else if (komenda == "test") {
+		if (args.size() != 2)
+			cout << "niepoprawne uzycie komendy" << endl;
+		else
+			zarzadzanieProcesami.usunProces(stoi(args[1]));
 	}
 	else {
 		clog << "Niepoprawna komenda. Sprawdz 'help'" << endl;
