@@ -186,6 +186,8 @@ RAM::RAM()
 	start.base = 0;
 	start.limit = RAM_SIZE;
 	freeBlocks.push_back(start);//tworze blok wolnej pamieci o wielkosci RAM_SIZE
+	RAM_Content[RAM_SIZE] = 'J';
+	RAM_Content[RAM_SIZE+1] = 'P';
 }
 
 void RAM::addToMem(PCB* a, std::string polecenie)
