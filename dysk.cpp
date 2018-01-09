@@ -1,12 +1,12 @@
 #include "dysk.h"
-#include "Wyjatki.h"
+
 #include <iostream>
 //Rzucane wyjątki:
 //1. brakMiescja
-//2. niejednoznacznaNazwa
-//3. blednaNazwaPliku
+//2. niejednoznacznaNazzwa
+//3. blednaNazwaPlikuu
 
-
+Dysk dysk;
 
 Dysk::Dysk()
 {
@@ -14,7 +14,7 @@ Dysk::Dysk()
 	wielkoscBloku = 32;
 	wielkoscDysku = 1024;
 	ileFolderow = 0;
-	for(int i=0; i<this->wektorBitowy.size(); i++)
+	for (int i = 0; i<this->wektorBitowy.size(); i++)
 	{
 		this->wektorBitowy[i] = true;
 	}
@@ -24,10 +24,17 @@ Dysk::Dysk()
 		this->tablicaDysk[i] = '0';
 	}
 	katalog katalog("Dysk");
-	
-	tablicaKatalogow[ileFolderow]=(katalog);
+
+	tablicaKatalogow[ileFolderow] = (katalog);
 	++ileFolderow;
 
+	blednaNazwaFolderu = false;
+	blednaNazwaPliku = false;
+	brakDostepuDoPliku = false;
+	brakMiejsca = false;
+	brakWolnychSynow = false;
+	niejednoznacznaNazwa = false;
+	nazwaBlednegoProcesu = "";
 }
 
 void Dysk::otworzPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu)
@@ -35,159 +42,194 @@ void Dysk::otworzPlik(std::string nazwa, std::string rozszerzenie, std::string d
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
+	zeruj();
+
 	if (pozycja == -1)
 	{
-		throw blednaNazwaPliku();
+		blednaNazwaPliku = true;
 	}
-	if (pozycjaFolderu == -1)
+	else if (pozycjaFolderu == -1)
 	{
-		throw blednaNazwaFolderu();
+		blednaNazwaFolderu = true;
 	}
-	tablicaSemaforow[pozycja].wait(proces);
+	else if (pozycja != -1 && pozycjaFolderu != -1)
+	{
+		tablicaSemaforow[pozycja].wait(proces);
+	}
 }
 
-void Dysk::zamknijPlik(std::string nazwa, std::string rozszerzenie, std::string dane, PCB * proces, std::string nazwaFolderu)
+void Dysk::zamknijPlik(std::string nazwa, std::string rozszerzenie, PCB * proces, std::string nazwaFolderu)
 {
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
+	zeruj();
+
 	if (pozycja == -1)
 	{
-		throw blednaNazwaPliku();
+		blednaNazwaPliku = true;
 	}
-	if (pozycjaFolderu == -1)
+	else if (pozycjaFolderu == -1)
 	{
-		throw blednaNazwaFolderu();
+		blednaNazwaFolderu = true;
 	}
-	tablicaSemaforow[pozycja].signal(proces);
+	else if (pozycja != -1 && pozycjaFolderu != -1)
+	{
+		tablicaSemaforow[pozycja].signal(proces);
+	}
 }
 
 
-void Dysk::utworzPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
+short Dysk::utworzPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
 {
 	// Sprawdz czy nie ma już takiego pliku
-	// Znajdz miesjce na dysku
+	// Znajdz miesjce na Dysku
 	// Znajdz iWęzeł
-	short pozycjaPliku  = znajdzPlik(nazwa, rozszerzenie);
+
+	zeruj();
+
+	short pozycjaPliku = znajdzPlik(nazwa, rozszerzenie);
 	/*if (pozycjaPliku != -1) {
-		std::cout << tablicaWpisow[pozycjaPliku].pobierzNazwe() << "\n";
-		std::cout << tablicaWpisow[pozycjaPliku].pobierzRozszerzenie();
+	std::cout << tablicaWpisow[pozycjaPliku].pobierzNazwe() << "\n";
+	std::cout << tablicaWpisow[pozycjaPliku].pobierzRozszerzenie();
 	}*/
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 	bool plikJest = false;
-	std::vector<short> pl = tablicaKatalogow[pozycjaFolderu].pobierzNumery();
-	for (int i=0; i<pl.size(); i++)
+	std::vector<short> pl;
+	if (pozycjaFolderu != -1)
 	{
-			if(tablicaWpisow[pl[i]].pobierzNazwe()==nazwa && tablicaWpisow[pl[i]].pobierzRozszerzenie() == rozszerzenie)
-			{
-				plikJest = true;
-				break;
-			}
+		pl = tablicaKatalogow[pozycjaFolderu].pobierzNumery();
 	}
-	if(plikJest)
+	for (int i = 0; i<pl.size(); i++)
 	{
-		throw niejednoznacznaNazwa();
+		if (tablicaWpisow[pl[i]].pobierzNazwe() == nazwa && tablicaWpisow[pl[i]].pobierzRozszerzenie() == rozszerzenie)
+		{
+			plikJest = true;
+			break;
+		}
 	}
-	if(pozycjaFolderu==-1)
+	if (plikJest)
 	{
-		throw blednaNazwaFolderu();
+		niejednoznacznaNazwa = true;
+		return -6;
 	}
-	if(pozycjaPliku ==-1 && pozycjaFolderu!=-1) // Pliku nie znaleziono, nazwa jest jednoznaczna
+	if (pozycjaFolderu == -1)
 	{
-		if(this->wolneBloki!=0)
+		blednaNazwaFolderu = true;
+		return -1;
+	}
+	if (pozycjaPliku == -1 && pozycjaFolderu != -1 && blednaNazwaFolderu != true) // Pliku nie znaleziono, nazwa jest jednoznaczna
+	{
+		if (this->wolneBloki != 0)
 		{
 			short blok = znajdzWolnyBlok();
 			short iWezel = znajdzIwezel();
 			this->tablicaKatalogow[pozycjaFolderu].dodajNumerIwezela(iWezel);
-			wektorBitowy[blok] = false; // Zaznacznie wykorzystania bloku dyskowego
+			wektorBitowy[blok] = false; // Zaznacznie wykorzystania bloku Dyskowego
 			tablicaIwezlow[iWezel].ustawPierwszyBlok(blok);
 			tablicaIwezlow[iWezel].ustawRozmiarPliku(0);
 			tablicaWpisow[iWezel].ustawNazwe(nazwa);
 			tablicaWpisow[iWezel].ustawNumerIwezla(iWezel);
 			tablicaWpisow[iWezel].ustawRozszrzenie(rozszerzenie);
 			--wolneBloki;
+			return 1;
 		}
-		else { throw brakMiejsca(); }
+		else { brakMiejsca = true; return -4; }
 	}
-	
+
 
 }
 
-void Dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu)
+short Dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu)
 {
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
-	if(tablicaSemaforow[pozycja].dlugosc()<0)
-	{
-		throw brakDostepuDoPliku();
-	}
-	tablicaSemaforow[pozycja].wait(proces);
+	zeruj();
+
 	if (pozycja == -1)
 	{
-		throw blednaNazwaPliku();
+		blednaNazwaPliku = true;
+		return -2;
 	}
-	if(pozycjaFolderu ==-1)
+	if (pozycjaFolderu == -1)
 	{
-		throw blednaNazwaFolderu();
+		blednaNazwaFolderu = true;
+		return -1;
+	}
+	if (pozycja != -1)
+	{
+		if (tablicaSemaforow[pozycja].dlugosc() >= 0)
+		{
+			brakDostepuDoPliku = true;
+			proces->ustawBlad(1);
+			nazwaBlednegoProcesu = proces->dajNazwe();
+		}
 	}
 
-	if(pozycja!=-1 && pozycjaFolderu!=-1)
+	if (pozycja != -1/* && brakDostepuDoPliku != true*/)
 	{
-		for(int i=0; i<dane.length(); i++)
+		otworzPlik(nazwa, rozszerzenie, "", proces, nazwaFolderu);
+	}
+
+
+
+	if (pozycja != -1 && pozycjaFolderu != -1 && brakDostepuDoPliku != true)
+	{
+		for (int i = 0; i<dane.length(); i++)
 		{
 			if (tablicaIwezlow[pozycja].pobierzRozmiarPliku() < 32)
 			{
 				tablicaDysk[tablicaIwezlow[pozycja].pobierzPierwszyBlok()*wielkoscBloku + tablicaIwezlow[pozycja].pobierzRozmiarPliku()] = dane[i];
-				tablicaIwezlow[pozycja].ustawRozmiarPliku(tablicaIwezlow[pozycja].pobierzRozmiarPliku()+1);
+				tablicaIwezlow[pozycja].ustawRozmiarPliku(tablicaIwezlow[pozycja].pobierzRozmiarPliku() + 1);
 			}
 
 			if (tablicaIwezlow[pozycja].pobierzRozmiarPliku() >= 32 && tablicaIwezlow[pozycja].pobierzRozmiarPliku() < 64)
 			{
-				if(tablicaIwezlow[pozycja].pobierzDrugiBlok()==-1) // Jeśli drugi blok nie jest zarezerwowany, zarezerwuj go.
+				if (tablicaIwezlow[pozycja].pobierzDrugiBlok() == -1) // Jeśli drugi blok nie jest zarezerwowany, zarezerwuj go.
 				{
 					short blok = znajdzWolnyBlok();
-					this->wektorBitowy[blok] = false; // Zaznacznie wykorzystania bloku dyskowego
+					this->wektorBitowy[blok] = false; // Zaznacznie wykorzystania bloku Dyskowego
 					tablicaIwezlow[pozycja].ustawDrugiBlok(blok);
 					i++;
 					--wolneBloki;
 				}
-				tablicaDysk[tablicaIwezlow[pozycja].pobierzDrugiBlok()*wielkoscBloku + tablicaIwezlow[pozycja].pobierzRozmiarPliku()%wielkoscBloku] = dane[i];
+				tablicaDysk[tablicaIwezlow[pozycja].pobierzDrugiBlok()*wielkoscBloku + tablicaIwezlow[pozycja].pobierzRozmiarPliku() % wielkoscBloku] = dane[i];
 				tablicaIwezlow[pozycja].ustawRozmiarPliku(tablicaIwezlow[pozycja].pobierzRozmiarPliku() + 1);
 			}
-			if(tablicaIwezlow[pozycja].pobierzRozmiarPliku() >= 64)
+			if (tablicaIwezlow[pozycja].pobierzRozmiarPliku() >= 64)
 			{
-				int pozycjaZapisu=0;
-				if(tablicaIwezlow[pozycja].pobierzIndeksowyBlok()==-1) // Rezerwacja bloku indeksowego.
+				int pozycjaZapisu = 0;
+				if (tablicaIwezlow[pozycja].pobierzIndeksowyBlok() == -1) // Rezerwacja bloku indeksowego.
 				{
 					--wolneBloki;
 					short blok = znajdzWolnyBlok();
-					this->wektorBitowy[blok] = false; // Zaznacznie wykorzystania bloku dyskowego.
+					this->wektorBitowy[blok] = false; // Zaznacznie wykorzystania bloku Dyskowego.
 					tablicaIwezlow[pozycja].ustawIndeksowyBlok(blok);
-					for(int k = blok*wielkoscBloku; k<blok*wielkoscBloku+32; k++)
+					for (int k = blok * wielkoscBloku; k<blok*wielkoscBloku + 32; k++)
 					{
 						tablicaDysk[k] = -1;
 					}
 					i++;
 				}
-				if(tablicaIwezlow[pozycja].pobierzRozmiarPliku()%32==0) // Szukanie kolejnego bloku na dane.
+				if (tablicaIwezlow[pozycja].pobierzRozmiarPliku() % 32 == 0) // Szukanie kolejnego bloku na dane.
 				{
-					for(int k=tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku; k<tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku+32; k++)
+					for (int k = tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku; k<tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku + 32; k++)
 					{
-						if(tablicaDysk[k]==-1)
+						if (tablicaDysk[k] == -1)
 						{
 							short blok = znajdzWolnyBlok();
-							this->wektorBitowy[blok] = false; // Zaznacznie wykorzystania bloku dyskowego.
+							this->wektorBitowy[blok] = false; // Zaznacznie wykorzystania bloku Dyskowego.
 							tablicaDysk[k] = blok;
 							--wolneBloki;
 							break;
 						}
 					}
 				}
-				
+
 				for (int k = tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku; k<tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku + 31; k++)
 				{
-					if (tablicaDysk[k] != -1 && tablicaDysk[k+1] == -1)
+					if (tablicaDysk[k] != -1 && tablicaDysk[k + 1] == -1)
 					{
 						pozycjaZapisu = tablicaDysk[k];
 					}
@@ -198,36 +240,65 @@ void Dysk::zapiszDoPliku(std::string nazwa, std::string rozszerzenie, std::strin
 			}
 		}
 	}
+	return 1;
 }
 
-std::string Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu)
+pobieDane Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu)
 {
 	std::string doZwrotu = "";
+	pobieDane zw;
+	zw.blad = 1;
+	zw.dane = "";
 	short ileBlokowOczytano = 0;
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
-	int pobraneDane = tablicaIwezlow[pozycja].pobierzRozmiarPliku();
+	if (pozycja != -1) {
+		int pobraneDane = tablicaIwezlow[pozycja].pobierzRozmiarPliku();
+	}
 	short ileDanychPierwszyBlok;
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
-	if (tablicaSemaforow[pozycja].dlugosc()<0)
+	zeruj();
+	/*if (pozycja != -1)
 	{
-		throw brakDostepuDoPliku();
+	if (tablicaSemaforow[pozycja].dlugosc() >= 0)
+	{
+	brakDostepuDoPliku = true;
+	tablicaSemaforow[pozycja].czekaj(proces);
 	}
-	tablicaSemaforow[pozycja].wait(proces);
+	}*/
+	//**************************************************
+	if (pozycja != -1)
+	{
+		if (tablicaSemaforow[pozycja].dlugosc() >= 0)
+		{
+			brakDostepuDoPliku = true;
+			proces->ustawBlad(1);
+			nazwaBlednegoProcesu = proces->dajNazwe();
+		}
+	}
+
+	if (pozycja != -1/* && brakDostepuDoPliku != true*/)
+	{
+		otworzPlik(nazwa, rozszerzenie, "", proces, nazwaFolderu);
+	}
+	//**************************************************
+
 	if (pozycja == -1)
 	{
-		throw blednaNazwaPliku();
+		blednaNazwaPliku = true;
+		zw.blad = -2;
 	}
 	if (pozycjaFolderu == -1)
 	{
-		throw blednaNazwaFolderu();
+		blednaNazwaFolderu = true;
+		zw.blad = -1;
 	}
 
-	if(pozycja!=-1 && pozycjaFolderu !=-1)
+	if (pozycja != -1 && pozycjaFolderu != -1 && brakDostepuDoPliku != true)
 	{
 		if (tablicaIwezlow[pozycja].pobierzPierwszyBlok() != -1)
 		{
-			
+
 			if (tablicaIwezlow[pozycja].pobierzRozmiarPliku() < 33)
 			{
 				ileDanychPierwszyBlok = tablicaIwezlow[pozycja].pobierzRozmiarPliku();
@@ -245,7 +316,7 @@ std::string Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* 
 		{
 			if (tablicaIwezlow[pozycja].pobierzRozmiarPliku() < 64)
 			{
-				ileDanychPierwszyBlok = tablicaIwezlow[pozycja].pobierzRozmiarPliku()-32;
+				ileDanychPierwszyBlok = tablicaIwezlow[pozycja].pobierzRozmiarPliku() - 32;
 			}
 			else { ileDanychPierwszyBlok = 32; }
 
@@ -255,12 +326,12 @@ std::string Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* 
 			}
 			++ileBlokowOczytano;
 		}
-		if(tablicaIwezlow[pozycja].pobierzIndeksowyBlok()!=-1)
+		if (tablicaIwezlow[pozycja].pobierzIndeksowyBlok() != -1)
 		{
 			std::vector<short> blokiPozostale;
-			for(int i = tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku; i<tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku+31; i++)
+			for (int i = tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku; i<tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*wielkoscBloku + 31; i++)
 			{
-				if(tablicaDysk[i]!=-1)
+				if (tablicaDysk[i] != -1)
 				{
 					blokiPozostale.push_back(tablicaDysk[i]);
 				}
@@ -269,17 +340,17 @@ std::string Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* 
 					break;
 				}
 			}
-			
-			for(auto it=0; it!=blokiPozostale.size(); it++)
+
+			for (auto it = 0; it != blokiPozostale.size(); it++)
 			{
 				++ileBlokowOczytano;
 				if (tablicaIwezlow[pozycja].pobierzRozmiarPliku() < ileBlokowOczytano*wielkoscBloku)
 				{
-					ileDanychPierwszyBlok = tablicaIwezlow[pozycja].pobierzRozmiarPliku() - (ileBlokowOczytano-1)*wielkoscBloku;
+					ileDanychPierwszyBlok = tablicaIwezlow[pozycja].pobierzRozmiarPliku() - (ileBlokowOczytano - 1)*wielkoscBloku;
 				}
 				else { ileDanychPierwszyBlok = 32; }
 
-				for (int i = blokiPozostale[it] *wielkoscBloku; i < blokiPozostale[it]*wielkoscBloku + ileDanychPierwszyBlok; i++)
+				for (int i = blokiPozostale[it] * wielkoscBloku; i < blokiPozostale[it] * wielkoscBloku + ileDanychPierwszyBlok; i++)
 				{
 					doZwrotu += tablicaDysk[i];
 				}
@@ -287,32 +358,41 @@ std::string Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* 
 
 		}
 	}
- 
-	return doZwrotu;
+	zw.dane = doZwrotu;
+	return zw;
 }
 
-void Dysk::otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu)
+short Dysk::otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu)
 {
 	short ileBlokowOczytano = 0;
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
-	int pobraneDane = tablicaIwezlow[pozycja].pobierzRozmiarPliku();
+	if (pozycja != -1)
+	{
+		int pobraneDane = tablicaIwezlow[pozycja].pobierzRozmiarPliku();
+	}
 	short ileDanychPierwszyBlok;
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
-	if (tablicaSemaforow[pozycja].dlugosc()<0)
+	zeruj();
+
+	if (tablicaSemaforow[pozycja].dlugosc() >= 0)
 	{
-		throw brakDostepuDoPliku();
+		brakDostepuDoPliku = true;
+		proces->ustawBlad(1);
+		nazwaBlednegoProcesu = proces->dajNazwe();
 	}
 	tablicaSemaforow[pozycja].wait(proces);
 	if (pozycja == -1)
 	{
-		throw blednaNazwaPliku();
+		blednaNazwaPliku = true;
+		return -2;
 	}
 	if (pozycjaFolderu == -1)
 	{
-		throw blednaNazwaFolderu();
+		blednaNazwaFolderu = true;
+		return -1;
 	}
-	if (pozycja != -1 && pozycjaFolderu!=-1)
+	if (pozycja != -1 && pozycjaFolderu != -1)
 	{
 		if (tablicaIwezlow[pozycja].pobierzPierwszyBlok() != -1)
 		{
@@ -377,7 +457,7 @@ void Dysk::otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proc
 					tablicaDysk[i] = '0';
 				}
 			}
-			for(auto i =tablicaIwezlow[pozycja].pobierzIndeksowyBlok()*32; i<tablicaIwezlow[pozycja].pobierzIndeksowyBlok() * 32+32; i++)
+			for (auto i = tablicaIwezlow[pozycja].pobierzIndeksowyBlok() * 32; i<tablicaIwezlow[pozycja].pobierzIndeksowyBlok() * 32 + 32; i++)
 			{
 				tablicaDysk[i] = '0';
 			}
@@ -386,23 +466,27 @@ void Dysk::otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proc
 		tablicaIwezlow[pozycja].ustawIndeksowyBlok(-1);
 		tablicaIwezlow[pozycja].ustawRozmiarPliku(1);
 	}
-	 
+	return 1;
 }
 
-void Dysk::usunPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
+short Dysk::usunPlik(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
 {
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
+	zeruj();
 	if (pozycja == -1)
 	{
-		throw blednaNazwaPliku();
+		blednaNazwaPliku = true;
+		return -2;
 	}
 	if (pozycjaFolderu == -1)
 	{
-		throw blednaNazwaFolderu();
+		blednaNazwaFolderu = true;
+		return -1;
 	}
-	if(pozycja!=-1 && pozycjaFolderu!=-1)
+	if (pozycja != -1 && pozycjaFolderu != -1)
 	{
+
 #pragma  region potrzeba
 		short ileBlokowOczytano = 0;
 		short pozycja = znajdzPlik(nazwa, rozszerzenie);
@@ -411,11 +495,11 @@ void Dysk::usunPlik(std::string nazwa, std::string rozszerzenie, std::string naz
 		short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 		if (pozycja == -1)
 		{
-			throw blednaNazwaPliku();
+			blednaNazwaPliku = true;
 		}
 		if (pozycjaFolderu == -1)
 		{
-			throw blednaNazwaFolderu();
+			blednaNazwaFolderu = true;
 		}
 		if (pozycja != -1 && pozycjaFolderu != -1)
 		{
@@ -493,78 +577,92 @@ void Dysk::usunPlik(std::string nazwa, std::string rozszerzenie, std::string naz
 		}
 
 #pragma endregion potrzeba
+
 		tablicaDysk[tablicaIwezlow[pozycja].pobierzPierwszyBlok() * 32] = '0';
 		wektorBitowy[tablicaIwezlow[pozycja].pobierzPierwszyBlok()] = true;
 		tablicaIwezlow[pozycja].czysc();
 		tablicaWpisow[pozycja].czysc();
 		tablicaKatalogow[pozycjaFolderu].usunNumerIwezla(pozycja);
 		++wolneBloki;
+		return 1;
 	}
 
 }
 
-void Dysk::zmienNazwePliku(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu)
+short Dysk::zmienNazwePliku(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu)
 {
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
-	
-	if(pozycja!=-1)
+	zeruj();
+	if (pozycja != -1)
 	{
 		tablicaWpisow[pozycja].ustawNazwe(nowaNazwa);
+		return 1;
 	}
-	else { throw blednaNazwaPliku(); }
+	else { blednaNazwaPliku = true; return -2; }
 }
 
-void Dysk::utworzFolder(std::string nazwa, std::string nazwaNadrzednego)
+short Dysk::utworzFolder(std::string nazwa, std::string nazwaNadrzednego)
 {
 	short pozycja = znajdzFolder(nazwaNadrzednego);
 	short pozycjaNowego = znajdzFolder(nazwa);
-	
-	
+
+	zeruj();
 
 	if (nazwa == nazwaNadrzednego)
 	{
-		throw blednaNazwaFolderu();
+		blednaNazwaFolderu = true;
+		return -1;
 	}
 
-	if (pozycja != -1 && pozycjaNowego==-1)
+	if (pozycja != -1 && pozycjaNowego == -1)
 	{
 		if (tablicaKatalogow[pozycja].ilePodfolderow() == 31)
 		{
-			throw brakWolnychSynow();
+			brakWolnychSynow = true;
+			return -5;
 		}
 		katalog katalog(nazwa, pozycja);
 		tablicaKatalogow[ileFolderow] = katalog;
 		++ileFolderow;
 	}
-	else { throw blednaNazwaFolderu(); }
-	tablicaKatalogow[znajdzFolder(nazwa)].ustawOjca(znajdzFolder(nazwaNadrzednego));
-	tablicaKatalogow[znajdzFolder(nazwaNadrzednego)].ustawSyna(znajdzFolder(nazwa));
-	tablicaKatalogow[znajdzFolder(nazwaNadrzednego)].ustawPodfoldery(tablicaKatalogow[znajdzFolder(nazwaNadrzednego)].ilePodfolderow() + 1);
-	
+	else { blednaNazwaFolderu = true; return -1; }
+
+	if (blednaNazwaFolderu == false)
+	{
+		tablicaKatalogow[znajdzFolder(nazwa)].ustawOjca(znajdzFolder(nazwaNadrzednego));
+		tablicaKatalogow[znajdzFolder(nazwaNadrzednego)].ustawSyna(znajdzFolder(nazwa));
+		tablicaKatalogow[znajdzFolder(nazwaNadrzednego)].ustawPodfoldery(tablicaKatalogow[znajdzFolder(nazwaNadrzednego)].ilePodfolderow() + 1);
+		return 1;
+	}
 }
 
-void Dysk::dodajPlikDoKatalogu(std::string nazwaDolcelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem)
+short Dysk::dodajPlikDoKatalogu(std::string nazwaDolcelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem)
 {
 	short pozycjaKataloguZPlikiem = znajdzFolder(nazwaFolderuZPlikiem);
 	short pozycjaKataloguDocelowego = znajdzFolder(nazwaDolcelowego);
 	short pozycjaPliku = znajdzPlik(nazwaPliku, rozszerzenie);
-	if(pozycjaKataloguZPlikiem==-1 || pozycjaKataloguDocelowego == -1)
+	zeruj();
+	if (pozycjaKataloguZPlikiem == -1 || pozycjaKataloguDocelowego == -1)
 	{
-		throw blednaNazwaFolderu();
+		blednaNazwaFolderu = true;
+		return -1;
 	}
-	if(pozycjaPliku==-1)
+	if (pozycjaPliku == -1)
 	{
-		throw blednaNazwaPliku();
+		blednaNazwaPliku = true;
+		return -2;
 	}
-	if(pozycjaKataloguZPlikiem !=-1 && pozycjaPliku!=-1)
+	if (pozycjaKataloguZPlikiem != -1 && pozycjaPliku != -1)
 	{
 		tablicaKatalogow[pozycjaKataloguDocelowego].dodajNumerIwezela(znajdzPlik(nazwaPliku, rozszerzenie));
 		tablicaKatalogow[pozycjaKataloguZPlikiem].usunNumerIwezla(znajdzPlik(nazwaPliku, rozszerzenie));
+		return 1;
 	}
 }
 
-void Dysk::usunFolder(int pozycja)
+short Dysk::usunFolder(int pozycja)
 {
+	zeruj();
 	if (znajdzFolder(this->pobierzNazweFolder(pozycja)) != -1) {
 		this->tablicaKatalogow[tablicaKatalogow[pozycja].pobierzOjca()].usunSyna(pozycja);
 		std::array<short, 32> podfoldery = tablicaKatalogow[pozycja].pobierzSynow();
@@ -584,31 +682,32 @@ void Dysk::usunFolder(int pozycja)
 		}
 		--ileFolderow;
 		tablicaKatalogow[pozycjaOjca].ustawPodfoldery(tablicaKatalogow[pozycjaOjca].ilePodfolderow() - 1);
+		return 1;
 	}
-	else { throw blednaNazwaFolderu(); }
+	else { blednaNazwaFolderu = true; return -1; }
 }
 
 void Dysk::wypiszDrzewo()
 {
-	for(int i=0; i<ileFolderow; i++)
+	for (int i = 0; i<ileFolderow; i++)
 	{
-		std::cout << "Nazwa: " << tablicaKatalogow[i].pobierzNazwe() <<"\n";
+		std::cout << "Nazwa: " << tablicaKatalogow[i].pobierzNazwe() << "\n";
 
 		std::cout << "Zawarte pliki: ";
 		std::vector<short> tab = tablicaKatalogow[i].pobierzNumery();
-		if(tab.size()==0)
+		if (tab.size() == 0)
 		{
 			std::cout << "Brak";
 		}
-		for(int i=0; i<tab.size(); i++)
+		for (int i = 0; i<tab.size(); i++)
 		{
 			std::cout << tablicaWpisow[tab[i]].pobierzNazwe() << "." << tablicaWpisow[tab[i]].pobierzRozszerzenie() << " ";
 		}
 		std::cout << "\n";
 		int k = tablicaKatalogow[i].pobierzOjca();
 		std::cout << "Folder nadrzedny: "; if (tablicaKatalogow[i].pobierzOjca() == -1) { std::cout << "Brak\n"; }
-		else { std::cout<<tablicaKatalogow[tablicaKatalogow[i].pobierzOjca()].pobierzNazwe()<<"\n"; };
-		std::cout << "Podfoldery: ";
+		else { std::cout << tablicaKatalogow[tablicaKatalogow[i].pobierzOjca()].pobierzNazwe() << "\n"; };
+		std::cout << "Podfoldery:\n";
 		bool podfoldery = true;
 		std::array<short, 32> tabl = tablicaKatalogow[i].pobierzSynow();
 		for (int i = 0; i<tabl.size(); i++)
@@ -618,7 +717,7 @@ void Dysk::wypiszDrzewo()
 				podfoldery = false;
 			}
 		}
-		if(podfoldery)
+		if (podfoldery)
 		{
 			std::cout << "Brak";
 		}
@@ -630,23 +729,23 @@ void Dysk::wypiszDysk()
 {
 	std::vector<short> blokiIndeksowe;
 
-	for(int i=0; i<tablicaIwezlow.size(); i++)
+	for (int i = 0; i<tablicaIwezlow.size(); i++)
 	{
-		if(tablicaIwezlow[i].pobierzIndeksowyBlok()!=-1)
+		if (tablicaIwezlow[i].pobierzIndeksowyBlok() != -1)
 		{
 			blokiIndeksowe.push_back(tablicaIwezlow[i].pobierzIndeksowyBlok());
 		}
 	}
 
-	for(int i=0; i<32; i++)
+	for (int i = 0; i<32; i++)
 	{
 		std::cout << i << " ";
-		
+
 		for (int k = 0; k<32; k++)
 		{
-			if(std::find(blokiIndeksowe.begin(), blokiIndeksowe.end(), i)!= blokiIndeksowe.end())
+			if (std::find(blokiIndeksowe.begin(), blokiIndeksowe.end(), i) != blokiIndeksowe.end())
 			{
-				std::cout << static_cast<short>(tablicaDysk[(i*wielkoscBloku) + k]) <<" ";
+				std::cout << static_cast<short>(tablicaDysk[(i*wielkoscBloku) + k]) << " ";
 			}
 			else {
 				std::cout << tablicaDysk[(i*wielkoscBloku) + k];
@@ -659,10 +758,10 @@ void Dysk::wypiszDysk()
 void Dysk::wypiszWektorBitowy()
 {
 	std::cout << "Wektor Bitowy: (1 blok wolny, 0 zajety)\n";
-	for (int i=0; i<wektorBitowy.size(); i++)
+	for (int i = 0; i<wektorBitowy.size(); i++)
 	{
 		std::cout << i << " " << wektorBitowy[i] << "\n";
-	}	
+	}
 }
 
 void Dysk::wypiszTabliceIwezelow()
@@ -682,33 +781,103 @@ void Dysk::ileWolnych()
 
 void Dysk::wypiszTabliceWpisow()
 {
-	for (int i=0; i<tablicaWpisow.size(); i++)
+	for (int i = 0; i<tablicaWpisow.size(); i++)
 	{
 		tablicaWpisow[i].wypisz();
 	}
 }
 
+bool Dysk::pobierzBlednaNazwaPliku()
+{
+	return blednaNazwaPliku;
+}
+
+bool Dysk::pobierzBlednaNazwaFolderu()
+{
+	return blednaNazwaFolderu;
+}
+
+bool Dysk::pobierzBrakDostepuDoPliku()
+{
+	return brakDostepuDoPliku;
+}
+
+bool Dysk::pobierzBrakMiejsca()
+{
+	return brakMiejsca;
+}
+
+bool Dysk::pobierzBrakWolnychSynow()
+{
+	return brakWolnychSynow;
+}
+
+bool Dysk::pobierzNiejednoznacznaNazwa()
+{
+	return niejednoznacznaNazwa;
+}
+
+bool Dysk::poprawnosc()
+{
+	std::vector<std::string> tablicaBledow = bledy();
+	if (tablicaBledow.size() == 0)
+		return true;
+	return false;
+}
+
+std::vector<std::string> Dysk::bledy()
+{
+	std::vector<std::string> doZwrotu;
+
+	if (blednaNazwaFolderu == true)
+	{
+		doZwrotu.push_back("blednaNazwaFolderu");
+	}
+	if (blednaNazwaPliku == true)
+	{
+		doZwrotu.push_back("blednaNazwaPliku");
+	}
+	if (brakDostepuDoPliku == true)
+	{
+		doZwrotu.push_back("brakDostepuDoPliku:" + nazwaBlednegoProcesu);
+	}
+	if (brakMiejsca == true)
+	{
+		doZwrotu.push_back("brakMiejsca");
+	}
+	if (brakWolnychSynow == true)
+	{
+		doZwrotu.push_back("brakWolnychSynow");
+	}
+	if (niejednoznacznaNazwa == true)
+	{
+		doZwrotu.push_back("niejednoznacznaNazwa");
+	}
+	return doZwrotu;
+}
+
 short Dysk::znajdzPlik(std::string nazwa, std::string rozszerzenie)
 {
 	short doZwrotu = -1;
-	for(short i = 0; i<this->tablicaWpisow.size(); i++)
+	for (short i = 0; i<this->tablicaWpisow.size(); i++)
 	{
-		if(this->tablicaWpisow[i].pobierzNazwe()==nazwa && this->tablicaWpisow[i].pobierzRozszerzenie()==rozszerzenie)
+		if (this->tablicaWpisow[i].pobierzNazwe() == nazwa && this->tablicaWpisow[i].pobierzRozszerzenie() == rozszerzenie)
 		{
 			doZwrotu = tablicaWpisow[i].pobierzNumer();
 			break;
 		}
 	}
-	
+
 	return doZwrotu;
 }
 
 short Dysk::znajdzWolnyBlok()
 {
-	short doZwrotu= -1;
-	for(int i=0; i<this->wektorBitowy.size(); i++)
+	short doZwrotu = -1;
+	zeruj();
+	for (int i = 0; i<this->wektorBitowy.size(); i++)
 	{
-		if(this->wektorBitowy[i]==true)
+		if (this->wektorBitowy[i] == true)
 		{
 			doZwrotu = i;
 			break;
@@ -716,7 +885,7 @@ short Dysk::znajdzWolnyBlok()
 	}
 	if (doZwrotu == -1)
 	{
-		throw brakMiejsca();
+		brakMiejsca = true;
 	}
 	return doZwrotu;
 }
@@ -743,13 +912,24 @@ std::string Dysk::pobierzNazweFolder(short poz)
 short Dysk::znajdzFolder(std::string nazwa)
 {
 	short doZwrotu = -1;
-	for(int i=0; i<tablicaKatalogow.size(); i++)
+	for (int i = 0; i<tablicaKatalogow.size(); i++)
 	{
-		if(tablicaKatalogow[i].pobierzNazwe()==nazwa)
+		if (tablicaKatalogow[i].pobierzNazwe() == nazwa)
 		{
 			doZwrotu = i;
 			break;
 		}
 	}
 	return doZwrotu;
+}
+
+void Dysk::zeruj()
+{
+	blednaNazwaFolderu = false;
+	blednaNazwaPliku = false;
+	brakDostepuDoPliku = false;
+	brakMiejsca = false;
+	brakWolnychSynow = false;
+	niejednoznacznaNazwa = false;
+	nazwaBlednegoProcesu = "";
 }

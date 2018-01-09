@@ -2,13 +2,14 @@
 class PCB;
 #include "ZarzadzanieProcesami.h"
 #include <queue>
+#include <exception>
 
 class bledneWywolanieWait : public std::exception
 {
 public:
 	const char* what() const throw()
 	{
-		return "Nieaktywny Proces wykona≥ wait().";
+		return "Nieaktywny Proces wykona≈Ç wait()";
 	}
 };
 class bledneWywolanieSignal : public std::exception
@@ -16,23 +17,22 @@ class bledneWywolanieSignal : public std::exception
 public:
 	const char* what() const throw()
 	{
-		return "Nieaktywny Proces wykona≥ signal().";
+		return "Nieaktywny Proces wykona≈Ç signal()";
 	}
 
 
 };
-
 
 class Semafory
 {
 public:
 	Semafory();
 	~Semafory();
-	
+
 	void wait(PCB* proces);
 	void signal(PCB* proces);
 	int dlugosc();			//sprawdzanie czy otwarty za pomoca tej metody
-	 				//<0 to otwarty >=0 zamkniety
+							//<0 to otwarty >=0 zamknietyy
 private:
 	int wartosc;
 	std::queue<PCB*> kolejka;

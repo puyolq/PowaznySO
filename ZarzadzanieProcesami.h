@@ -3,28 +3,22 @@
 #include <vector>
 class Semafory;
 #include "Semafory.h"
-
-struct Socket
-{
-};
-
-//
-
 //
 /* STANY
- * 0 - nowy
- * 1 - gotowy
- * 2 - oczekuj¹cy
- * 3 - aktywny
- * 4 - zakoñczony
- */
+* 0 - nowy
+* 1 - gotowy
+* 2 - oczekujaacy
+* 3 - aktywny
+* 4 - zakoÃ±czony
+*/
 
 
 class PCB
 {
 private:
-	//ogólne sk³adniki
-	int id;
+	//ogÃ³lne skÂ³adniki
+	int id;		
+	int blad;				//dodane do obslugi bledow
 	std::string nazwa;
 	std::vector<PCB*> potomkowie;
 	PCB* rodzic;
@@ -33,6 +27,7 @@ public:
 	PCB()
 	{
 		id = 0;
+		
 		//potomkowie = nullptr;
 		rodzic = nullptr;
 	}
@@ -40,20 +35,25 @@ public:
 	PCB* dodajProces(int id, std::string nazwa, std::string rodzic);
 	std::string dajNazwe();
 	std::vector<PCB*> dajPotomkow();
+	std::vector<PCB*> &dajPotomkowRAM();
 	void dodajPotomka(PCB* potomek);
 	void wyswietlPotomkow(int lvl);
 	void wyswietlProces(std::string nazwa);
+	void wyswietlProces(int pid);
 	PCB* znajdzProces(std::string nazwa);
+	PCB* znajdzProces(int pid);
 	PCB* dajRodzica();
 	int dajId();
 	void usunProces(std::string nazwa);
+	void usunProces(int pid);
 	void usunPotomka(std::string nazwa);
+	void usunPotomka(int pid);
 	void przeniesPotomkow(PCB* init, PCB* doPrzeniesienia);
 	void ustawRodzica(PCB* _rodzic);
 	int zliczProcesy();
 
 
-	//dla ¯egalskiego (interpreter)
+	//dla Â¯egalskiego (interpreter)
 private:
 	int status;
 	int rej1, rej2, rej3, rej4;
@@ -73,16 +73,14 @@ public:
 	int dajLicznikRozkazow();
 
 
-	//dla Cezarego (komunikacja miêdzyprocesowa)
+	//dla Cezarego (komunikacja miÃªdzyprocesowa)
 private:
-	std::vector<Socket*> listaSocketow;
-	Socket* socket;
+	int deskryptorGniazda;
 public:
-	Socket*dajSocket();
-	void ustawSocket(Socket*_socket);
-	std::vector<Socket*>dajListeSocketow();
-	void usunSocket(Socket*_socket);
-	void dodajSocket(Socket*_socket);
+	void ustawDeskryptorGniazda(int wartosc);
+	int dajDeskryptorGniazda();
+	int dajBlad();			//dodane blad
+	void ustawBlad(int wartosc);
 
 	//dla Mariana (RAM)
 public:
@@ -103,7 +101,7 @@ class ZarzadzanieProcesami
 {
 private:
 	int idLicznik;
-	PCB* init;
+	
 	int dajLicznik();
 
 public:
@@ -111,9 +109,19 @@ public:
 	~ZarzadzanieProcesami();
 
 	void wyswietlIloscProcesow();
+	int iloscProcesow();
 	void wyswietlWszystkieProcesy();
 	void wyswietlProces(std::string nazwa);
+	void wyswietlProces(int pid);
+	PCB* znajdzProces(int pid);
+	PCB* znajdzProces(std::string nazwa);
+
+	PCB* init;
 
 	PCB* dodajProces(std::string nazwa, std::string rodzic);
 	void usunProces(std::string nazwa);
+	void usunProces(int pid);
+	void przeniesPotomkow(std::string co, std::string dokad);
 };
+extern ZarzadzanieProcesami zarzadzanieProcesami;
+extern PCB idle;

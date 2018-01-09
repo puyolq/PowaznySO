@@ -1,3 +1,4 @@
+
 #include "Semafory.h"
 
 Semafory::Semafory()
@@ -11,8 +12,8 @@ Semafory::~Semafory()
 
 void Semafory::wait(PCB * proces)
 {
-	if (proces->dajStatus() == 3) {
-		if (wartosc > 0)
+	if (proces->dajStatus() <= 3) {
+		if (wartosc>0)
 		{
 			--wartosc;
 		}
@@ -23,12 +24,16 @@ void Semafory::wait(PCB * proces)
 			--wartosc;
 		}
 	}
-	else { throw bledneWywolanieWait(); }
+	else {
+
+		throw bledneWywolanieWait();
+	}
+
 }
 
 void Semafory::signal(PCB * proces)
 {
-	if (proces->dajStatus() == 3) {
+	if (proces->dajStatus() <= 3) {
 		if (kolejka.empty())
 		{
 			++wartosc;
@@ -36,14 +41,17 @@ void Semafory::signal(PCB * proces)
 		else
 		{
 			kolejka.front()->ustawStatus(1);
+			kolejka.front()->ustawBlad(0);
 			kolejka.pop();
 			++wartosc;
 		}
 	}
 	else { throw bledneWywolanieSignal(); }
 }
-
+//WYJATKI WYRZUCIC
 int Semafory::dlugosc()
 {
 	return (-1)*(this->wartosc);
 }
+//
+//

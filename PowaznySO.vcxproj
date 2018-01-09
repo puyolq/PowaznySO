@@ -143,22 +143,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dysk.cpp" />
+    <ClCompile Include="Interpreter.cpp" />
     <ClCompile Include="iwezel.cpp" />
     <ClCompile Include="katalog.cpp" />
     <ClCompile Include="Kolejka procesow.cpp" />
+    <ClCompile Include="Komunikacja.cpp" />
     <ClCompile Include="RAM.cpp" />
     <ClCompile Include="Semafory.cpp" />
+    <ClCompile Include="Shell.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="wpisKatalogowy.cpp" />
     <ClCompile Include="ZarzadzanieProcesami.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dysk.h" />
+    <ClInclude Include="Interpreter.h" />
     <ClInclude Include="iwezel.h" />
     <ClInclude Include="katalog.h" />
     <ClInclude Include="Kolejka procesow.hpp" />
+    <ClInclude Include="Komunikacja.h" />
     <ClInclude Include="RAM.hpp" />
     <ClInclude Include="Semafory.h" />
+    <ClInclude Include="Shell.h" />
     <ClInclude Include="wpisKatalogowy.h" />
     <ClInclude Include="Wyjatki.h" />
     <ClInclude Include="ZarzadzanieProcesami.h" />

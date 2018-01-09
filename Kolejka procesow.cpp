@@ -5,9 +5,8 @@
 KolejkaProcesow kolejkaGotowych("gotowych");
 KolejkaProcesow kolejkaOczekujacych("oczekujacych");
 
-PCB* idle = new PCB(99, "idle", nullptr);
 
-Wezel* bezczynnosc = new Wezel(idle);
+Wezel* bezczynnosc = new Wezel(&idle);
 	
 Wezel::Wezel(PCB* proces) : proces(proces), nastepny(NULL){}
 
@@ -36,6 +35,11 @@ void KolejkaProcesow::dodajDoKolejki(PCB* proces){
 
 void KolejkaProcesow::usunProces(const short& idProcesu){
 	Wezel* temp1 = glowa;
+	if (temp1->proces->dajId() == idProcesu) {
+		usunZPoczatku();
+		return;
+	}
+
 	for (short i = 0; i < rozmiarKolejki(); i++){
 		if (temp1->nastepny) {
 			if (temp1->nastepny->proces->dajId() == idProcesu) {
@@ -62,7 +66,10 @@ void KolejkaProcesow::usunZPoczatku(){
 	Wezel* temp1 = glowa;
 	if (temp1->nastepny) {
 		glowa = temp1->nastepny;
+		glowa->proces->ustawStatus(3);
 	}
+	else if (nazwa == "oczekujacych")
+		glowa = NULL;
 	
 }
 
@@ -82,7 +89,7 @@ void KolejkaProcesow::usunZKonca(){
 }
 
 void KolejkaProcesow::sprawdzBezczynnosc(){
-	if (!glowa->nastepny) {
+	if (!glowa->nastepny && this->nazwa == "gotowych") {
 		glowa = bezczynnosc;
 		glowa->proces->ustawStatus(3);
 		ogon = bezczynnosc;
@@ -99,13 +106,12 @@ void KolejkaProcesow::uruchomEkspedytor(const bool &skonczylSie) {
 	if (skonczylSie) {
 		if (glowa != bezczynnosc) {
 			glowa->proces->ustawStatus(4);
-			usunZPoczatku();
+			//usunZPoczatku();
 			glowa->proces->ustawStatus(3);
-			//stan = zakonczony
+			//stan = zakonczooopooooooopopony
 		}
 	}
 	else {
-		//sprawdzBezczynnosc();
 		if (glowa != ogon) {
 			if (glowa->nastepny == bezczynnosc) {
 				glowa->nastepny = NULL;
@@ -126,17 +132,22 @@ void KolejkaProcesow::uruchomEkspedytor(const bool &skonczylSie) {
 			ogon = bezczynnosc;
 		}
 	}
-
+//
 }
 
 void KolejkaProcesow::wyswietlKolejke(){
 	short lp = 1;
+	std::clog << "Kolejka procesow " << nazwa << ":" << std::endl;
+	if (this->nazwa == "oczekujacych" && glowa == NULL) {
+		return;
+	}
 	Wezel* temp = glowa;
-	std::clog << "Kolejka procesow "<<nazwa<<":" << std::endl;
 
 	while (temp){
 		std::clog <<lp<<". PID:"<<temp->proces->dajId() <<" Nazwa:"<< temp->proces->dajNazwe()<< " Stan: "<<temp->proces->dajStatus() <<std::endl;
-		temp = temp->nastepny;
+		if (!temp->nastepny)
+			break;
+			temp = temp->nastepny;
 		lp++;
 	}
 	std::clog << std::endl;
