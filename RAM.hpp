@@ -6,7 +6,7 @@
 class RAM {
 
 	//PCB *pcb = new PCB();
-	char RAM_Content[RAM_SIZE]; // caly ram 
+	char RAM_Content[RAM_SIZE + 2]; // caly ram 
 	int freeRAM; //dostepna wolna pamiec
 	void defragment(); //defragmentacja
 	void rewrite(int base1, int base2, int size);
