@@ -28,8 +28,10 @@ public:
 	void PobierzRejestry();
 	//Kopiowanie rejestrow z interpretera do PCB
 	void UstawRejestr();
-	// Dodawanie w komkretnej czesci ramu 
-	void WpiszDoKomorki(int lokalizacja,std::string dane);
+	//blad przy operacjach na dysku
+	void obsluzBledy(short blad);
+	// Sprawdza czy string jest liczba
+	bool CzyStringLiczba(std::string& s);
 	//Metoda wykonuj¹ca 1 rozkaz asemblerowy
 	void WykonywanieProgramu();
 };

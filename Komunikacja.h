@@ -41,7 +41,7 @@ public:
 
 	//pobierz wiadomoœæ z listy wiadomoœci - pobiera pierwsz¹ wiadomoœæ z odebranych wiadomoœci i wyswietla ja w konsoli
 	//jeœli lista jest pusta, zwraca false. Jesli na liscie jest przynajmniej jedna wiadomosc, zwraca true
-	bool wyswietlWiadomosc();
+	bool pobierzWiadomosc(Wiadomosc &odebranaWiadomosc);
 
 	void zamknijGniazdo();
 };
@@ -65,7 +65,7 @@ public:
 	KomunikacjaMiedzyprocesowa();
 
 	//Pierwszy rozkaz dla Interpretera - odebranie komunikatu
-	bool rozkazOdebraniaKomunikatu(int numerIDProcesuOdbiorcy);
+	Wiadomosc rozkazOdebraniaKomunikatu(int numerIDProcesuOdbiorcy);
 
 	//Drugi rozkaz dla Interpretera - wyslanie komunikatu
 	bool rozkazWyslaniaKomunikatu(int numerIDProcesuNadawcy, std::string nazwaProcesuOdbiorcy, std::string komunikat);

@@ -1,1 +1,3 @@
-MV A 3,DC A,EX,
+MV A 3
+DC A
+EX

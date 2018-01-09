@@ -1,1 +1,2 @@
-SM po marianek ;<,EX,
+SM po marianek ;<
+EX

@@ -25,7 +25,7 @@ void RAM::rewrite(int base1, int base2, int size)
 	for (int i = 0; i<size; i++)
 	{
 		RAM_Content[base1 + i] = RAM_Content[base2 + i];
-		RAM_Content[base2 + i] = 'w';
+		RAM_Content[base2 + i] = '\0';
 	}
 }
 
@@ -46,11 +46,13 @@ void RAM::defragment()
 					writtenBlocks[g].base = claimedBlocks[i].base + claimedBlocks[i].limit;
 				}
 			}
-			for(auto e : lista){
-				if(e->dajRamLokalizacja() == claimedBlocks[i + 1].base)
-				{ e->ustawRamLokalizacja(claimedBlocks[i].base + claimedBlocks[i].limit);}
+			for (auto e : lista) {
+				if (e->dajRamLokalizacja() == claimedBlocks[i + 1].base)
+				{
+					e->ustawRamLokalizacja(claimedBlocks[i].base + claimedBlocks[i].limit);
+				}
 			}
-			
+
 
 
 			claimedBlocks[i + 1].base = claimedBlocks[i].base + claimedBlocks[i].limit;
@@ -122,7 +124,7 @@ void RAM::memWrite(PCB* a, std::string polecenie)
 void RAM::WriteToRam(std::string a, writtenBlock &writtenTo, int localisation)
 {
 
-	a += ',';
+	a += '\00';
 	int j = 0;
 	for (int g = localisation; g < localisation + a.size(); g++, j++)
 	{
@@ -138,33 +140,33 @@ void RAM::deleteWritten(int base) {
 	Block free;
 	for (auto e : writtenBlocks)
 	{
-		if(writtenBlocks.size()){
-		writtenPOS++;
-		if (e.origin == backup)
-		{
-			base = e.base;
-			limit = e.limit;
-			for (int pos = base; pos < base + limit; pos++)
+		if (writtenBlocks.size()) {
+			writtenPOS++;
+			if (e.origin == backup)
 			{
-				RAM_Content[pos] = 'w';
-			}//czyszczenie ramu
-			for (i = 0; i < claimedBlocks.size(); i++) {
-				if (claimedBlocks[i].base == base) {
-					break;
+				base = e.base;
+				limit = e.limit;
+				for (int pos = base; pos < base + limit; pos++)
+				{
+					RAM_Content[pos] = '\0';
+				}//czyszczenie ramu
+				for (i = 0; i < claimedBlocks.size(); i++) {
+					if (claimedBlocks[i].base == base) {
+						break;
+					}
 				}
+				claimedBlocks.erase(claimedBlocks.begin() + i);
+				free.base = base;
+				free.limit = limit;
+				freeBlocks.push_back(free);
+				freeRAM += limit;
+				writtenBlocks.erase(writtenBlocks.begin() + writtenPOS);
+				deleteWritten(backup);
 			}
-			claimedBlocks.erase(claimedBlocks.begin() + i);
-			free.base = base;
-			free.limit = limit;
-			freeBlocks.push_back(free);
-			freeRAM += limit;
-			writtenBlocks.erase(writtenBlocks.begin() + writtenPOS);
-			deleteWritten(backup);
 		}
-		}
-		
+
 	}
-	
+
 }
 
 
@@ -179,7 +181,7 @@ RAM::RAM()
 
 	freeRAM = RAM_SIZE;
 	processNum = 0;
-	for (int i = 0; i < RAM_SIZE; ++i) { RAM_Content[i] = 'w'; } // "pusty" RAM
+	for (int i = 0; i < RAM_SIZE; ++i) { RAM_Content[i] = '\0'; } // "pusty" RAM
 	Block start;
 	start.base = 0;
 	start.limit = RAM_SIZE;
@@ -220,7 +222,7 @@ void RAM::deleteFromMem(PCB* a)
 		int base = claimedBlocks[i].base;
 		for (int pos = base; pos < base + limit; pos++)
 		{
-			RAM_Content[pos] = 'w';
+			RAM_Content[pos] = '\0';
 		}//czyszczenie ramu
 		claimedBlocks.erase(claimedBlocks.begin() + i);
 		Block free;
@@ -263,7 +265,7 @@ std::string RAM::showProcess(int base)
 
 	std::string process = "";
 
-	while (RAM_Content[base] != ',') { process += RAM_Content[base]; base++; }
+	while (RAM_Content[base] != '\00') { process += RAM_Content[base]; base++; }
 	return process;
 }
 
@@ -275,8 +277,8 @@ void RAM::saveToRam(int a, int localisation, std::string value)
 	Block freeBlock, claimedBlock;
 	for (int i = 0; i< memClaimed; i++)
 	{
-		if (RAM_Content[localisation + i] != 'w') {
-			std::cout << "Pamiec zajeta" << std::endl; 
+		if (RAM_Content[localisation + i] != '\0') {
+			std::cout << "Pamiec zajeta" << std::endl;
 			return;
 		}
 	}//sprawdzanie czy mozna zapisac

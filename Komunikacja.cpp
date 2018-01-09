@@ -54,12 +54,11 @@ void Gniazdo::dodajWiadomosc(Wiadomosc wyslanaWiadomosc)
 
 //pobierz wiadomoœæ z listy wiadomoœci - pobiera pierwsz¹ wiadomoœæ z listy odebranych wiadomoœci i wyswietla ja w konsoli
 //jeœli lista jest pusta, zwraca false. Jesli na liscie jest przynajmniej jedna wiadomosc, zwraca true
-bool Gniazdo::wyswietlWiadomosc() {
+bool Gniazdo::pobierzWiadomosc(Wiadomosc &odebranaWiadomosc) {
 	if (listaOdebranychWiadomosci.size() == 0)
 		return false;
-	Wiadomosc odebranaWiadomosc = listaOdebranychWiadomosci.front();
-	//Wyswietlenie zawartosci Wiadomosci
-	std::cout << "Komunikat od procesu o ID: " << odebranaWiadomosc.pobierzNumerPIDNadawcy() << " o tresci: " << odebranaWiadomosc.pobierzKomunikat() << std::endl;
+	//Pobranie Wiadomosci i usuniecie jej z odebranych
+	odebranaWiadomosc = listaOdebranychWiadomosci.front();
 	listaOdebranychWiadomosci.pop_front();
 	return true;
 }
@@ -118,25 +117,44 @@ int KomunikacjaMiedzyprocesowa::znajdzIndeksWSpisie(int deskryptorPoszukiwanegoG
 KomunikacjaMiedzyprocesowa::KomunikacjaMiedzyprocesowa() {}
 
 //Pierwszy rozkaz dla Interpretera - odebranie komunikatu
-bool KomunikacjaMiedzyprocesowa::rozkazOdebraniaKomunikatu(int numerIDProcesuOdbiorcy)
+Wiadomosc KomunikacjaMiedzyprocesowa::rozkazOdebraniaKomunikatu(int numerIDProcesuOdbiorcy)
 {
-	//?????????????????????
+	Wiadomosc odebranaWiadomosc(0, "");
 	PCB* wskaznikNaProcesOdbiorcy = zarzadzanieProcesami.znajdzProces(numerIDProcesuOdbiorcy);
 	if (wskaznikNaProcesOdbiorcy->dajDeskryptorGniazda() == 0)
 	{
 		stworzNoweGniazdoDlaProcesu(numerIDProcesuOdbiorcy);
 	}
 	int indeksGniazdaOdbiorcy = znajdzIndeksWSpisie(wskaznikNaProcesOdbiorcy->dajDeskryptorGniazda());
-	if (spisWszystkichGniazd[indeksGniazdaOdbiorcy].wyswietlWiadomosc() == false)
+	if (spisWszystkichGniazd[indeksGniazdaOdbiorcy].pobierzWiadomosc(odebranaWiadomosc) == false)
 	{
 		//ZABLOKUJ PROCES O NUMERZE ID = numerIDProcesuOdbiorcy;
-	wskaznikNaProcesOdbiorcy->ustawStatus(2);
-		return false;
+		wskaznikNaProcesOdbiorcy->ustawStatus(2);
+		return odebranaWiadomosc;
 	}
 	else {
-		std::cout << "Komunikat zostal odebrany i wyswietlony. Program powinien kontynuowac dzialanie." << std::endl;
+		return odebranaWiadomosc;
+	}
+
+	/*
+	//?????????????????????
+	PCB* wskaznikNaProcesOdbiorcy = zarzadzanieProcesami.znajdzProces(numerIDProcesuOdbiorcy);
+	if (wskaznikNaProcesOdbiorcy->dajDeskryptorGniazda() == 0)
+	{
+	stworzNoweGniazdoDlaProcesu(numerIDProcesuOdbiorcy);
+	}
+	int indeksGniazdaOdbiorcy = znajdzIndeksWSpisie(wskaznikNaProcesOdbiorcy->dajDeskryptorGniazda());
+	if (spisWszystkichGniazd[indeksGniazdaOdbiorcy].wyswietlWiadomosc() == false)
+	{
+	//ZABLOKUJ PROCES O NUMERZE ID = numerIDProcesuOdbiorcy;
+	wskaznikNaProcesOdbiorcy->ustawStatus(2);
+	return false;
+	}
+	else {
+	std::cout << "Komunikat zostal odebrany i wyswietlony. Program powinien kontynuowac dzialanie." << std::endl;
 	}
 	return true;
+	*/
 }
 
 //Drugi rozkaz dla Interpretera - wyslanie komunikatu

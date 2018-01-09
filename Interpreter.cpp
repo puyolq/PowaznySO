@@ -4,7 +4,8 @@
 #include <fstream>
 
 #include"Interpreter.h"
-
+#include <algorithm>
+#include <cctype>
 
 Interpreter interpreter;
 
@@ -28,16 +29,20 @@ Interpreter::~Interpreter() {};
 //Wpisywanie programu z TXT do RAM          
 void Interpreter::WpiszDoRam(PCB *pcb, std::string program) {
 	std::string pom;
+	std::string pom2 = "";
 	program = program + ".txt";
 	std::fstream plik;
 	plik.open(program, std::ios::in);
-	if (plik.good() == true) {
-		getline(plik, pom);
+	if (plik.good() == false) {
+		std::cout << "Nie ma takiego programu" << std::endl;
 	}
 	else {
+		while (getline(plik, pom)) {
+			pom2 = pom2 + pom + '\00';
+		}
 
 	}
-	ram.addToMem(pcb, pom);
+	ram.addToMem(pcb, pom2);
 }
 
 //Wypisywanie stanow rejestrow aktualnie zapisanych w interpreterze 
@@ -86,18 +91,53 @@ void Interpreter::UstawRejestr() {
 	kolejkaGotowych.glowa->proces->ustawRamLokalizacja(LokalizacjaProgramu);
 }
 
-void Interpreter::WpiszDoKomorki(int lokalizacja, std::string dane)
+//obsluga bledow fo komend na dysku
+void Interpreter::obsluzBledy(short blad)
 {
-
+	//  1 : wszystko ok;
+	// -1 : B³edna nazwa folderu
+	//- 2 : Nie odnaleziono pliku.
+	//- 3 : Semafor zablokowany, brak dostepu.
+	//- 4 : Brak miejsca na dysku.
+	//- 5 : W folderze nie mozna utworzyc nowych podfolderow.
+	//- 6 : Nazwa nie jest jednoznaczna.
+	if (blad == 1) {
+		//...dobrze
+	}
+	else if (blad == -1) {
+		std::clog << "Blad programu: Bledna nazwa folderu" << std::endl;
+	}
+	else if (blad == -2) {
+		std::clog << "Blad programu: Plik nie istnieje" << std::endl;
+	}
+	else if (blad == -3) {
+		//...PCB
+	}
+	else if (blad == -4) {
+		std::clog << "Blad programu: Brak miejsca na dysku" << std::endl;
+	}
+	else if (blad == -5) {
+		std::clog << "Blad programu: W folderze nie mozna utworzyc nowych podfolderow" << std::endl;
+	}
+	else if (blad == -6) {
+		std::clog << "Blad programu: Plik juz istnieje w folderze" << std::endl;
+	}
+	else
+	{
+		std::clog << "Blad programu: Blad nie jest rozpatrywany" << std::endl;
+	}
 }
+
+//sprawdzanie czy dany string to liczba
+bool Interpreter::CzyStringLiczba(std::string& s)
+{
+	return !s.empty() && std::find_if(s.begin(), s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
+	return true;
+}
+
 
 //Wykonywanie programu
 void Interpreter::WykonywanieProgramu() {
-	//dodac pobieranie rejestrow od bartosza i sprawdzanie liczby wykonanych rozkazow
-	//...
-	//...
-	//...
-	//...
 	PobierzRejestry();
 	if (LokalizacjaProgramu != -1) {
 		if (Rozkaz != "EX") {
@@ -129,19 +169,25 @@ void Interpreter::WykonywanieProgramu() {
 						A += D;
 					};
 					//Sumowanie Rejestr RAM
-					/*
-					if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							A += stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							A += 0;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}
-					*/
+
 
 					//Sumowanie Rejestr Liczba
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -163,18 +209,23 @@ void Interpreter::WykonywanieProgramu() {
 						B += D;
 					};
 					//Sumowanie Rejestr RAM
-					/*
-					if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							B += stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							B += 0;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}*/
 
 					//Sumowanie Rejestr Liczba
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -196,18 +247,23 @@ void Interpreter::WykonywanieProgramu() {
 						C += D;
 					};
 					//Sumowanie Rejestr RAM
-					/*
-					if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							C += stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							C += 0;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}*/
 
 					//Sumowanie Rejestr Liczba
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -230,19 +286,23 @@ void Interpreter::WykonywanieProgramu() {
 						D += A;
 					};
 					//Sumowanie Rejestr RAM
-					/*
-					if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							D += stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							D += 0;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}
-					*/
 
 					//Sumowanie Rejestr Liczba
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -347,9 +407,15 @@ void Interpreter::WykonywanieProgramu() {
 						if (pom == 1) liczba += Dane[i];
 					}
 					Indeks = stoi(indeks);
-					//TU MUSZE CIE WYWOLAC Z 
-					// Dodac funkce wpisujaca do ramo dowolna warotcs 
-					ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, liczba);
+					if (liczba[0] == '~') {
+						if (liczba[1] == 'A') { ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, std::to_string(A)); }
+						if (liczba[1] == 'B') { ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, std::to_string(B)); }
+						if (liczba[1] == 'C') { ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, std::to_string(C)); }
+						if (liczba[1] == 'D') { ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, std::to_string(D)); }
+					}
+					else {
+						ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, liczba);
+					}
 				}
 
 			}
@@ -412,19 +478,24 @@ void Interpreter::WykonywanieProgramu() {
 						A -= D;
 					};
 					//Odejmowanie z rejestru watosci z ramu
-					/*
-					if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							A -= stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							A -= 0;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}
-					*/
 
 					//Odejmowanie od rejestru danej liczby 
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -446,19 +517,24 @@ void Interpreter::WykonywanieProgramu() {
 						B -= D;
 					};
 					//Odejmowanie z rejestru watosci z ramu
-					/*
-					if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							B -= stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							B -= 0;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}
-					*/
 
 					//Odejmowanie od rejestru danej liczby 
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -482,17 +558,24 @@ void Interpreter::WykonywanieProgramu() {
 					};
 
 					//Odejmowanie z rejestru watosci z ramu
-					/*if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							C -= stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							C -= 0;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}*/
 
 					//Odejmowanie od rejestru danej liczby 
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -516,18 +599,24 @@ void Interpreter::WykonywanieProgramu() {
 						D -= A;
 					};
 					//Odejmowanie z rejestru watosci z ramu
-					/*
-					if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							D -= stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							D -= 0;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}*/
 
 					//Odejmowanie od rejestru danej liczby 
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -556,18 +645,24 @@ void Interpreter::WykonywanieProgramu() {
 						A *= D;
 					};
 					//mnozenie rejetr ram
-					/*
-					if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							A *= stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							A = A;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}*/
 
 					//Mnozenie rejestr liczba 
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -589,18 +684,24 @@ void Interpreter::WykonywanieProgramu() {
 						B *= D;
 					};
 					//Mnozenie rejestr ram
-					/*
-					if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							B *= stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							B = B;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}*/
 
 					//Mnozenie rejestr liczba 
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -622,18 +723,24 @@ void Interpreter::WykonywanieProgramu() {
 						C *= D;
 					};
 					//Mnozenie rejestr ram
-					/*
-					if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							C *= stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							C = C;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}*/
 
 					//Mnozenie rejestr liczba 
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -657,18 +764,24 @@ void Interpreter::WykonywanieProgramu() {
 						D *= A;
 					};
 					//Mnozenie rejestr ram
-					/*
-					if (Pom == "[") {
-					std::string indeks;
-					int Indeks;
-					int i = 4;
-					while (Dane[i] != ']') {
-					indeks += Dane[i];
-					i++;
+
+					if (Pom[0] == '[') {
+						std::string indeks;
+						int Indeks;
+						int i = 1;
+						while (Pom[i] != ']') {
+							indeks += Pom[i];
+							i++;
+						}
+						Indeks = stoi(indeks);
+						if (CzyStringLiczba(ram.showProcess(Indeks))) {
+							D *= stoi(ram.showProcess(Indeks));
+						}
+						else {
+							//////////////////////////////////////////////DO USTALENIA ///////////////////////////////////////////////////
+							D = D;
+						}
 					}
-					Indeks = stoi(indeks);
-					//A += RAM[indeks];  wartosc zwracana z dnej komurki
-					}*/
 
 					//Mnozenie rejestr liczba 
 					if (Pom[0] == '0' || Pom[0] == '1' || Pom[0] == '2' || Pom[0] == '3' || Pom[0] == '4' || Pom[0] == '5' || Pom[0] == '6' || Pom[0] == '7' || Pom[0] == '8' || Pom[0] == '9') {
@@ -698,7 +811,10 @@ void Interpreter::WykonywanieProgramu() {
 						rozszerzenie += Dane[i];
 					}
 				}
-				dysk.utworzPlik(nazwa, rozszerzenie);
+				if (dysk.utworzPlik(nazwa, rozszerzenie) != 1) {
+					obsluzBledy(dysk.utworzPlik(nazwa, rozszerzenie));
+					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+				};
 			}
 
 			//Wpisywanie danych do pliku - dzia³a 
@@ -727,20 +843,35 @@ void Interpreter::WykonywanieProgramu() {
 				}
 				if (dane[0] == '~') {
 					if (dane[1] == 'A') {
-						dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces);
+						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1) {
+							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
+							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+						};
 					}
 					if (dane[1] == 'B') {
-						dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(B), kolejkaGotowych.glowa->proces);
+						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(B), kolejkaGotowych.glowa->proces) != 1) {
+							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
+							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+						};
 					}
 					if (dane[1] == 'C') {
-						dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(C), kolejkaGotowych.glowa->proces);
+						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(C), kolejkaGotowych.glowa->proces) != 1) {
+							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
+							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+						};
 					}
 					if (dane[1] == 'D') {
-						dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(D), kolejkaGotowych.glowa->proces);
+						if (dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(D), kolejkaGotowych.glowa->proces) != 1) {
+							obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
+							ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+						};
 					}
 				}
 				else {
-					dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, kolejkaGotowych.glowa->proces);
+					if (dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, kolejkaGotowych.glowa->proces) != 1) {
+						obsluzBledy(dysk.zapiszDoPliku(nazwa, rozszerzenie, std::to_string(A), kolejkaGotowych.glowa->proces) != 1);
+						ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+					};
 				}
 				dysk.zamknijPlik(nazwa, rozszerzenie, kolejkaGotowych.glowa->proces);
 			}
@@ -758,11 +889,15 @@ void Interpreter::WykonywanieProgramu() {
 						break;
 					}
 				}
-				dysk.utworzFolder(folder1, folder2);
+				if (dysk.utworzFolder(folder1, folder2) != 1) {
+					obsluzBledy(dysk.utworzFolder(folder1, folder2) != 1);
+					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+				};
 			}
 
 			//Rozkazy do procesow
 
+			//wysylanie wiadomosci
 			else if (Symbol == "SM") {
 				PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
 				std::string odbiorca = "";
@@ -776,12 +911,14 @@ void Interpreter::WykonywanieProgramu() {
 					else
 						break;
 				}
-				if (komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(), odbiorca, Dane.substr(a, Dane.size() - a)) == false)
+				std::string wys = Dane.substr(a + 1, Dane.size() - a - 1);
+				if (komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(), odbiorca, wys) == false)
 				{
 					return;
 				}
 			}
 
+			//wysylanie wiadomosci pobranej z pliku na dysku
 			else if (Symbol == "SP") {
 				PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
 				std::string odbiorca = "";
@@ -805,24 +942,55 @@ void Interpreter::WykonywanieProgramu() {
 				a++;
 				rozszerzenie += Dane.substr(a, Dane.size() - a);
 				pobieDane wyjscie = dysk.pobierzDane(plik, rozszerzenie, procesTymczasowy);
-				std::string komunikat = wyjscie.dane;
-				if (komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(), odbiorca, komunikat) == false)
-				{
-					return;
+				int stan = wyjscie.blad;
+				if (stan == 1) {
+					std::string komunikat = wyjscie.dane;
+					if (komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(), odbiorca, komunikat) == false)
+					{
+						return;
+					}
+				}
+				else {
+					obsluzBledy(stan);
+					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
 				}
 			}
 
+			//czytanie wiadomosci 
 			else if (Symbol == "RM") {
 				PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
-				if (komunikacja.rozkazOdebraniaKomunikatu(kolejkaGotowych.glowa->proces->dajId()) == false) {
-					LicznikRozkazow -= 4;
+				Wiadomosc odebranaWiadomosc = komunikacja.rozkazOdebraniaKomunikatu(kolejkaGotowych.glowa->proces->dajId());
+				if (odebranaWiadomosc.pobierzKomunikat() == "") {
+					LicznikRozkazow -= 3;
 					procesTymczasowy->ustawLicznikRozkazow(LicznikRozkazow);
 					return;
 				}
+				std::cout << "Komunikat od procesu o ID: " << odebranaWiadomosc.pobierzNumerPIDNadawcy() << " o tresci: " << odebranaWiadomosc.pobierzKomunikat() << std::endl;
 			}
 
-			else if (Symbol == "") {
-
+			//DLACZEGO USUWA PROCES W RZ Z USUNIECIEM PROCESU SM
+			//czytanie wiadomosci i zapis na dysku do pliku 
+			else if (Symbol == "RP") {
+				PCB* procesTymczasowy = kolejkaGotowych.glowa->proces;
+				Wiadomosc odebranaWiadomosc = komunikacja.rozkazOdebraniaKomunikatu(kolejkaGotowych.glowa->proces->dajId());
+				int a = 0;
+				std::string plik;
+				std::string rozszerzenie;
+				while (Dane[a] != '.') {
+					plik += Dane[a];
+					a++;
+				}
+				a++;
+				rozszerzenie += Dane.substr(a, Dane.size() - a);
+				if (odebranaWiadomosc.pobierzKomunikat() == "") {
+					LicznikRozkazow -= (plik.size() + rozszerzenie.size() + 5);
+					procesTymczasowy->ustawLicznikRozkazow(LicznikRozkazow);
+					return;
+				}
+				if (dysk.zapiszDoPliku(plik, rozszerzenie, odebranaWiadomosc.pobierzKomunikat(), kolejkaGotowych.glowa->proces) != 1) {
+					obsluzBledy(dysk.zapiszDoPliku(plik, rozszerzenie, odebranaWiadomosc.pobierzKomunikat(), kolejkaGotowych.glowa->proces) != 1);
+					ram.deleteFromMem(kolejkaGotowych.glowa->proces);
+				}
 			}
 
 			else {
@@ -834,10 +1002,9 @@ void Interpreter::WykonywanieProgramu() {
 			UstawRejestr();
 		}
 		else {
-			UstawRejestr();
+			//UstawRejestr();
 			kolejkaGotowych.uruchomEkspedytor(true);
-			NumerRozkazu = 0; //dodano - test
-			PobierzRejestry();
+			//PobierzRejestry();
 			return;
 		}
 		NumerRozkazu++;
@@ -852,3 +1019,4 @@ void Interpreter::WykonywanieProgramu() {
 		//kolejkaGotowych.glowa->proces.usunProces(kolejkaGotowych.glowa->proces);
 	}
 }
+
