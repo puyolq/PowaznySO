@@ -6,4 +6,5 @@
 *.ipch
 x64/
 Debug/
+.vs/
 *.obj
