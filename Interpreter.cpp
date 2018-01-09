@@ -110,9 +110,9 @@ void Interpreter::WykonywanieProgramu() {
 				Symbol = Rozkaz.substr(0, 2); // Rozkaz memoniczny
 				Dane = Rozkaz.substr(3, Rozkaz.length() - 3); //Dane od danego rozkazu
 			}
-														  //Rozkazy Asemblerowe
+			//Rozkazy Asemblerowe
 
-														  //Dodawanie
+			//Dodawanie
 			if (Symbol == "AD") {
 				std::string rejestr = Dane.substr(0, 1);
 				std::string Pom = Dane.substr(2, Dane.size() - 2);
@@ -804,7 +804,8 @@ void Interpreter::WykonywanieProgramu() {
 				}
 				a++;
 				rozszerzenie += Dane.substr(a, Dane.size() - a);
-				std::string komunikat = dysk.pobierzDane(plik, rozszerzenie, procesTymczasowy);
+				pobieDane wyjscie = dysk.pobierzDane(plik, rozszerzenie, procesTymczasowy);
+				std::string komunikat = wyjscie.dane;
 				if (komunikacja.rozkazWyslaniaKomunikatu(kolejkaGotowych.glowa->proces->dajId(), odbiorca, komunikat) == false)
 				{
 					return;
@@ -847,8 +848,7 @@ void Interpreter::WykonywanieProgramu() {
 		std::clog << std::endl;
 	}
 	else {
-	zarzadzanieProcesami.usunProces(kolejkaGotowych.glowa->proces->dajId());
-	//kolejkaGotowych.glowa->proces.usunProces(kolejkaGotowych.glowa->proces);
+		zarzadzanieProcesami.usunProces(kolejkaGotowych.glowa->proces->dajId());
+		//kolejkaGotowych.glowa->proces.usunProces(kolejkaGotowych.glowa->proces);
 	}
 }
-

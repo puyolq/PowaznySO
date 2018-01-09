@@ -1,7 +1,7 @@
 #pragma once
 #include "ZarzadzanieProcesami.h" //Bartosz Ptak
 #include <vector>
-#define RAM_SIZE 32
+#define RAM_SIZE 128
 
 class RAM {
 

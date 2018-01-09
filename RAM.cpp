@@ -237,7 +237,7 @@ void RAM::deleteFromMem(PCB* a)
 
 void RAM::showRam()
 {
-	system("cls");
+	//system("cls");
 	for (int i = 0; i < RAM_SIZE; i++)
 	{
 		if (i % 8 != 0) {
