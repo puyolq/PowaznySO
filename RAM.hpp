@@ -1,12 +1,12 @@
 #pragma once
 #include "ZarzadzanieProcesami.h" //Bartosz Ptak
 #include <vector>
-#define RAM_SIZE 126
-
+#define RAM_SIZE 123
+#define TRU_RAM_SIZE 128
 class RAM {
 
 	//PCB *pcb = new PCB();
-	char RAM_Content[RAM_SIZE + 2]; // caly ram 
+	char RAM_Content[TRU_RAM_SIZE]; // caly ram 
 	int freeRAM; //dostepna wolna pamiec
 	void defragment(); //defragmentacja
 	void rewrite(int base1, int base2, int size);

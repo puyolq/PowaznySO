@@ -187,7 +187,10 @@ RAM::RAM()
 	start.limit = RAM_SIZE;
 	freeBlocks.push_back(start);//tworze blok wolnej pamieci o wielkosci RAM_SIZE
 	RAM_Content[RAM_SIZE] = 'J';
-	RAM_Content[RAM_SIZE+1] = 'P';
+	RAM_Content[RAM_SIZE + 1] = 'P';
+	RAM_Content[RAM_SIZE] = ' ';
+	RAM_Content[RAM_SIZE + 1] = '3';
+	RAM_Content[RAM_SIZE] = '\00';
 }
 
 void RAM::addToMem(PCB* a, std::string polecenie)
@@ -242,7 +245,7 @@ void RAM::deleteFromMem(PCB* a)
 void RAM::showRam()
 {
 	//system("cls");
-	for (int i = 0; i < RAM_SIZE; i++)
+	for (int i = 0; i < TRU_RAM_SIZE; i++)
 	{
 		if (i % 8 != 0) {
 			std::cout << "|" << RAM_Content[i] << "|";

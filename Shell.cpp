@@ -8,7 +8,8 @@ using namespace std;
 Shell::Shell()
 {
 	clog << "Shell initialized" << endl;
-
+	idle.ustawStatus(3);
+	kolejkaGotowych.dodajDoKolejki(&idle);
 }
 
 void Shell::CP(std::string nazwa, std::string rodzic, std::string program)
@@ -48,7 +49,7 @@ void Shell::BC(std::string nazwa)
 void Shell::MP(std::string co, std::string dokad)
 {
 	if (zarzadzanieProcesami.znajdzProces(co) != nullptr && zarzadzanieProcesami.znajdzProces(dokad) != nullptr) {
-		zarzadzanieProcesami.przeniesPotomkow(co, dokad);
+		zarzadzanieProcesami.przeniesProces(co, dokad);
 	}
 	else
 		clog << "Jeden z procesow lub oba nie istnieja" << endl;
@@ -56,11 +57,14 @@ void Shell::MP(std::string co, std::string dokad)
 
 void Shell::GO()
 {
-	if (zarzadzanieProcesami.iloscProcesow() != 1 && kolejkaGotowych.rozmiarKolejki() > 0) {
+	if (zarzadzanieProcesami.iloscProcesow() != 1 && kolejkaGotowych.rozmiarKolejki()>0) {
 
 		interpreter.PobierzRozkaz(kolejkaGotowych.glowa->proces);
-		if (interpreter.Rozkaz != "")
+		if (interpreter.Rozkaz != "") {
+			std::cout << " ******************************" << std::endl;
+			std::cout << " Proces aktywny: " << kolejkaGotowych.glowa->proces->dajNazwe() << std::endl;
 			std::cout << " ROZKAZ: " << interpreter.Rozkaz << std::endl;
+		}
 		interpreter.WykonywanieProgramu();
 
 	}
@@ -84,53 +88,53 @@ void Shell::MS()
 }
 
 
-void Shell::MF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu, PCB* proces)
+void Shell::MF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
 {
-	dysk.utworzPlik(nazwa, rozszerzenie, proces, nazwaFolderu);
-	obsluzBledy(proces->dajBlad());
+	short wyjscie = dysk.utworzPlik(nazwa, rozszerzenie, nazwaFolderu);
+	obsluzBledy(wyjscie);
 }
 
-void Shell::DF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu, PCB* proces)
+void Shell::DF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu)
 {
-	dysk.usunPlik(nazwa, rozszerzenie, proces, nazwaFolderu);
-	obsluzBledy(proces->dajBlad());
+	short wyjscie = dysk.usunPlik(nazwa, rozszerzenie, nazwaFolderu);
+	obsluzBledy(wyjscie);
 }
 
-void Shell::RF(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu, PCB* proces)
+void Shell::RF(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu)
 {
-	dysk.zmienNazwePliku(nazwa, rozszerzenie, proces, nowaNazwa, nazwaFolderu);
-	obsluzBledy(proces->dajBlad());
+	short wyjscie = dysk.zmienNazwePliku(nazwa, rozszerzenie, nowaNazwa, nazwaFolderu);
+	obsluzBledy(wyjscie);
 }
 
 void Shell::SF(std::string nazwa, std::string rozszerzenie, std::string dane, PCB * proces, std::string nazwaFolderu)
 {
-	dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, proces, nazwaFolderu);
-	obsluzBledy(proces->dajBlad());
+	short wyjscie = dysk.zapiszDoPliku(nazwa, rozszerzenie, dane, proces, nazwaFolderu);
+	obsluzBledy(wyjscie);
 	dysk.zamknijPlik(nazwa, rozszerzenie, proces, nazwaFolderu);
 }
 
 void Shell::PF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::string nazwaFolderu)
 {
-
-	string wyj = dysk.pobierzDane(nazwa, rozszerzenie, proces, nazwaFolderu);
-	obsluzBledy(proces->dajBlad());
-	cout << wyj << endl;
+	pobieDane wyj;
+	wyj = dysk.pobierzDane(nazwa, rozszerzenie, proces, nazwaFolderu);
+	obsluzBledy(wyj.blad);
+	cout << wyj.dane << endl;
 	dysk.zamknijPlik(nazwa, rozszerzenie, proces, nazwaFolderu);
 }
 
 void Shell::XF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::string nazwaFolderu)
 {
-	dysk.otworzStratnie(nazwa, rozszerzenie, proces, nazwaFolderu);
-	obsluzBledy(proces->dajBlad());
+	short wyjscie = dysk.otworzStratnie(nazwa, rozszerzenie, proces, nazwaFolderu);
+	obsluzBledy(wyjscie);
 	dysk.zamknijPlik(nazwa, rozszerzenie, proces, nazwaFolderu);
 }
 
 void Shell::OF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::string nazwaFolderu)
 {
-
-	string wyj = dysk.pobierzDane(nazwa, rozszerzenie, proces, nazwaFolderu);
-	obsluzBledy(proces->dajBlad());
-	cout << wyj << endl;
+	pobieDane wyj;
+	wyj = dysk.pobierzDane(nazwa, rozszerzenie, proces, nazwaFolderu);
+	obsluzBledy(wyj.blad);
+	cout << wyj.dane << endl;
 }
 
 void Shell::CF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::string nazwaFolderu)
@@ -141,27 +145,27 @@ void Shell::CF(std::string nazwa, std::string rozszerzenie, PCB * proces, std::s
 
 
 
-void Shell::MD(std::string nazwa, std::string nazwaNadrzednego, PCB* proces)
+void Shell::MD(std::string nazwa, std::string nazwaNadrzednego)
 {
-	dysk.utworzFolder(nazwa, proces, nazwaNadrzednego);
-	obsluzBledy(proces->dajBlad());
+	short wyjscie = dysk.utworzFolder(nazwa, nazwaNadrzednego);
+	obsluzBledy(wyjscie);
 }
 
-void Shell::AD(std::string nazwaDocelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem, PCB* proces)
+void Shell::AD(std::string nazwaDocelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem)
 {
-	dysk.dodajPlikDoKatalogu(nazwaDocelowego, nazwaPliku, proces, rozszerzenie, nazwaFolderuZPlikiem);
-	obsluzBledy(proces->dajBlad());
+	short wyjscie = dysk.dodajPlikDoKatalogu(nazwaDocelowego, nazwaPliku, rozszerzenie, nazwaFolderuZPlikiem);
+	obsluzBledy(wyjscie);
 }
 
-void Shell::DD(std::string nazwa, PCB* proces)
+void Shell::DD(std::string nazwa)
 {
 	int pozycja = dysk.znajdzFolder(nazwa);
 	if (pozycja == -1) {
 		clog << "Folder nie istnieje" << endl;
 	}
 	else {
-		dysk.usunFolder(pozycja, proces);
-		obsluzBledy(proces->dajBlad());
+		short wyjscie = dysk.usunFolder(pozycja);
+		obsluzBledy(wyjscie);
 	}
 }
 
@@ -274,18 +278,16 @@ void Shell::czytajWejscie(std::string wejscie)
 		PP();
 	}
 	else if (komenda == "MF") {
-		if (args.size() < 3)
+		if (args.size() <3)
 			cout << "niepoprawne uzycie komendy" << endl;
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
-			CP("plikcostam", "init", "");
-			MF(args[1], args[2], args[3], zarzadzanieProcesami.znajdzProces("plikcostam"));
-			DP("plikcostam");
+			MF(args[1], args[2], args[3]);
 		}
 	}
 	else if (komenda == "DF") {
-		if (args.size() < 3)
+		if (args.size() <3)
 			cout << "niepoprawne uzycie komendy" << endl;
 		else {
 			if (args.size() != 4)
@@ -294,11 +296,8 @@ void Shell::czytajWejscie(std::string wejscie)
 				clog << "Nie znaleziono pliku." << endl;
 				return;
 			}
-			else {
-				CP("plikcostam", "init", "");
-				DF(args[1], args[2], args[3], zarzadzanieProcesami.znajdzProces("plikcostam"));
-				DP("plikcostam");
-			}
+			else
+				DF(args[1], args[2], args[3]);
 		}
 	}
 	else if (komenda == "RF") {
@@ -311,34 +310,27 @@ void Shell::czytajWejscie(std::string wejscie)
 				clog << "Nie znaleziono pliku." << endl;
 				return;
 			}
-			else {
-				CP("plikcostam", "init", "");
-				RF(args[1], args[2], args[3], args[4], zarzadzanieProcesami.znajdzProces("plikcostam"));
-				DP("plikcostam");
-			}
+			else
+				RF(args[1], args[2], args[3], args[4]);
 		}
 	}
 
 	else if (komenda == "MD") {
-		if (args.size() < 2)
+		if (args.size() <2)
 			cout << "niepoprawne uzycie komendy" << endl;
 		else {
 			if (args.size() != 3)
 				args.push_back("Dysk");
-			CP("plikcostam", "init", "");
-			MD(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"));
-			DP("plikcostam");
+			MD(args[1], args[2]);
 		}
 	}
 	else if (komenda == "AD") {
-		if (args.size() < 4)
+		if (args.size() <4)
 			cout << "niepoprawne uzycie komendy" << endl;
 		else {
 			if (args.size() != 5)
 				args.push_back("Dysk");
-			CP("plikcostam", "init", "");
-			AD(args[1], args[2], args[3], args[4], zarzadzanieProcesami.znajdzProces("plikcostam"));
-			DP("plikcostam");
+			AD(args[1], args[2], args[3], args[4]);
 		}
 	}
 	else if (komenda == "DD") {
@@ -347,11 +339,8 @@ void Shell::czytajWejscie(std::string wejscie)
 		else if (args[1] == "Dysk") {
 			clog << "Nie mozna usunac katalogu glownego" << endl;
 		}
-		else {
-			CP("plikcostam", "init", "");
-			DD(args[1], zarzadzanieProcesami.znajdzProces("plikcostam"));
-			DP("plikcostam");
-		}
+		else
+			DD(args[1]);
 	}
 	else if (komenda == "FD") {
 		if (args.size() != 2)
@@ -504,8 +493,11 @@ void Shell::czytajWejscie(std::string wejscie)
 			else {
 				std::string temp = "";
 
+				vector<string> bledy = dysk.bledy();
 
-
+				for (auto e : bledy) {
+					std::clog << e << std::endl;
+				}
 				for (auto e : PlikiProcesy) {
 					if (e.nazwaPliku == args[1] && e.rozszerzeniePliku == args[2]) {
 						temp = e.nazwaProcesu;
@@ -557,6 +549,12 @@ void Shell::czytajWejscie(std::string wejscie)
 	else if (komenda == "help") {
 		help();
 	}
+	else if (komenda == "test") {
+		if (args.size() != 2)
+			cout << "niepoprawne uzycie komendy" << endl;
+		else
+			zarzadzanieProcesami.usunProces(stoi(args[1]));
+	}
 	else {
 		clog << "Niepoprawna komenda. Sprawdz 'help'" << endl;
 	}
@@ -605,9 +603,37 @@ void Shell::ladujSkrypt(string nazwa)
 
 void Shell::obsluzBledy(short blad)
 {
-	if (blad)
+	//  1 : wszystko ok;
+	// -1 : B³edna nazwa folderu
+	//- 2 : Nie odnaleziono pliku.
+	//- 3 : Semafor zablokowany, brak dostepu.
+	//- 4 : Brak miejsca na dysku.
+	//- 5 : W folderze nie mozna utworzyc nowych podfolderow.
+	//- 6 : Nazwa nie jest jednoznaczna.
+	if (blad == 1) {
+		//...dobrze
+	}
+	else if (blad == -1) {
+		clog << "Bledna nazwa folderu" << endl;
+	}
+	else if (blad == -2) {
+		clog << "Nie odnaleziono pliku" << endl;
+	}
+	else if (blad == -3) {
+		//...PCB
+	}
+	else if (blad == -4) {
+		clog << "Brak miejsca na dysku" << endl;
+	}
+	else if (blad == -5) {
+		clog << "W folderze nie mozna utworzyc nowych podfolderow" << endl;
+	}
+	else if (blad == -6) {
+		clog << "Nazwa nie jest jednoznaczna" << endl;
+	}
+	else
 	{
-		std::cout << "Wystapil blad.\n";
+		clog << "Blad nie jest rozpatrywany" << endl;
 	}
 }
 
