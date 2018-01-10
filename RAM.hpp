@@ -18,20 +18,20 @@ class RAM {
 	std::vector<writtenBlock> writtenBlocks;//bloki pamieci
 	bool isFreeBlock(int a); // Sprawdza dostêpn¹ pamiêæ (blok)
 	void FBRemove(PCB*a);//usuniecie wolnego bloku
-	void memWrite(PCB* a, std::string polecenie);//Zapisywanie w pamieci
-	void RAM::WriteToRam(std::string a, writtenBlock &writtenTo, int localisation);//wpisywanie do ramu
+	void memWrite(PCB* a, std::string polecenie, int claimed);//Zapisywanie w pamieci
 	void memMerge();//laczy 2 wolne bloki w 1 jezeli sa obok siebie
-	void deleteWritten(int base);// usuwa wpisane
+	
+	int findStack(int base);
 public:
 	RAM(); // konstruktor
 
-	void addToMem(PCB*a, std::string polecenie); //dodaj do pamieci
+	void addToMem(PCB*a, std::string polecenie, int claimedSpace); //dodaj do pamieci
 	void deleteFromMem(PCB*a); //usun z pamieci
 	void showRam();//wypisz cala zawartosc
 	void showRange(int start, int lenght);
 	std::string showProcess(int base);
-	void saveToRam(int a, int localisation, std::string value);// wpisuje wartosc poczawszy od komorki podanej przez assembler
-
+	void saveToRam(PCB* b, std::string a, int localisation);// wpisuje wartosc poczawszy od komorki podanej przez assembler do pola przydzielonego (od 1)
+	std::string memRead(PCB* b, int localisation); // zwraca komorke pamieci przydzielonej programowi( numerowanie od 0)
 
 
 															   ///////////// DO WYJEBANIA //////////////////////

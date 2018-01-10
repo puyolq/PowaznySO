@@ -28,6 +28,8 @@ Interpreter::~Interpreter() {};
 
 //Wpisywanie programu z TXT do RAM          
 void Interpreter::WpiszDoRam(PCB *pcb, std::string program) {
+	// TODO musisz to jakos ladniej ogarnac
+	int pamiecZajeta = 0; // domyslna ilosc pamieci zajetej przez program przez ex
 	std::string pom;
 	std::string pom2 = "";
 	program = program + ".txt";
@@ -42,7 +44,7 @@ void Interpreter::WpiszDoRam(PCB *pcb, std::string program) {
 		}
 
 	}
-	ram.addToMem(pcb, pom2);
+	ram.addToMem(pcb, pom2, pamiecZajeta);
 }
 
 //Wypisywanie stanow rejestrow aktualnie zapisanych w interpreterze 
@@ -408,13 +410,13 @@ void Interpreter::WykonywanieProgramu() {
 					}
 					Indeks = stoi(indeks);
 					if (liczba[0] == '~') {
-						if (liczba[1] == 'A') { ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, std::to_string(A)); }
-						if (liczba[1] == 'B') { ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, std::to_string(B)); }
-						if (liczba[1] == 'C') { ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, std::to_string(C)); }
-						if (liczba[1] == 'D') { ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, std::to_string(D)); }
+						if (liczba[1] == 'A') { ram.saveToRam(kolejkaGotowych.glowa->proces,liczba,Indeks); }
+						if (liczba[1] == 'B') { ram.saveToRam(kolejkaGotowych.glowa->proces, liczba, Indeks);}
+						if (liczba[1] == 'C') { ram.saveToRam(kolejkaGotowych.glowa->proces, liczba, Indeks); }
+						if (liczba[1] == 'D') { ram.saveToRam(kolejkaGotowych.glowa->proces, liczba, Indeks); }
 					}
 					else {
-						ram.saveToRam(kolejkaGotowych.glowa->proces->dajRamLokalizacja(), Indeks, liczba);
+						ram.saveToRam(kolejkaGotowych.glowa->proces, liczba, Indeks);
 					}
 				}
 
