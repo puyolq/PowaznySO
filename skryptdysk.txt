@@ -1,0 +1,6 @@
+PP
+MS
+CP 1 init testdysk1
+CP 2 1 testdysk2
+MS
+PP

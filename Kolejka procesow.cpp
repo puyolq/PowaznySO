@@ -23,7 +23,7 @@ KolejkaProcesow::~KolejkaProcesow(){
 void KolejkaProcesow::dodajDoKolejki(PCB* proces){
 	Wezel* temp1 = new Wezel(proces);
 	Wezel* temp2 = glowa;
-	if (!glowa || glowa == bezczynnosc){
+	if (!glowa || glowa->proces == bezczynnosc->proces){
 		glowa = temp1;
 		glowa->proces->ustawStatus(3);
 		ogon = glowa;

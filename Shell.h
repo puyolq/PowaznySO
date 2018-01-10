@@ -11,7 +11,7 @@
 #include "Interpreter.h"
 #include "Wyjatki.h"
 #include <algorithm>
-
+#include <cctype>
 
 class Shell {
 public:
@@ -39,17 +39,20 @@ public:
 
 
 	//tworzenie pliku
-	void MF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu);
+	void MF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu, PCB* proces);
 	//usuwanie pliku
-	void DF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu);
+	void DF(std::string nazwa, std::string rozszerzenie, std::string nazwaFolderu, PCB* proces);
 	//zmiana nazwy pliku
-	void RF(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu);
+	void RF(std::string nazwa, std::string rozszerzenie, std::string nowaNazwa, std::string nazwaFolderu, PCB* proces);
 
 	//zapis do pliku
 	void SF(std::string nazwa, std::string rozszerzenie, std::string dane, PCB* proces, std::string nazwaFolderu);
 
 	//pobranie danych z pliku
 	void PF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu);
+
+	//pobranie wycinka danych z pliku
+	void PE(std::string nazwa, std::string rozszerzenie, PCB* proces, int pozycjaStartowa, int ileZnakow, std::string nazwaFolderu);
 
 	//otwieranie stratnie
 	void XF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu);
@@ -61,13 +64,11 @@ public:
 	void CF(std::string nazwa, std::string rozszerzenie, PCB* proces, std::string nazwaFolderu);
 
 	//tworzenie folderu
-	void MD(std::string nazwa, std::string nazwaNadrzednego);
+	void MD(std::string nazwa, std::string nazwaNadrzednego, PCB* proces);
 	//dodawanie pliku do katalogu
-	void AD(std::string nazwaDocelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem);
+	void AD(std::string nazwaDocelowego, std::string nazwaPliku, std::string rozszerzenie, std::string nazwaFolderuZPlikiem, PCB* proces);
 	//usuwanie folderu
-	void DD(std::string nazwa);
-	//szukanie folderu
-	void FD(std::string nazwa);
+	void DD(std::string nazwa, PCB* proces);
 
 	//wypisanie drzewa plikow i katalogow na dysku
 	void PT();
@@ -86,6 +87,8 @@ public:
 	void WQ();
 	//wypisz niezajete i zajete bloczki RAM
 	void RB();
+	//wypisz gniazda
+	void PS();
 	//spis komend
 	void help();
 
@@ -97,7 +100,7 @@ public:
 	bool wlaczone = false;
 
 	void obsluzBledy(short blad);
-
+	bool czyStringLiczba(std::string &s);
 	std::string random_string(size_t length);
 	struct PlikProces {
 		std::string nazwaProcesu;

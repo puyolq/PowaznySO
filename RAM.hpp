@@ -1,12 +1,12 @@
 #pragma once
 #include "ZarzadzanieProcesami.h" //Bartosz Ptak
 #include <vector>
-#define RAM_SIZE 126
-
+#define RAM_SIZE 125
+#define TRU_RAM_SIZE 128
 class RAM {
 
 	//PCB *pcb = new PCB();
-	char RAM_Content[RAM_SIZE + 2]; // caly ram 
+	char RAM_Content[TRU_RAM_SIZE]; // caly ram 
 	int freeRAM; //dostepna wolna pamiec
 	void defragment(); //defragmentacja
 	void rewrite(int base1, int base2, int size);
@@ -18,21 +18,20 @@ class RAM {
 	std::vector<writtenBlock> writtenBlocks;//bloki pamieci
 	bool isFreeBlock(int a); // Sprawdza dostêpn¹ pamiêæ (blok)
 	void FBRemove(PCB*a);//usuniecie wolnego bloku
-	void memWrite(PCB* a, std::string polecenie);//Zapisywanie w pamieci
-	void RAM::WriteToRam(std::string a, writtenBlock &writtenTo, int localisation);//wpisywanie do ramu
+	void memWrite(PCB* a, std::string polecenie, int claimed);//Zapisywanie w pamieci
 	void memMerge();//laczy 2 wolne bloki w 1 jezeli sa obok siebie
-	Semafory semaforRam;
-	void deleteWritten(int base);// usuwa wpisane
+	
+	int findStack(int base);
 public:
 	RAM(); // konstruktor
 
-	bool addToMem(PCB*a, std::string polecenie); //dodaj do pamieci
+	void addToMem(PCB*a, std::string polecenie, int claimedSpace); //dodaj do pamieci
 	void deleteFromMem(PCB*a); //usun z pamieci
 	void showRam();//wypisz cala zawartosc
 	void showRange(int start, int lenght);
 	std::string showProcess(int base);
-	void saveToRam(int a, int localisation, std::string value);// wpisuje wartosc poczawszy od komorki podanej przez assembler
-
+	void saveToRam(PCB* b, std::string a, int localisation);// wpisuje wartosc poczawszy od komorki podanej przez assembler do pola przydzielonego (od 1)
+	std::string memRead(PCB* b, int localisation); // zwraca komorke pamieci przydzielonej programowi( numerowanie od 0)
 
 
 															   ///////////// DO WYJEBANIA //////////////////////

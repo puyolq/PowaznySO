@@ -1,0 +1,4 @@
+CF aaa.bin
+CF bbb.cv
+WF aaa.r sdfd
+EX
