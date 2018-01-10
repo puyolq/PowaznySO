@@ -188,10 +188,13 @@ RAM::RAM()
 	freeBlocks.push_back(start);//tworze blok wolnej pamieci o wielkosci RAM_SIZE
 	RAM_Content[RAM_SIZE] = 'J';
 	RAM_Content[RAM_SIZE+1] = 'P';
+	Semafory sem(0);
+	semaforRam = sem;
 }
 
-void RAM::addToMem(PCB* a, std::string polecenie)
+bool RAM::addToMem(PCB* a, std::string polecenie)
 {
+	bool status = true;
 	if (a->ramRozmiar <= 0) { a->ramRozmiar = polecenie.size(); }
 	if (a->ramRozmiar <= freeRAM)
 	{
@@ -207,8 +210,11 @@ void RAM::addToMem(PCB* a, std::string polecenie)
 			freeRAM -= a->ramRozmiar;
 		}
 	}
-	else { std::cout << "Brak pamieci"; }
-
+	else {
+		semaforRam.wait(a);
+		status = false;
+	}
+	return status;
 }
 
 void RAM::deleteFromMem(PCB* a)

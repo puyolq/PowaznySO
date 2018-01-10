@@ -21,11 +21,12 @@ class RAM {
 	void memWrite(PCB* a, std::string polecenie);//Zapisywanie w pamieci
 	void RAM::WriteToRam(std::string a, writtenBlock &writtenTo, int localisation);//wpisywanie do ramu
 	void memMerge();//laczy 2 wolne bloki w 1 jezeli sa obok siebie
+	Semafory semaforRam;
 	void deleteWritten(int base);// usuwa wpisane
 public:
 	RAM(); // konstruktor
 
-	void addToMem(PCB*a, std::string polecenie); //dodaj do pamieci
+	bool addToMem(PCB*a, std::string polecenie); //dodaj do pamieci
 	void deleteFromMem(PCB*a); //usun z pamieci
 	void showRam();//wypisz cala zawartosc
 	void showRange(int start, int lenght);

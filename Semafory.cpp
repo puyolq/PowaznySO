@@ -6,6 +6,10 @@ Semafory::Semafory()
 	wartosc = 1;
 }
 
+Semafory::Semafory(int x) {
+	wartosc = x;
+}
+
 Semafory::~Semafory()
 {
 }
