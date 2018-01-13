@@ -1,4 +1,4 @@
-#include "ZarzadzanieProcesami.h"
+ï»¿#include "ZarzadzanieProcesami.h"
 #include "Kolejka procesow.hpp"
 #include "RAM.hpp"
 #include <iostream>
@@ -18,9 +18,10 @@ PCB::PCB(int _id, std::string _nazwa, PCB* _rodzic)
 	rej2 = 0;
 	rej3 = 0;
 	rej4 = 0;
-	blad = 0;
 	licznikRozkazow = 0;
 	ramLokalizacja = -1;
+	miejsceNaDane = 0;
+	nazwaProgramu = "";
 	if (_rodzic == nullptr) {
 		ramLokalizacja = RAM_SIZE;
 	}
@@ -36,7 +37,7 @@ PCB::~PCB()
 
 PCB* PCB::dodajProces(int id, std::string nazwa, std::string rodzic)
 {
-	if(znajdzProces(nazwa)!=nullptr) return nullptr;
+	if (znajdzProces(nazwa) != nullptr) return nullptr;
 	PCB* znajdz = znajdzProces(rodzic);
 	PCB* local;
 	if (znajdz != nullptr)
@@ -55,7 +56,7 @@ PCB* PCB::dodajProces(int id, std::string nazwa, std::string rodzic)
 
 void PCB::ustawStatus(int _status)
 {
-	if(_status>0 && _status<5)
+	if (_status>0 && _status<5)
 	{
 		//
 		//zmiana z nowy na gotowy
@@ -68,27 +69,44 @@ void PCB::ustawStatus(int _status)
 		else if (status == 1 && _status == 3) status = _status;
 		//zmiana z aktywny na gotowy
 		else if (status == 3 && _status == 1) status = _status;
-		//zmiana z aktywnego na oczekuj¹cy
+		//zmiana z aktywnego na oczekujï¿½cy
 		else if (status == 3 && _status == 2 || status == 1 && _status == 2)	//dodano z 1 na 2 ???
 		{
 			status = _status;
 			uspijProces(this);
 		}
-		//zmiana z oczekuj¹cego na gotowy
+		//zmiana z oczekujï¿½cego na gotowy
 		else if (status == 2 && _status == 1)
 		{
 			status = _status;
 			obudzProces(this);
 		}
-		//zmiana z aktywnego na zakoñczony
-		else if(status==3 && _status==4)
+		//zmiana z aktywnego na zakoï¿½czony
+		else if (status == 3 && _status == 4)
 		{
 			status = _status;
-			usunProces(this->dajNazwe()); //DAMIAN: skutkuje tym ¿e nigdy prcoes nie jest zakoñczony, PCB siê zeruje, dane wskazuj¹ce s¹ losowe
+			usunProces(this->dajNazwe()); //DAMIAN: skutkuje tym ï¿½e nigdy prcoes nie jest zakoï¿½czony, PCB siï¿½ zeruje, dane wskazujï¿½ce sï¿½ losowe
 		}
-		
+
 	}
 }
+
+void PCB::ustawProgram(std::string a) {
+	nazwaProgramu = a;
+}
+
+std::string PCB::dajProgram() {
+	return nazwaProgramu;
+}
+
+void PCB::ustawMiejsceNaDane(int a) {
+	miejsceNaDane = a;
+}
+
+int PCB::dajMiejsceNaDane() {
+	return miejsceNaDane;
+}
+
 
 int PCB::dajStatus()
 {
@@ -306,14 +324,14 @@ int PCB::dajId()
 	return id;
 }
 
-int PCB::dajBlad()
+bool PCB::dajBlad()
 {
-	return blad;
+	return flagaBledu;
 }
 
-void PCB::ustawBlad(int wartosc)
+void PCB::ustawBlad(bool wartosc)
 {
-	blad = wartosc;
+	flagaBledu = wartosc;
 }
 
 void PCB::usunProces(std::string nazwa)
@@ -322,12 +340,12 @@ void PCB::usunProces(std::string nazwa)
 	ram.deleteFromMem(local);
 	if (local != nullptr)
 	{
-		
+
 		PCB* ojciec = local->dajRodzica();
 		przeniesPotomkow(znajdzProces("init"), local);
 		//przeniesPotomkow(ojciec, local) popsulismy wczoraj
 		ojciec->usunPotomka(nazwa);
-		if(this->dajStatus() == 2)
+		if (this->dajStatus() == 2)
 			kolejkaOczekujacych.usunProces(local->dajId());
 		else
 			kolejkaGotowych.usunProces(local->dajId());
@@ -392,8 +410,8 @@ void PCB::przeniesPotomkow(PCB* init, PCB* doPrzeniesienia)
 	{
 		/*for (auto e : doPrzeniesienia->potomkowie)
 		{
-			e->ustawRodzica(init);
-			init->dodajPotomka(e);
+		e->ustawRodzica(init);
+		init->dodajPotomka(e);
 		}*/
 		for (int e = 0; e < doPrzeniesienia->potomkowie.size(); e++) {
 			doPrzeniesienia->potomkowie[e]->ustawRodzica(init);
@@ -441,6 +459,7 @@ void PCB::przeniesProces(PCB* proces)
 		proces->dodajPotomka(this);
 	}
 }
+
 
 /* ZARZADZANIE PROCESAMI */
 
@@ -507,13 +526,11 @@ void ZarzadzanieProcesami::usunProces(int pid)
 
 void ZarzadzanieProcesami::przeniesProces(std::string co, std::string dokad)
 {
-	if(co!=dokad)
+	if (co != dokad)
 		znajdzProces(co)->przeniesProces(znajdzProces(dokad));
-	else 
+	else
 		std::clog << "Proces nie moze zostac wlasnym rodzicem." << std::endl;
 }
-
-
 
 PCB* ZarzadzanieProcesami::znajdzProces(int pid)
 {

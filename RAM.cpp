@@ -100,7 +100,7 @@ void RAM::memWrite(PCB* a, std::string polecenie, int claimed)
 	if (claimed) { for (int i = 0; i < claimed; i++) { polecenie += '\u5350 '; } }
 	FBRemove(a);
 	int j = 0;
-	
+
 	for (int i = a->ramLokalizacja; i < a->ramRozmiar + a->ramLokalizacja; i++, j++)
 	{
 		RAM_Content[i] = polecenie[j];
@@ -114,9 +114,11 @@ int RAM::findStack(int base)
 	for (int i = 0; i < RAM_SIZE; i++)
 	{
 
-		if (RAM_Content[base + i] == 'E' && RAM_Content[base + i + 1] == 'x' && RAM_Content[base + i + 2] == '\00')
+		if (RAM_Content[base + i] == 'E' && RAM_Content[base + i + 1] == 'X' && RAM_Content[base + i + 2] == '\00')
 		{
+			
 			stack = i + 3;
+			break;
 		}
 	}
 	return stack;
@@ -142,7 +144,8 @@ RAM::RAM()
 	RAM_Content[RAM_SIZE] = 'J';
 	RAM_Content[RAM_SIZE + 1] = 'P';
 	RAM_Content[RAM_SIZE + 2] = '\00';
-
+	Semafory sem(0);
+	semaforRAM = sem;
 }
 
 void RAM::addToMem(PCB* a, std::string polecenie, int claimedSpace)
@@ -152,25 +155,26 @@ void RAM::addToMem(PCB* a, std::string polecenie, int claimedSpace)
 	{
 		if (isFreeBlock(a->ramRozmiar))
 		{
-			memWrite(a, polecenie,claimedSpace);
+			memWrite(a, polecenie, claimedSpace);
 			freeRAM -= a->ramRozmiar;
 		}
 		else
 		{
 			defragment();
-			memWrite(a, polecenie,claimedSpace);
+			memWrite(a, polecenie, claimedSpace);
 			freeRAM -= a->ramRozmiar;
 		}
 	}
-	else { 
-		// TODO SEMAFOR 
+	else {
+		semaforRAM.wait(a);
+		
 	}
 
 }
 
 void RAM::deleteFromMem(PCB* a)
 {
-	if (a->dajRamLokalizacja() != -1) {
+	if (a->dajRamLokalizacja() >=0) {
 		int i = 0;
 		for (; i < claimedBlocks.size(); ++i) {
 			if (claimedBlocks[i].base == a->ramLokalizacja) {
@@ -193,7 +197,9 @@ void RAM::deleteFromMem(PCB* a)
 		std::sort(freeBlocks.begin(), freeBlocks.end(), [](const Block &b1, const Block &b2) {return b1.base < b2.base; });
 		memMerge();
 
-		// TODO SEMAFOR LECI
+		while (semaforRAM.dlugosc() > 0) {
+			semaforRAM.signal(a);
+		}
 	}
 }
 
@@ -212,6 +218,10 @@ void RAM::showRam()
 
 void RAM::showRange(int start, int lenght)
 {
+	if (start + lenght > TRU_RAM_SIZE) {
+	//std:cout << "Nie kombinuj hopie" << std::endl;
+		return;
+	}
 	std::cout << "|";
 	for (int i = start; i<start + lenght; i++)
 	{
@@ -219,6 +229,26 @@ void RAM::showRange(int start, int lenght)
 	}
 	std::cout << std::endl;
 }
+
+void RAM::showRangeProcess(int start, int lenght, PCB * b)
+{
+	start--;
+	if (start > b->dajMiejsceNaDane() || start + lenght > b->dajMiejsceNaDane())
+	{
+		b->ustawBlad(1);
+		return;
+	}
+
+	
+	for (int i = start + b->dajRamLokalizacja() + b->dajRamRozmiar() - b->dajMiejsceNaDane(); i<start + lenght + b->dajRamLokalizacja() + b->dajRamRozmiar() - b->dajMiejsceNaDane(); i++)
+	{
+		std::cout << RAM_Content[i];
+	}
+	std::cout << std::endl;
+}
+
+
+
 
 std::string RAM::showProcess(int base)
 {
@@ -239,11 +269,12 @@ void RAM::saveToRam(PCB* b, std::string a, int localisation)
 	a += '\00';
 	if (localisation < b->dajRamLokalizacja() || localisation + a.size() > b->dajRamLokalizacja() + b->dajRamRozmiar())
 	{
-		// TODO FATAL ERROR !
+		b->ustawBlad(1);
 		return;
 	}
 	int j = 0;
-	for (int g = localisation + b->dajRamLokalizacja() + stack; g < localisation + a.size(); g++, j++)
+	int start = localisation + b->dajRamLokalizacja() + stack;
+	for (int g = start; g <  start + a.size(); g++, j++)
 	{
 		RAM_Content[g] = a[j];
 	}
@@ -251,16 +282,16 @@ void RAM::saveToRam(PCB* b, std::string a, int localisation)
 
 std::string RAM::memRead(PCB* b, int localisation)
 {
-	
+
 	if (localisation < b->dajRamLokalizacja() || localisation> b->dajRamLokalizacja() + b->dajRamRozmiar())
 	{
-		// TODO FATAL ERROR !
+		b->ustawBlad(1);
 		return "";
 	}
 	int a = findStack(b->dajRamLokalizacja()) + localisation;
 	std::string tekst;
 	int i = 0;
-	while(RAM_Content[i]!='\00')
+	while (RAM_Content[i] != '\00')
 	{
 		tekst += RAM_Content[i];
 		++i;

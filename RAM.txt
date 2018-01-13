@@ -1,1 +1,6 @@
-MV A 3,MV [60] marian,MV [70] kot,MV [120] penic,EX,
+MV [100] 20
+MV A 3
+MV C 4
+MV B 2
+MV C 1
+EX

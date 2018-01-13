@@ -1,3 +1,8 @@
-MV A 3
-DC A
+MV D 4
+MV A D
+MV B A
+ML A B
+JP 13
+CF prog2.txt
+WF prog2.txt ~A
 EX

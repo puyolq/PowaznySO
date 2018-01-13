@@ -1,0 +1,5 @@
+CP p1
+CP p2 p1
+CP p3
+DP p1
+PP

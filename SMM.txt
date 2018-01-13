@@ -1,0 +1,5 @@
+CS 1
+BS 1
+SM 6 Marian Jan
+DS
+EX

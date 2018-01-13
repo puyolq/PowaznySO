@@ -6,7 +6,8 @@ Semafory::Semafory()
 	wartosc = 1;
 }
 
-Semafory::Semafory(int x) {
+Semafory::Semafory(int x)
+{
 	wartosc = x;
 }
 
@@ -16,7 +17,7 @@ Semafory::~Semafory()
 
 void Semafory::wait(PCB * proces)
 {
-	if (proces->dajStatus() <= 3) {
+	if (proces->dajStatus() <= 4) {
 		if (wartosc>0)
 		{
 			--wartosc;
@@ -37,7 +38,7 @@ void Semafory::wait(PCB * proces)
 
 void Semafory::signal(PCB * proces)
 {
-	if (proces->dajStatus() <= 3) {
+	if (proces->dajStatus() <= 4) {
 		if (kolejka.empty())
 		{
 			++wartosc;
@@ -50,12 +51,11 @@ void Semafory::signal(PCB * proces)
 			++wartosc;
 		}
 	}
-	else { throw bledneWywolanieSignal(); }
+	else {
+		throw bledneWywolanieSignal(); }
 }
 //WYJATKI WYRZUCIC
 int Semafory::dlugosc()
 {
 	return (-1)*(this->wartosc);
 }
-//
-//

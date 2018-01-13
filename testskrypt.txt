@@ -1,6 +1,11 @@
 MF 1 1
+
 SF 1 1 testowo
+
 OF 1 1
+
 RQ
+
 CF 1 1
+
 RQ

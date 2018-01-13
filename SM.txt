@@ -1,2 +1,4 @@
-SM po marianek ;<
+CS 6
+BS 6
+SM 9 SystemyOS
 EX

@@ -1,4 +1,8 @@
-MV A -1223
-CF p1.txt
-WF p1.txt ~A
+MV A 5
+DC A
+MV B -30
+CP potomek1 prog2 5
+ML A B
+CF prog.txt
+WF prog.txt ~A
 EX

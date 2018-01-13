@@ -1,0 +1,5 @@
+MV D 4
+MV A D
+MV B A
+ML A B
+EX

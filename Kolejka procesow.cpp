@@ -7,23 +7,23 @@ KolejkaProcesow kolejkaOczekujacych("oczekujacych");
 
 
 Wezel* bezczynnosc = new Wezel(&idle);
-	
-Wezel::Wezel(PCB* proces) : proces(proces), nastepny(NULL){}
 
-Wezel::Wezel(): proces(NULL), nastepny(NULL){}
+Wezel::Wezel(PCB* proces) : proces(proces), nastepny(NULL) {}
+
+Wezel::Wezel() : proces(NULL), nastepny(NULL) {}
 
 #pragma region KolejkaProcesow - cia³a metod
-KolejkaProcesow::KolejkaProcesow(std::string nazwa):nazwa(nazwa){}
+KolejkaProcesow::KolejkaProcesow(std::string nazwa) : nazwa(nazwa) {}
 
-KolejkaProcesow::~KolejkaProcesow(){
+KolejkaProcesow::~KolejkaProcesow() {
 	if (glowa && ogon)
 		delete glowa, ogon;
 }
 
-void KolejkaProcesow::dodajDoKolejki(PCB* proces){
+void KolejkaProcesow::dodajDoKolejki(PCB* proces) {
 	Wezel* temp1 = new Wezel(proces);
 	Wezel* temp2 = glowa;
-	if (!glowa || glowa->proces == bezczynnosc->proces){
+	if (!glowa || glowa->proces == bezczynnosc->proces) {
 		glowa = temp1;
 		glowa->proces->ustawStatus(3);
 		ogon = glowa;
@@ -33,14 +33,14 @@ void KolejkaProcesow::dodajDoKolejki(PCB* proces){
 	ogon = temp1;
 }
 
-void KolejkaProcesow::usunProces(const short& idProcesu){
+void KolejkaProcesow::usunProces(const short& idProcesu) {
 	Wezel* temp1 = glowa;
 	if (temp1->proces->dajId() == idProcesu) {
 		usunZPoczatku();
 		return;
 	}
 
-	for (short i = 0; i < rozmiarKolejki(); i++){
+	for (short i = 0; i < rozmiarKolejki(); i++) {
 		if (temp1->nastepny) {
 			if (temp1->nastepny->proces->dajId() == idProcesu) {
 				Wezel* temp2 = temp1->nastepny;
@@ -61,7 +61,7 @@ void KolejkaProcesow::usunProces(const short& idProcesu){
 	}
 }
 
-void KolejkaProcesow::usunZPoczatku(){
+void KolejkaProcesow::usunZPoczatku() {
 	sprawdzBezczynnosc();
 	Wezel* temp1 = glowa;
 	if (temp1->nastepny) {
@@ -70,25 +70,25 @@ void KolejkaProcesow::usunZPoczatku(){
 	}
 	else if (nazwa == "oczekujacych")
 		glowa = NULL;
-	
+
 }
 
-void KolejkaProcesow::usunZKonca(){
+void KolejkaProcesow::usunZKonca() {
 	sprawdzBezczynnosc();
 	Wezel* temp1 = glowa;
 	while (temp1->nastepny) {
-		if(temp1->nastepny)
+		if (temp1->nastepny)
 			temp1 = temp1->nastepny;
 	}
 	Wezel* temp2 = temp1;
-	if(temp1->nastepny)
+	if (temp1->nastepny)
 		temp1 = temp1->nastepny;
-	if(temp2->nastepny)
+	if (temp2->nastepny)
 		temp2->nastepny = NULL;
 	ogon = temp2;
 }
 
-void KolejkaProcesow::sprawdzBezczynnosc(){
+void KolejkaProcesow::sprawdzBezczynnosc() {
 	if (!glowa->nastepny && this->nazwa == "gotowych") {
 		glowa = bezczynnosc;
 		glowa->proces->ustawStatus(3);
@@ -98,7 +98,7 @@ void KolejkaProcesow::sprawdzBezczynnosc(){
 }
 
 void KolejkaProcesow::uruchomEkspedytor(const bool &skonczylSie) {
-	if (!glowa->nastepny && glowa!=bezczynnosc) {
+	if (!glowa->nastepny && glowa != bezczynnosc) {
 		glowa->nastepny = bezczynnosc;
 		ogon = bezczynnosc;
 
@@ -106,9 +106,22 @@ void KolejkaProcesow::uruchomEkspedytor(const bool &skonczylSie) {
 	if (skonczylSie) {
 		if (glowa != bezczynnosc) {
 			glowa->proces->ustawStatus(4);
-			//usunZPoczatku();
+
+			if (glowa != bezczynnosc) {
+				glowa->proces->ustawStatus(3);
+				return;
+			}
+			else {
+				if (glowa->nastepny) {
+					if (glowa->nastepny->proces != NULL) {
+						if (glowa->nastepny->proces->dajId() > 1)
+							glowa = glowa->nastepny;
+						else
+							glowa->nastepny = NULL;
+					}
+				}
+			}
 			glowa->proces->ustawStatus(3);
-			//stan = zakonczooopooooooopopony
 		}
 	}
 	else {
@@ -132,10 +145,10 @@ void KolejkaProcesow::uruchomEkspedytor(const bool &skonczylSie) {
 			ogon = bezczynnosc;
 		}
 	}
-//
+	//
 }
 
-void KolejkaProcesow::wyswietlKolejke(){
+void KolejkaProcesow::wyswietlKolejke() {
 	short lp = 1;
 	std::clog << "Kolejka procesow " << nazwa << ":" << std::endl;
 	if (this->nazwa == "oczekujacych" && glowa == NULL) {
@@ -143,17 +156,17 @@ void KolejkaProcesow::wyswietlKolejke(){
 	}
 	Wezel* temp = glowa;
 
-	while (temp){
-		std::clog <<lp<<". PID:"<<temp->proces->dajId() <<" Nazwa:"<< temp->proces->dajNazwe()<< " Stan: "<<temp->proces->dajStatus() <<std::endl;
+	while (temp) {
+		std::clog << lp << ". PID:" << temp->proces->dajId() << " Nazwa:" << temp->proces->dajNazwe() << " Stan: " << temp->proces->dajStatus() << std::endl;
 		if (!temp->nastepny)
 			break;
-			temp = temp->nastepny;
+		temp = temp->nastepny;
 		lp++;
 	}
 	std::clog << std::endl;
 }
 
-short KolejkaProcesow::rozmiarKolejki(){
+short KolejkaProcesow::rozmiarKolejki() {
 	short licznik = 0;
 	Wezel* temp = glowa;
 	if (temp == bezczynnosc)
@@ -167,7 +180,7 @@ short KolejkaProcesow::rozmiarKolejki(){
 #pragma endregion
 
 #pragma region Inne funkcje
-void zmienKolejke(PCB * proces){
+void zmienKolejke(PCB * proces) {
 	if (kolejkaGotowych.glowa->proces == proces) {
 		kolejkaOczekujacych.dodajDoKolejki(proces);
 		kolejkaGotowych.usunZPoczatku();
@@ -178,7 +191,7 @@ void zmienKolejke(PCB * proces){
 	}
 }
 
-void zmienKolejke(Wezel * wezel){
+void zmienKolejke(Wezel * wezel) {
 	if (kolejkaGotowych.glowa->proces == wezel->proces) {
 		kolejkaOczekujacych.dodajDoKolejki(wezel->proces);
 		kolejkaGotowych.usunZPoczatku();

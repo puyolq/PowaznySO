@@ -1,0 +1,13 @@
+MV C 4
+
+MV A 3
+
+MV B 7
+
+AD A B
+
+AD A C
+
+MV D 3
+
+EX

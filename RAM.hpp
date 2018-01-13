@@ -2,7 +2,7 @@
 #include "ZarzadzanieProcesami.h" //Bartosz Ptak
 #include <vector>
 #define RAM_SIZE 125
-#define TRU_RAM_SIZE 128
+#define TRU_RAM_SIZE RAM_SIZE + 3
 class RAM {
 
 	//PCB *pcb = new PCB();
@@ -20,7 +20,7 @@ class RAM {
 	void FBRemove(PCB*a);//usuniecie wolnego bloku
 	void memWrite(PCB* a, std::string polecenie, int claimed);//Zapisywanie w pamieci
 	void memMerge();//laczy 2 wolne bloki w 1 jezeli sa obok siebie
-	
+	Semafory semaforRAM;
 	int findStack(int base);
 public:
 	RAM(); // konstruktor
@@ -29,12 +29,13 @@ public:
 	void deleteFromMem(PCB*a); //usun z pamieci
 	void showRam();//wypisz cala zawartosc
 	void showRange(int start, int lenght);
+	void showRangeProcess(int start, int lenght, PCB* b);
 	std::string showProcess(int base);
 	void saveToRam(PCB* b, std::string a, int localisation);// wpisuje wartosc poczawszy od komorki podanej przez assembler do pola przydzielonego (od 1)
 	std::string memRead(PCB* b, int localisation); // zwraca komorke pamieci przydzielonej programowi( numerowanie od 0)
 
 
-															   ///////////// DO WYJEBANIA //////////////////////
+												   ///////////// DO WYJEBANIA //////////////////////
 	void printBLOCKS();
 };
 

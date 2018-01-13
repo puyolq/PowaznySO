@@ -34,7 +34,7 @@ void Dysk::otworzPlik(std::string nazwa, std::string rozszerzenie, std::string d
 	short pozycja = znajdzPlik(nazwa, rozszerzenie);
 	short pozycjaFolderu = znajdzFolder(nazwaFolderu);
 
-	
+
 	if (pozycja == -1)
 	{
 		proces->ustawBlad(true);
@@ -102,7 +102,7 @@ void Dysk::utworzPlik(std::string nazwa, std::string rozszerzenie, PCB* proces, 
 		proces->ustawBlad(true);
 		return;
 	}
-	if (pozycjaPliku == -1 && pozycjaFolderu != -1) // Pliku nie znaleziono, nazwa jest jednoznaczna
+	if (!plikJest && pozycjaFolderu != -1) // Pliku nie znaleziono, nazwa jest jednoznaczna
 	{
 		if (this->wolneBloki != 0)
 		{
@@ -244,12 +244,9 @@ std::string Dysk::pobierzDane(std::string nazwa, std::string rozszerzenie, PCB* 
 		if (tablicaSemaforow[pozycja].dlugosc() >= 0)
 		{
 			proces->ustawBlad(true);
+			tablicaSemaforow[pozycja].wait(proces);
 			return "";
 		}
-	}
-
-	if (pozycja != -1)
-	{
 		otworzPlik(nazwa, rozszerzenie, "", proces, nazwaFolderu);
 	}
 	//**************************************************
@@ -377,6 +374,9 @@ void Dysk::otworzStratnie(std::string nazwa, std::string rozszerzenie, PCB* proc
 	if (tablicaSemaforow[pozycja].dlugosc() >= 0)
 	{
 		proces->ustawBlad(true);
+		//***********************************************************************************
+		tablicaSemaforow[pozycja].wait(proces);
+		//***********************************************************************************
 		return;
 	}
 	tablicaSemaforow[pozycja].wait(proces);
@@ -473,6 +473,9 @@ void Dysk::usunPlik(std::string nazwa, std::string rozszerzenie, PCB* proces, st
 	if (pozycja == -1)
 	{
 		proces->ustawBlad(true);
+		return;
+	}
+	if (tablicaSemaforow[pozycja].dlugosc() >= 0) {
 		return;
 	}
 	if (pozycjaFolderu == -1)
@@ -680,7 +683,7 @@ void Dysk::usunFolder(int pozycja, PCB* proces)
 	}
 	else
 	{
-		proces->ustawBlad(true); 
+		proces->ustawBlad(true);
 		return;
 	}
 }
@@ -846,4 +849,3 @@ short Dysk::znajdzFolder(std::string nazwa)
 	}
 	return doZwrotu;
 }
-

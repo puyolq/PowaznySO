@@ -17,8 +17,8 @@ class PCB
 {
 private:
 	//ogólne sk³adniki
-	int id;		
-	int blad;				//dodane do obslugi bledow
+	int id;
+	//int blad;				//dodane do obslugi bledow
 	std::string nazwa;
 	std::vector<PCB*> potomkowie;
 	PCB* rodzic;
@@ -28,7 +28,7 @@ public:
 	PCB()
 	{
 		id = 0;
-		
+
 		//potomkowie = nullptr;
 		rodzic = nullptr;
 	}
@@ -82,18 +82,23 @@ private:
 public:
 	void ustawDeskryptorGniazda(int wartosc);
 	int dajDeskryptorGniazda();
-	int dajBlad();			//dodane blad
-	void ustawBlad(int wartosc);
+	bool dajBlad();			//dodane blad
+	void ustawBlad(bool wartosc);
 
 	//dla Mariana (RAM)
 public:
+	void PCB::ustawProgram(std::string a);
+	std::string PCB::dajProgram();
 	int ramLokalizacja;
 	int ramRozmiar;
-
+	int miejsceNaDane;
+	std::string nazwaProgramu = "";
 	void ustawRamLokalizacja(int wartosc);
 	int dajRamLokalizacja();
 	void ustawRamRozmiar(int wartosc);
 	int dajRamRozmiar();
+	void ustawMiejsceNaDane(int a);
+	int dajMiejsceNaDane();
 
 	//dla Mariusza (semafory)
 	Semafory *semafor;
@@ -104,7 +109,7 @@ class ZarzadzanieProcesami
 {
 private:
 	int idLicznik;
-	
+
 	int dajLicznik();
 
 public:

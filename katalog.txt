@@ -1,0 +1,8 @@
+CK Plik Dysk
+CK Muzyka Dysk
+CK Szkola Plik
+CK Studia Szkola
+CF oko.txt
+CF ala.cv
+WF oko.txt JJAA
+EX

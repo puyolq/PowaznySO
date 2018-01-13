@@ -18,7 +18,7 @@ public:
 	Shell();
 
 	//tworzenie procesu
-	void CP(std::string nazwa, std::string rodzic, std::string program);
+	void CP(std::string nazwa, std::string rodzic, std::string program, int rozmiar);
 	//usuwanie procesu
 	void DP(std::string nazwa);
 	//wyswietlanie wszystkich procesow

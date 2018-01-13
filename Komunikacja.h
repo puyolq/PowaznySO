@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <string>
+#include "Semafory.h"
 
 class Wiadomosc {
 private:
@@ -11,7 +12,7 @@ private:
 	int numerPIDNadawcy;
 
 public:
-	//Konstruktor klasy wiadomosc
+	Wiadomosc();
 	Wiadomosc(int numerPIDNadawcy, std::string komunikat);
 
 	std::string pobierzKomunikat();
@@ -22,9 +23,10 @@ class Gniazdo {
 private:
 	//lista wiadomosci
 	std::list<Wiadomosc> listaOdebranychWiadomosci; //( stos )
-
 	int numerIDWlasciciela; //unikalny numer ID procesu powiazanego z gniazdem
 	int deskryptorGniazda; //unikalny numer gniazda
+
+	Semafory semaforKanalu;
 public:
 
 	Gniazdo();
@@ -44,6 +46,12 @@ public:
 	bool pobierzWiadomosc(Wiadomosc &odebranaWiadomosc);
 
 	void zamknijGniazdo();
+
+	void zablokujWlasciciela();
+
+	void odblokujWlasciciela();
+
+	bool czyWlascicielZablokowany();
 };
 
 //Klasa zarzadzajaca cala komunikacja. Tworzona przy uruchomieniu systemu operacyjnego
@@ -51,27 +59,32 @@ class KomunikacjaMiedzyprocesowa {
 private:
 	std::vector<Gniazdo> spisWszystkichGniazd;
 
-	//Znajduje nowy, unikalny deskryptor gniazda
-	int znajdzNowyDeskryptor();
-
-	//Funkcja przyporz¹dkowuje nowe gniazdo procesowi o podanym ID
-	void stworzNoweGniazdoDlaProcesu(int numerIDProcesu);
-
-	//Funkcja zwracajaca indeks danego gniazda w wektorze gniazd dla podanego deskryptora
-	int znajdzIndeksWSpisie(int deskryptorPoszukiwanegoGniazda);
+	//Funkcja sprawdzajaca, czy dany deskryptor jest wolny. true - wolny, false - zajêty
+	bool KomunikacjaMiedzyprocesowa::sprawdzCzyDanyDeskryptorJestWolny(int testowanyDeskryptorGniazda);
 
 public:
 	//Konstruktor
 	KomunikacjaMiedzyprocesowa();
 
+	//Funkcja zwracaj¹ca wskaznik na gniazdo w spisie (nullptr gdy w spisie nie ma gniazda o podanym deskryptorze)
+	Gniazdo* znajdzGniazdoWSpisie(int deskryptorGniazda);
+
+	//Funkcja przyporz¹dkowuje nowe gniazdo procesowi o podanym ID
+	void KomunikacjaMiedzyprocesowa::stworzNoweGniazdo(int numerIDProcesu, int deskryptorGniazda);
+
+	//Funkcja wi¹¿¹ca gniazdo o podanym deskryptorze z procesem o podanym ID
+	void KomunikacjaMiedzyprocesowa::powiazanieGniazdaZProcesem(int numerIDProcesu, int deskryptorGniazda);
+
 	//Pierwszy rozkaz dla Interpretera - odebranie komunikatu
 	Wiadomosc rozkazOdebraniaKomunikatu(int numerIDProcesuOdbiorcy);
 
 	//Drugi rozkaz dla Interpretera - wyslanie komunikatu
-	bool rozkazWyslaniaKomunikatu(int numerIDProcesuNadawcy, std::string nazwaProcesuOdbiorcy, std::string komunikat);
+	void rozkazWyslaniaKomunikatu(int numerIDProcesuNadawcy, int deskryptorGniazdaOdbiorcy, std::string komunikat);
+
+	void wyswietlSpisWszystkichGniazd();
 
 	//Usuniecie gniazda - wywolywane wraz z zamknieciem procesu
-	void usunGniazdo(int deskryptorGniazdaDoUsuniecia);
+	void KomunikacjaMiedzyprocesowa::usunGniazdo(int numerIDProcesu);
 };
 
 extern KomunikacjaMiedzyprocesowa komunikacja;

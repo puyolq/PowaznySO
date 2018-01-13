@@ -27,7 +27,7 @@ class Semafory
 {
 public:
 	Semafory();
-	Semafory(int);
+	Semafory(int x);
 	~Semafory();
 
 	void wait(PCB* proces);

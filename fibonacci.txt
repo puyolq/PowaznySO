@@ -1,0 +1,12 @@
+MV D 4
+SB D 2
+MV A 1
+MV B 1
+MV C A
+AD A B
+MV B C
+JP 27
+MV [5] ~B
+CF fib.txt
+WF fib.txt ~B
+EX

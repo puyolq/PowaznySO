@@ -12,7 +12,7 @@ Shell::Shell()
 	kolejkaGotowych.dodajDoKolejki(&idle);
 }
 
-void Shell::CP(std::string nazwa, std::string rodzic, std::string program)
+void Shell::CP(std::string nazwa, std::string rodzic, std::string program, int rozmiar)
 {
 	if (zarzadzanieProcesami.znajdzProces(nazwa) == nullptr) {
 		zarzadzanieProcesami.dodajProces(nazwa, rodzic);
@@ -20,8 +20,11 @@ void Shell::CP(std::string nazwa, std::string rodzic, std::string program)
 		if (program == "") {
 			;
 		}
-		else
-			interpreter.WpiszDoRam(zarzadzanieProcesami.znajdzProces(nazwa), program);
+		else {
+			zarzadzanieProcesami.znajdzProces(nazwa)->ustawProgram(program);
+			zarzadzanieProcesami.znajdzProces(nazwa)->ustawMiejsceNaDane(rozmiar);
+			//interpreter.WpiszDoRam(zarzadzanieProcesami.znajdzProces(nazwa), program, rozmiar);
+		}
 	}
 	else std::clog << "Proces istnieje" << std::endl;
 }
@@ -33,8 +36,16 @@ void Shell::DP(std::string nazwa)
 	}
 	else if (zarzadzanieProcesami.znajdzProces(nazwa) == nullptr)
 		clog << "Proces nie istnieje" << endl;
-	else
+	else {
+		if (zarzadzanieProcesami.znajdzProces(nazwa)->dajDeskryptorGniazda() != 0)
+		{
+			Gniazdo* wskaznikNaGniazdo = komunikacja.znajdzGniazdoWSpisie(zarzadzanieProcesami.znajdzProces(nazwa)->dajDeskryptorGniazda());
+			if (wskaznikNaGniazdo->czyWlascicielZablokowany() == true)
+				wskaznikNaGniazdo->odblokujWlasciciela();
+			komunikacja.usunGniazdo(zarzadzanieProcesami.znajdzProces(nazwa)->dajId());
+		}
 		zarzadzanieProcesami.usunProces(nazwa);
+	}
 }
 
 void Shell::BC(std::string nazwa)
@@ -56,18 +67,15 @@ void Shell::MP(std::string co, std::string dokad)
 
 void Shell::GO()
 {
-	if (zarzadzanieProcesami.iloscProcesow() != 1 && kolejkaGotowych.rozmiarKolejki()>0) {
+	//if (zarzadzanieProcesami.iloscProcesow() != 1 && kolejkaGotowych.rozmiarKolejki()>0) {
 
-		interpreter.PobierzRozkaz(kolejkaGotowych.glowa->proces);
-		if (interpreter.Rozkaz != "") {
-			std::cout << " ******************************" << std::endl;
-			std::cout << " Proces aktywny: " << kolejkaGotowych.glowa->proces->dajNazwe() << std::endl;
-			std::cout << " ROZKAZ: " << interpreter.Rozkaz << std::endl;
-		}
-		interpreter.WykonywanieProgramu();
+	//interpreter.PobierzRozkaz(kolejkaGotowych.glowa->proces);
+	//if (interpreter.Rozkaz != "") {
+	//}
+	interpreter.WykonywanieProgramu();
 
-	}
-	else std::cout << "Nie ma zaladowanego programu" << std::endl;
+//	}
+	//else std::cout << "Nie ma zaladowanego programu" << std::endl;
 	//interpreter.StanRejestrow();
 }
 
@@ -215,7 +223,7 @@ void Shell::RB()
 
 void Shell::PS()
 {
-	cout << "Wywolanie z komunikacji :)" << endl;
+	komunikacja.wyswietlSpisWszystkichGniazd();
 }
 
 void Shell::help()
@@ -249,24 +257,36 @@ void Shell::czytajWejscie(std::string wejscie)
 	//string komenda = args[0];
 	string komenda;
 	int i = 0;
-	while(args[0][i])
+	while (args[0][i])
 	{
 		komenda += toupper(args[0][i]);
 		i++;
 	}
 
 	if (komenda == "CP") {
-		if (args.size() < 2 || args.size() > 4)
-			cout << "Niepoprawne uzycie komendy! CP nazwa *rodzic **program" << endl;
+		if (args.size() < 2 || args.size() > 5)
+			cout << "Niepoprawne uzycie komendy! CP nazwa *rodzic **program ***rozmiarNaDane" << endl;
 		else {
 			//ustalamy rodzica
-			if (args.size() != 3) {
+			if (args.size() <3) {
 				args.push_back("init");
 			}
 			//program ""
-			if (args.size() != 4)
+			if (args.size() < 4)
 				args.push_back("");
-			CP(args[1], args[2], args[3]);
+			if (args.size() < 5) {
+				args.push_back("0");
+			}
+			if (args.size() == 5 && !czyStringLiczba(args[4]))
+			{
+				clog << "Niepoprawne uzycie komendy! CP nazwa *rodzic **program ***rozmiarNaDane" << endl;
+			}
+			else {
+				if (stoi(args[4])<RAM_SIZE - 2)
+					CP(args[1], args[2], args[3], stoi(args[4]));
+				else
+					clog << "Niepoprawne uzycie komendy! CP nazwa *rodzic **program ***rozmiarNaDane" << endl;
+			}
 		}
 	}
 	else if (komenda == "DP") {
@@ -293,9 +313,9 @@ void Shell::czytajWejscie(std::string wejscie)
 		else {
 			if (args.size() != 4)
 				args.push_back("Dysk");
-			CP("plikcostam", "init", "");
-			MF(args[1], args[2], args[3], zarzadzanieProcesami.znajdzProces("plikcostam"));
-			DP("plikcostam");
+			CP("obslugaPliku", "init", "", 0);
+			MF(args[1], args[2], args[3], zarzadzanieProcesami.znajdzProces("obslugaPliku"));
+			DP("obslugaPliku");
 		}
 	}
 	else if (komenda == "DF") {
@@ -309,9 +329,9 @@ void Shell::czytajWejscie(std::string wejscie)
 				return;
 			}
 			else {
-				CP("plikcostam", "init", "");
-				DF(args[1], args[2], args[3], zarzadzanieProcesami.znajdzProces("plikcostam"));
-				DP("plikcostam");
+				CP("obslugaPliku", "init", "", 0);
+				DF(args[1], args[2], args[3], zarzadzanieProcesami.znajdzProces("obslugaPliku"));
+				DP("obslugaPliku");
 			}
 		}
 	}
@@ -326,9 +346,9 @@ void Shell::czytajWejscie(std::string wejscie)
 				return;
 			}
 			else {
-				CP("plikcostam", "init", "");
-				RF(args[1], args[2], args[3], args[4], zarzadzanieProcesami.znajdzProces("plikcostam"));
-				DP("plikcostam");
+				CP("obslugaPliku", "init", "", 0);
+				RF(args[1], args[2], args[3], args[4], zarzadzanieProcesami.znajdzProces("obslugaPliku"));
+				DP("obslugaPliku");
 			}
 		}
 	}
@@ -338,9 +358,9 @@ void Shell::czytajWejscie(std::string wejscie)
 		else {
 			if (args.size() != 3)
 				args.push_back("Dysk");
-			CP("plikcostam", "init", "");
-			MD(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"));
-			DP("plikcostam");
+			CP("obslugaPliku", "init", "", 0);
+			MD(args[1], args[2], zarzadzanieProcesami.znajdzProces("obslugaPliku"));
+			DP("obslugaPliku");
 		}
 	}
 	else if (komenda == "AD") {
@@ -349,30 +369,45 @@ void Shell::czytajWejscie(std::string wejscie)
 		else {
 			if (args.size() != 5)
 				args.push_back("Dysk");
-			CP("plikcostam", "init", "");
-			AD(args[1], args[2], args[3], args[4], zarzadzanieProcesami.znajdzProces("plikcostam"));
-			DP("plikcostam");
+			CP("obslugaPliku", "init", "", 0);
+			AD(args[1], args[2], args[3], args[4], zarzadzanieProcesami.znajdzProces("obslugaPliku"));
+			DP("obslugaPliku");
 		}
 	}
-	else if (komenda == "DD") {
+	else if (komenda == "DD" || komenda == "RD") {
 		if (args.size() != 2)
 			cout << "Niepoprawne uzycie komendy! DD nazwa" << endl;
 		else if (args[1] == "Dysk") {
 			clog << "Nie mozna usunac katalogu glownego" << endl;
 		}
 		else {
-			CP("plikcostam", "init", "");
-			DD(args[1], zarzadzanieProcesami.znajdzProces("plikcostam"));
-			DP("plikcostam");
+			CP("obslugaPliku", "init", "", 0);
+			DD(args[1], zarzadzanieProcesami.znajdzProces("obslugaPliku"));
+			DP("obslugaPliku");
 		}
 	}
-	else if (komenda == "PT") {
-		if(args.size()!=1)
+	else if (komenda == "PT" || komenda == "DIR") {
+		if (args.size() != 1)
 		{
 			cout << "Niepoprawne uzycie komendy! PT" << endl;
 		}
 		else
 			PT();
+	}
+	else if (komenda == "ECHO")
+	{
+		if (args.size() == 1)
+		{
+			clog << "ECHO is on." << endl;
+		}
+		else if (args.size() >= 2)
+		{
+			for (int z = 1; z < args.size(); z++)
+				if (z == args.size() - 1)
+					clog << args[z] << endl;
+				else
+					clog << args[z] << " ";
+		}
 	}
 	else if (komenda == "PD") {
 		if (args.size() != 1)
@@ -418,7 +453,7 @@ void Shell::czytajWejscie(std::string wejscie)
 		if (args.size() != 3)
 			cout << "Niepoprawne uzycie komendy! MC adres rozmiar" << endl;
 		else {
-			if(czyStringLiczba(args[1]) && czyStringLiczba(args[2]))
+			if (czyStringLiczba(args[1]) && czyStringLiczba(args[2]))
 				MC(stoi(args[1]), stoi(args[2]));
 			else
 			{
@@ -433,7 +468,7 @@ void Shell::czytajWejscie(std::string wejscie)
 			ladujSkrypt(args[1]);
 	}
 	else if (komenda == "EXIT") {
-		if(args.size()!=1)
+		if (args.size() != 1)
 		{
 			cout << "Niepoprawne uzycie komendy! exit" << endl;
 		}
@@ -451,10 +486,10 @@ void Shell::czytajWejscie(std::string wejscie)
 				return;
 			}
 			else {
-				CP("plikcostam", "init", "");
-				SF(args[1], args[2], args[3], zarzadzanieProcesami.znajdzProces("plikcostam"), args[4]);
+				CP("obslugaPliku", "init", "", 0);
+				SF(args[1], args[2], args[3], zarzadzanieProcesami.znajdzProces("obslugaPliku"), args[4]);
 
-				DP("plikcostam");
+				DP("obslugaPliku");
 			}
 
 		}
@@ -470,14 +505,14 @@ void Shell::czytajWejscie(std::string wejscie)
 				return;
 			}
 			else {
-				CP("plikcostam", "init", "");
-				PF(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"), args[3]);
+				CP("obslugaPliku", "init", "", 0);
+				PF(args[1], args[2], zarzadzanieProcesami.znajdzProces("obslugaPliku"), args[3]);
 
-				DP("plikcostam");
+				DP("obslugaPliku");
 			}
 		}
 	}
-	else if	(komenda == "PE")
+	else if (komenda == "PE")
 	{
 		if (args.size() < 5 || args.size()>6)
 			cout << "Niepoprawne uzycie komendy! PE nazwa rozszerzenie pozycjaStartowa ileZnakow *folder" << endl;
@@ -490,10 +525,10 @@ void Shell::czytajWejscie(std::string wejscie)
 			}
 			else {
 				if (czyStringLiczba(args[3]) && czyStringLiczba(args[4])) {
-					CP("plikcostam", "init", "");
-					PE(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"), stoi(args[3]), stoi(args[4]), args[5]);
+					CP("obslugaPliku", "init", "", 0);
+					PE(args[1], args[2], zarzadzanieProcesami.znajdzProces("obslugaPliku"), stoi(args[3]), stoi(args[4]), args[5]);
 
-					DP("plikcostam");
+					DP("obslugaPliku");
 				}
 				else
 					cout << "Niepoprawne uzycie komendy! PE nazwa rozszerzenie pozycjaStartowa ileZnakow *folder" << endl;
@@ -511,9 +546,9 @@ void Shell::czytajWejscie(std::string wejscie)
 				return;
 			}
 			else {
-				CP("plikcostam", "init", "");
-				XF(args[1], args[2], zarzadzanieProcesami.znajdzProces("plikcostam"), args[3]);
-				DP("plikcostam");
+				CP("obslugaPliku", "init", "", 0);
+				XF(args[1], args[2], zarzadzanieProcesami.znajdzProces("obslugaPliku"), args[3]);
+				DP("obslugaPliku");
 			}
 		}
 	}
@@ -543,7 +578,8 @@ void Shell::czytajWejscie(std::string wejscie)
 				temp2.nazwaProcesu = temp;
 				PlikiProcesy.push_back(temp2);
 
-				CP(temp, "init", "");
+				CP(temp, "init", "", 0);
+				zarzadzanieProcesami.znajdzProces(temp)->ustawRamLokalizacja(-10);
 
 				OF(args[1], args[2], zarzadzanieProcesami.znajdzProces(temp), args[3]);
 			}
@@ -584,16 +620,17 @@ void Shell::czytajWejscie(std::string wejscie)
 					}
 					PlikiProcesy.erase(PlikiProcesy.begin() + x);
 				}
-				else
+				else {
 					std::clog << "Blad procesu: " << temp << " = " << zarzadzanieProcesami.znajdzProces(temp)->dajBlad() << std::endl;
-
+					zarzadzanieProcesami.znajdzProces(temp)->ustawBlad(0);
+				}
 
 
 			}
 		}
 	}
 	else if (komenda == "GO") {
-		if(args.size()!=1)
+		if (args.size() != 1)
 		{
 			cout << "Niepoprawne uzycie komendy! GO" << endl;
 		}
@@ -639,8 +676,17 @@ void Shell::czytajWejscie(std::string wejscie)
 		else
 			MP(args[1], args[2]);
 	}
+	else if (komenda == "CLS")
+	{
+		if (args.size() != 1)
+		{
+			cout << "Niepoprawne uzycie komendy! cls" << endl;
+		}
+		else
+			system("cls");
+	}
 	else if (komenda == "HELP") {
-		if(args.size()!=1)
+		if (args.size() != 1)
 		{
 			cout << "Niepoprawne uzycie komendy! help" << endl;
 		}
@@ -674,7 +720,7 @@ void Shell::ladujSkrypt(string nazwa)
 		polecenie.clear();
 
 	}
-//odczytywanie komend i wykonywanie
+	//odczytywanie komend i wykonywanie
 	for (int i = 0; i < polecenia.size(); i++) {
 		for (int j = 0; j < polecenia[i].size(); j++) {
 			if (j != polecenia[i].size())
@@ -702,7 +748,7 @@ bool Shell::czyStringLiczba(std::string& s)
 
 	return !s.empty() && std::find_if(s.begin(), s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
 	return true;
-	
+
 }
 
 std::string Shell::random_string(size_t length)
